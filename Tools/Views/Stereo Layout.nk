@@ -1,0 +1,309 @@
+Group {
+ name Stereo_Layout
+ knobChanged "n=nuke.thisNode()\nk=nuke.thisKnob()\nif k.name() == 'reformat':\n\trefEnable = \['format', 'resize', 'center', 'flip', 'flop', 'turn', 'filter', 'clamp', 'black_outside', 'pbb']\n\tfor knob in refEnable:\n\t\tif k.value() == True:\n\t\t\tn.knob(knob).setEnabled(True)\n\t\telse:\n\t\t\tn.knob(knob).setEnabled(False)"
+ selected true
+ addUserKnob {20 Stereo_Layout l "Stereo Layout"}
+ addUserKnob {4 in_type l input M {views "side by side" "top bottom" ""}}
+ addUserKnob {4 output_type l output M {views "side by side" "top bottom" ""}}
+ output_type "side by side"
+ addUserKnob {6 swap_views l "swap views" +STARTLINE}
+ addUserKnob {26 ""}
+ addUserKnob {6 reformat +STARTLINE}
+ reformat true
+ addUserKnob {41 format l "output format" T Reformat9.format}
+ addUserKnob {41 resize l "resize type" T Reformat9.resize}
+ addUserKnob {41 center -STARTLINE T Reformat9.center}
+ addUserKnob {41 flip -STARTLINE T Reformat9.flip}
+ addUserKnob {41 flop -STARTLINE T Reformat9.flop}
+ addUserKnob {41 turn -STARTLINE T Reformat9.turn}
+ addUserKnob {41 filter T Reformat9.filter}
+ addUserKnob {41 clamp -STARTLINE T Reformat9.clamp}
+ addUserKnob {41 black_outside l "black outside" -STARTLINE T Reformat9.black_outside}
+ addUserKnob {41 pbb l "preserve bounding box" -STARTLINE T Reformat9.pbb}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 260
+  ypos 92
+ }
+ Dot {
+  name Dot3
+  xpos 294
+  ypos 218
+ }
+set N8fa1dc00 [stack 0]
+ Dot {
+  name Dot5
+  xpos 766
+  ypos 218
+ }
+set N8fa1d500 [stack 0]
+ Dot {
+  name Dot4
+  xpos 1212
+  ypos 218
+ }
+ Dot {
+  name Dot11
+  xpos 1212
+  ypos 336
+ }
+set N16c5e380 [stack 0]
+ Dot {
+  name Dot12
+  xpos 1321
+  ypos 336
+ }
+ Reformat {
+  type scale
+  scale {1 0.5}
+  resize none
+  center false
+  name Reformat6
+  xpos 1287
+  ypos 405
+ }
+ Dot {
+  name Dot13
+  xpos 1321
+  ypos 490
+ }
+push $N16c5e380
+ Dot {
+  name Dot14
+  xpos 1101
+  ypos 336
+ }
+ Reformat {
+  type scale
+  scale {1 0.5}
+  resize none
+  center false
+  pbb true
+  name Reformat4
+  xpos 1067
+  ypos 383
+ }
+ Transform {
+  translate {0 {-height}}
+  center {1024 1024}
+  black_outside false
+  name Transform2
+  xpos 1067
+  ypos 409
+ }
+ Reformat {
+  type scale
+  resize none
+  name Reformat5
+  xpos 1067
+  ypos 435
+ }
+ Dot {
+  name Dot15
+  xpos 1101
+  ypos 490
+ }
+ JoinViews {
+  inputs 2
+  name JoinViews2
+  xpos 1178
+  ypos 486
+  viewassoc "left\nright"
+ }
+ Dot {
+  name Dot2
+  xpos 1212
+  ypos 633
+ }
+push $N8fa1d500
+ Dot {
+  name Dot10
+  xpos 766
+  ypos 340
+ }
+set N16c5e700 [stack 0]
+ Dot {
+  name Dot9
+  xpos 875
+  ypos 340
+ }
+ Reformat {
+  type scale
+  scale {0.5 1}
+  resize none
+  center false
+  pbb true
+  name Reformat2
+  xpos 841
+  ypos 386
+ }
+ Transform {
+  translate {{-width} 0}
+  center {1024 1024}
+  black_outside false
+  name Transform1
+  xpos 841
+  ypos 412
+ }
+ Reformat {
+  type scale
+  resize none
+  name Reformat3
+  xpos 841
+  ypos 438
+ }
+ Dot {
+  name Dot8
+  xpos 875
+  ypos 494
+ }
+push $N16c5e700
+ Dot {
+  name Dot7
+  xpos 655
+  ypos 340
+ }
+ Reformat {
+  type scale
+  scale {0.5 1}
+  resize none
+  center false
+  name Reformat1
+  xpos 621
+  ypos 412
+ }
+ Dot {
+  name Dot6
+  xpos 655
+  ypos 494
+ }
+ JoinViews {
+  inputs 2
+  name JoinViews1
+  xpos 732
+  ypos 490
+  viewassoc "left\nright"
+ }
+ Dot {
+  name Dot1
+  xpos 766
+  ypos 608
+ }
+push $N8fa1dc00
+ Switch {
+  inputs 3
+  which {{parent.in_type}}
+  name input_type
+  xpos 260
+  ypos 629
+ }
+ ShuffleViews {
+  views {left right right left}
+  name ShuffleViews1
+  xpos 260
+  ypos 655
+  disable {{1-parent.swap_views}}
+ }
+ Dot {
+  name Dot18
+  xpos 294
+  ypos 700
+ }
+set N347ee00 [stack 0]
+ Dot {
+  name Dot19
+  xpos 766
+  ypos 700
+ }
+set N347ea80 [stack 0]
+ Dot {
+  name Dot20
+  xpos 1212
+  ypos 700
+ }
+ SideBySide {
+  vertical true
+  name SideBySide2
+  xpos 1178
+  ypos 891
+ }
+ Reformat {
+  type scale
+  scale {1 2}
+  resize none
+  center false
+  name Reformat8
+  xpos 1178
+  ypos 917
+ }
+ Dot {
+  name Dot17
+  xpos 1212
+  ypos 1119
+ }
+push $N347ea80
+ SideBySide {
+  name SideBySide1
+  xpos 732
+  ypos 893
+ }
+ Reformat {
+  type scale
+  scale {2 1}
+  resize none
+  center false
+  name Reformat7
+  xpos 732
+  ypos 919
+ }
+ Dot {
+  name Dot16
+  xpos 766
+  ypos 1089
+ }
+push $N347ee00
+ Switch {
+  inputs 3
+  which {{parent.output_type}}
+  name output_type
+  xpos 260
+  ypos 1115
+ }
+ Dot {
+  name Dot21
+  xpos 294
+  ypos 1189
+ }
+set N154c0700 [stack 0]
+ Dot {
+  name Dot22
+  xpos 404
+  ypos 1189
+ }
+ Reformat {
+  resize distort
+  name Reformat9
+  xpos 370
+  ypos 1262
+ }
+ Dot {
+  name Dot23
+  xpos 403
+  ypos 1373
+ }
+push $N154c0700
+ Switch {
+  inputs 2
+  which {{parent.reformat}}
+  name Reformat
+  xpos 260
+  ypos 1369
+ }
+ Output {
+  name Output1
+  xpos 260
+  ypos 1500
+ }
+end_group

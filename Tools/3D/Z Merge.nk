@@ -1,0 +1,610 @@
+Group {
+ name Z_Merge
+ knobChanged "n=nuke.thisNode()\nk=nuke.thisKnob()\nif k.name() == 'enable_feather':\n\trefEnable = \['distance', 'center', 'offset']\n\tfor knob in refEnable:\n\t\tif k.value() == True:\n\t\t\tn.knob(knob).setEnabled(True)\n\t\telse:\n\t\t\tn.knob(knob).setEnabled(False)"
+ selected true
+ addUserKnob {20 Z_Merge l "Z Merge"}
+ addUserKnob {41 from0 l "Z channel" T Copy1.from0}
+ addUserKnob {6 invert_depth l invert +STARTLINE}
+ addUserKnob {26 feather}
+ addUserKnob {6 enable_feather l enable +STARTLINE}
+ enable_feather true
+ addUserKnob {7 distance}
+ distance 0.001
+ addUserKnob {7 center}
+ center 0.5
+ addUserKnob {7 offset R -5 5}
+ addUserKnob {26 outputs "output"}
+ addUserKnob {4 output_type "type" M {over B A "B mask" "A mask"}}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0xaaaaaa00
+  label "Z priority"
+  note_font_size 42
+  xpos -75
+  ypos 913
+  bdwidth 588
+  bdheight 397
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0x8e8e3800
+  label output
+  note_font_size 42
+  xpos -12
+  ypos 1340
+  bdwidth 488
+  bdheight 327
+ }
+ Input {
+  inputs 0
+  name A
+  xpos 385
+  ypos 147
+  number 1
+  addUserKnob {20 User}
+  addUserKnob {1 nodeType +DISABLED}
+  nodeType Input
+ }
+ Dot {
+  name Dot20
+  xpos 419
+  ypos 412
+ }
+set Nfe3da000 [stack 0]
+ Input {
+  inputs 0
+  name B
+  xpos 173
+  ypos 146
+  addUserKnob {20 User}
+  addUserKnob {1 nodeType +DISABLED}
+  nodeType Input
+ }
+ Dot {
+  name Dot2
+  xpos 207
+  ypos 255
+ }
+set N12146380 [stack 0]
+ AddChannels {
+  channels rgba
+  channels2 depth
+  name AddChannels1
+  xpos 173
+  ypos 338
+ }
+set Nfe802000 [stack 0]
+push $Nfe802000
+ Copy {
+  inputs 2
+  from0 depth.Z
+  to0 rgba.red
+  name Copy1
+  xpos 173
+  ypos 364
+ }
+ Copy {
+  inputs 2
+  from0 {{{Copy1.from0}}}
+  to0 rgba.green
+  name Copy2
+  xpos 173
+  ypos 402
+ }
+ Shuffle {
+  blue black
+  alpha black
+  name Shuffle1
+  xpos 173
+  ypos 440
+ }
+ Dot {
+  name Dot1
+  xpos 207
+  ypos 485
+ }
+set N12146000 [stack 0]
+ Dot {
+  name Dot3
+  xpos 324
+  ypos 485
+ }
+ Expression {
+  channel0 rgba
+  expr0 g>r?1:0
+  channel1 none
+  channel2 none
+  channel3 none
+  name Expression1
+  xpos 290
+  ypos 535
+ }
+ Invert {
+  name Invert1
+  xpos 290
+  ypos 561
+  disable {{1-parent.invert_depth}}
+ }
+ Dot {
+  name Dot5
+  xpos 324
+  ypos 858
+ }
+push $N12146000
+ Expression {
+  channel0 rgba
+  expr0 g-r
+  channel1 none
+  channel2 none
+  name find_dist
+  xpos 173
+  ypos 539
+  addUserKnob {20 User}
+ }
+ Grade {
+  channels rgba
+  multiply -1
+  black_clamp false
+  name Grade2
+  xpos 173
+  ypos 565
+  disable {{1-parent.invert_depth}}
+ }
+ Grade {
+  channels rgba
+  whitepoint {{parent.distance}}
+  black_clamp false
+  name define_dist
+  xpos 173
+  ypos 591
+ }
+ Grade {
+  channels rgba
+  add {{parent.center}}
+  black_clamp false
+  name offset
+  xpos 173
+  ypos 617
+ }
+ Grade {
+  channels rgba
+  add {{parent.offset}}
+  black_clamp false
+  name user_off
+  xpos 173
+  ypos 643
+ }
+ Grade {
+  channels rgba
+  white_clamp true
+  name Grade1
+  xpos 173
+  ypos 669
+ }
+ Group {
+  name LinearSmooth1
+  xpos 173
+  ypos 784
+  addUserKnob {20 User}
+  addUserKnob {4 type t "linear -> same ( linear )\nplinear -> perceptually linear\nsmooth -> smooth both ends\nsmooth1 -> smooth towards 1\nsmooth0 -> smooth towards 0\n" M {linear plinear smooth smooth1 smooth0 "" "" "" "" ""}}
+  type smooth
+ }
+  Input {
+   inputs 0
+   name Input1
+   xpos 170
+   ypos 94
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Input
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6bd2de-7c08-11e5-bd9a-74d02b2b0a3c
+  }
+  Dot {
+   name Dot1
+   xpos 204
+   ypos 134
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6c2100-7c08-11e5-a29b-74d02b2b0a3c
+  }
+set N756bfc00 [stack 0]
+  Dot {
+   name Dot5
+   xpos 302
+   ypos 134
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6c6f1e-7c08-11e5-a3c2-74d02b2b0a3c
+  }
+set N756bee00 [stack 0]
+  Expression {
+   expr0 r*r*r
+   expr1 g*g*g
+   expr2 b*b*b
+   expr3 a*a*a
+   name perceptualLinear
+   selected true
+   xpos 268
+   ypos 181
+   addUserKnob {20 User}
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6cbd40-7c08-11e5-adfb-74d02b2b0a3c
+  }
+push $N756bee00
+  Dot {
+   name Dot3
+   xpos 406
+   ypos 134
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6d5980-7c08-11e5-b954-74d02b2b0a3c
+  }
+set N756bea80 [stack 0]
+  Dot {
+   name Dot4
+   xpos 531
+   ypos 134
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6da7a1-7c08-11e5-8e60-74d02b2b0a3c
+  }
+set Nff270700 [stack 0]
+  Dot {
+   name Dot2
+   xpos 644
+   ypos 134
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6df5c0-7c08-11e5-bf31-74d02b2b0a3c
+  }
+  Expression {
+   expr0 "r*r*(2-r )"
+   expr1 "g*g*(2-g )"
+   expr2 "b*b*(2-b )"
+   expr3 "a*a*(2-a )"
+   name smooth0
+   xpos 610
+   ypos 184
+   addUserKnob {20 User}
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6e6aee-7c08-11e5-85f7-74d02b2b0a3c
+  }
+  Dot {
+   name Dot6
+   xpos 644
+   ypos 263
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6f2e40-7c08-11e5-8f7f-74d02b2b0a3c
+  }
+push $Nff270700
+  Expression {
+   expr0 "r*r*( 3-2*r )"
+   expr1 "g*g*( 3-2*g )"
+   expr2 "b*b*( 3-2*b )"
+   expr3 "a*a*( 3-2*a )"
+   name smooth1
+   xpos 497
+   ypos 183
+   addUserKnob {20 User}
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d6f554f-7c08-11e5-a542-74d02b2b0a3c
+  }
+  Dot {
+   name Dot7
+   xpos 531
+   ypos 236
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d7018a1-7c08-11e5-9add-74d02b2b0a3c
+  }
+push $N756bea80
+  Expression {
+   expr0 "r*( 1+r*( 1-r ) )"
+   expr1 "g*( 1+g*( 1-g ) )"
+   expr2 "b*( 1+b*( 1-b ) )"
+   expr3 "a*( 1+a*( 1-a ) )"
+   name smooth
+   xpos 372
+   ypos 181
+   addUserKnob {20 User}
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d7066c0-7c08-11e5-99fd-74d02b2b0a3c
+  }
+  Dot {
+   name Dot8
+   xpos 406
+   ypos 221
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Dot
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d712a0f-7c08-11e5-b357-74d02b2b0a3c
+  }
+push $N756bfc00
+  NoOp {
+   name linear
+   xpos 170
+   ypos 181
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType NoOp
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d71782e-7c08-11e5-ad73-74d02b2b0a3c
+  }
+  Switch {
+   inputs 5
+   which {{parent.type}}
+   name Switch2
+   xpos 170
+   ypos 259
+   addUserKnob {20 User}
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d71c64f-7c08-11e5-a096-74d02b2b0a3c
+  }
+  Output {
+   name Output1
+   xpos 170
+   ypos 314
+   addUserKnob {20 User}
+   addUserKnob {1 nodeType +DISABLED}
+   nodeType Output
+   addUserKnob {1 nativeUID +DISABLED}
+   nativeUID 9d72628f-7c08-11e5-94e1-74d02b2b0a3c
+  }
+ end_group
+ Switch {
+  inputs 2
+  which {{1-parent.enable_feather}}
+  name Switch1
+  xpos 173
+  ypos 854
+ }
+ Dot {
+  name Dot10
+  xpos 206
+  ypos 1043
+ }
+set Nfe61b180 [stack 0]
+ Dot {
+  name Dot21
+  xpos 267
+  ypos 1043
+ }
+set Nfe61aa80 [stack 0]
+push $Nfe61aa80
+push $Nfe3da000
+ Dot {
+  name Dot7
+  xpos 418
+  ypos 1021
+ }
+set Nfe61b880 [stack 0]
+ Dot {
+  name Dot8
+  xpos 350
+  ypos 1021
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge2
+  xpos 316
+  ypos 1039
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle2
+  xpos 316
+  ypos 1065
+ }
+ Dot {
+  name Dot9
+  xpos 350
+  ypos 1091
+ }
+push $Nfe61b180
+ Merge2 {
+  inputs 2
+  operation difference
+  name Merge4
+  xpos 172
+  ypos 1087
+ }
+ Dot {
+  name Dot14
+  xpos 206
+  ypos 1129
+ }
+push $Nfe61b180
+ Dot {
+  name Dot13
+  xpos 107
+  ypos 1043
+ }
+ Invert {
+  name Invert2
+  xpos 73
+  ypos 1087
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge5
+  xpos 73
+  ypos 1125
+ }
+ Dot {
+  name Dot15
+  xpos 107
+  ypos 1151
+ }
+set N1a46a80 [stack 0]
+ Dot {
+  name Dot18
+  xpos 208
+  ypos 1151
+ }
+push $N1a46a80
+push $N12146380
+ Dot {
+  name Dot11
+  xpos 31
+  ypos 255
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge3
+  xpos -3
+  ypos 1147
+ }
+ Dot {
+  name Dot16
+  xpos 31
+  ypos 1173
+ }
+set N1a46000 [stack 0]
+ Dot {
+  name Dot17
+  xpos 107
+  ypos 1173
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle3
+  xpos 73
+  ypos 1191
+ }
+ Dot {
+  name Dot19
+  xpos 107
+  ypos 1217
+ }
+ Merge2 {
+  inputs 2
+  operation difference
+  name Merge6
+  xpos 174
+  ypos 1213
+ }
+ Dot {
+  name Dot22
+  xpos 208
+  ypos 1239
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  name Merge8
+  xpos 233
+  ypos 1235
+ }
+push $Nfe61b880
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge7
+  xpos 385
+  ypos 1235
+ }
+ Dot {
+  name Dot4
+  xpos 420
+  ypos 1424
+ }
+set Nfb833c00 [stack 0]
+ Dot {
+  name Dot24
+  xpos 420
+  ypos 1510
+ }
+set Nfb832a80 [stack 0]
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle5
+  xpos 386
+  ypos 1577
+ }
+ Dot {
+  name Dot25
+  xpos 420
+  ypos 1641
+ }
+push $N1a46000
+ Dot {
+  name Dot12
+  xpos 32
+  ypos 1424
+ }
+set Na42cb500 [stack 0]
+ Dot {
+  name Dot6
+  xpos 32
+  ypos 1530
+ }
+set Na42caa80 [stack 0]
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle4
+  xpos -2
+  ypos 1585
+ }
+ Dot {
+  name Dot23
+  xpos 32
+  ypos 1641
+ }
+push $Nfb832a80
+push $Na42caa80
+push $Nfb833c00
+push $Na42cb500
+ Merge2 {
+  inputs 2
+  operation disjoint-over
+  name Merge1
+  xpos 174
+  ypos 1420
+ }
+ Switch {
+  inputs 5
+  which {{parent.output_type}}
+  name Switch2
+  xpos 174
+  ypos 1637
+ }
+ Output {
+  name Output1
+  xpos 174
+  ypos 1751
+  addUserKnob {20 User}
+  addUserKnob {1 nodeType +DISABLED}
+  nodeType Output
+ }
+end_group

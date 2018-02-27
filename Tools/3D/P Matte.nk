@@ -1,0 +1,474 @@
+Group {
+ name P_Matte
+ knobChanged "n=nuke.thisNode()\nk=nuke.thisKnob()\nif k.name() == 'inputChange':\n\trefEnable = \['pickCenterMode', 'center', 'overlay']\n\tfor knob in refEnable:\n\t\tif n.input(1) == None:\n\t\t\tn.knob(knob).setEnabled(True)\n\t\telse:\n\t\t\tn.knob(knob).setEnabled(False)"
+ selected true
+ addUserKnob {20 P_Matte l "P Matte"}
+ addUserKnob {41 worldPositionChannel l layer T ShuffleWorld.in}
+ addUserKnob {26 c l "CENTER              "}
+ addUserKnob {4 shape M {sphere cube ramp "" ""}}
+ addUserKnob {6 pickCenterMode l "pick center mode" t "rgb = position\nalpha = mask" -STARTLINE}
+ addUserKnob {18 center}
+ center {0 0 0}
+ addUserKnob {7 overlay}
+ overlay 0.025
+ addUserKnob {6 center_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 center_panelDropped_1 l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {26 t l "TRANSFORM        "}
+ addUserKnob {13 translate}
+ addUserKnob {13 rotate}
+ addUserKnob {26 core l "CORE                 "}
+ addUserKnob {7 coreUniformScale l "uniform scale" R 0 10}
+ addUserKnob {13 coreScale l scale}
+ coreScale {1 1 1}
+ addUserKnob {26 g l "FALLOFF              "}
+ addUserKnob {7 uniformScale l "uniform scale" R 0 10}
+ uniformScale 1
+ addUserKnob {13 scale}
+ scale {1 1 1}
+ addUserKnob {4 smoothing M {linear smooth "smooth center" "smooth edge" "linear perceptually" ""}}
+ smoothing "smooth center"
+ addUserKnob {7 blackPoint l blackpoint}
+ addUserKnob {7 whitePoint l whitepoint}
+ whitePoint 1
+ addUserKnob {7 gamma}
+ gamma 1
+ addUserKnob {26 ""}
+ addUserKnob {6 create_alpha l "full alpha" +STARTLINE}
+ create_alpha true
+ addUserKnob {6 invert +STARTLINE}
+ addUserKnob {6 unPremult l unpremult +STARTLINE}
+ addUserKnob {6 premult +STARTLINE}
+}
+ Input {
+  inputs 0
+  name data
+  xpos -267
+  ypos -487
+ }
+ Dot {
+  name Dot11
+  xpos -233
+  ypos -435
+ }
+set Ndfeb2e00 [stack 0]
+ Dot {
+  name Dot12
+  xpos -356
+  ypos -435
+ }
+ ColorCorrect {
+  saturation 0
+  name ColorCorrect1
+  xpos -390
+  ypos 878
+ }
+push $Ndfeb2e00
+ Expression {
+  channel0 alpha
+  expr0 r==0&&g==0&&b==0?0:1
+  channel1 none
+  channel2 none
+  channel3 none
+  name generate_alpha
+  xpos -267
+  ypos -397
+  disable {{1-parent.create_alpha}}
+ }
+ Unpremult {
+  channels all
+  name Unpremult
+  xpos -267
+  ypos -327
+  disable {{!parent.unPremult}}
+ }
+ Shuffle {
+  in2 rgba
+  alpha alpha2
+  name ShuffleWorld
+  xpos -267
+  ypos -246
+ }
+ Dot {
+  name Dot9
+  xpos -233
+  ypos -197
+ }
+set N74b1880 [stack 0]
+ Add {
+  channels rgb
+  value {{-parent.center} {-parent.center} {-parent.center} 0}
+  name centerPos
+  xpos -267
+  ypos -125
+  disable {{1-matrixAxis.disable}}
+ }
+ Add {
+  channels rgb
+  value {{"\[exists parent.input1]? -\[topnode parent.input1].matrix.3: 0"} {"\[exists parent.input1]? -\[topnode parent.input1].matrix.7: 0"} {"\[exists parent.input1]? -\[topnode parent.input1].matrix.11: 0"} {curve}}
+  name translateAxis
+  xpos -267
+  ypos -47
+  disable {{"!\[exists parent.input1]"}}
+ }
+ ColorMatrix {
+  matrix {
+      {{AxisClone.matrix.0} {AxisClone.matrix.1} {AxisClone.matrix.2}}
+      {{AxisClone.matrix.4} {AxisClone.matrix.5} {AxisClone.matrix.6}}
+      {{AxisClone.matrix.8} {AxisClone.matrix.9} {AxisClone.matrix.10}}
+    }
+  name matrixAxis
+  xpos -267
+  ypos -23
+  disable {{"!\[exists parent.input1]"}}
+ }
+ Add {
+  channels rgb
+  value {{-matrix3D.matrix.3} {-matrix3D.matrix.7} {-matrix3D.matrix.11} {curve}}
+  name translateIn
+  xpos -267
+  ypos 120
+ }
+ ColorMatrix {
+  matrix {
+      {{matrix3D.matrix.0} {matrix3D.matrix.1} {matrix3D.matrix.2}}
+      {{matrix3D.matrix.4} {matrix3D.matrix.5} {matrix3D.matrix.6}}
+      {{matrix3D.matrix.8} {matrix3D.matrix.9} {matrix3D.matrix.10}}
+    }
+  name matrixIn
+  xpos -267
+  ypos 144
+ }
+ Expression {
+  temp_name0 coreX
+  temp_expr0 parent.coreUniformScale*parent.coreScale.x/parent.uniformScale/parent.scale.x/2
+  temp_name1 coreY
+  temp_expr1 parent.coreUniformScale*parent.coreScale.y/parent.uniformScale/parent.scale.y/2
+  temp_name2 coreZ
+  temp_expr2 parent.coreUniformScale*parent.coreScale.z/parent.uniformScale/parent.scale.z/2
+  expr0 "abs(r)<=coreX? 0: r>0? r-coreX: r+coreX"
+  expr1 "abs(g)<=coreY? 0: g>0? g-coreY: g+coreY"
+  expr2 "abs(b)<=coreZ? 0: b>0? b-coreZ: b+coreZ"
+  name core
+  xpos -267
+  ypos 325
+ }
+ Dot {
+  name Dot1
+  xpos -233
+  ypos 494
+ }
+set N154bc700 [stack 0]
+ Dot {
+  name Dot8
+  xpos -123
+  ypos 494
+ }
+set N154bc380 [stack 0]
+ Dot {
+  name Dot3
+  xpos 0
+  ypos 494
+ }
+ Expression {
+  channel0 rgb
+  expr0 "a>0? abs(b): 1"
+  channel1 none
+  channel2 none
+  name ramp
+  xpos -34
+  ypos 540
+ }
+ Dot {
+  name Dot6
+  xpos 0
+  ypos 586
+ }
+push $N154bc380
+ Expression {
+  channel0 rgb
+  expr0 "a>0? 1-(clamp(1-abs(r))*clamp(1-abs(g))*clamp(1-abs(b))): 1"
+  channel1 none
+  channel2 none
+  name cube
+  xpos -157
+  ypos 536
+ }
+push $N154bc700
+ Expression {
+  temp_name0 coreX
+  temp_expr0 parent.coreUniformScale*parent.coreScale.x/parent.uniformScale/parent.scale.x
+  temp_name1 coreY
+  temp_expr1 parent.coreUniformScale*parent.coreScale.y/parent.uniformScale/parent.scale.y
+  temp_name2 coreZ
+  temp_expr2 parent.coreUniformScale*parent.coreScale.z/parent.uniformScale/parent.scale.z
+  channel0 rgb
+  expr0 "a>0? sqrt( r*r+g*g+b*b ): 1"
+  channel1 none
+  channel2 none
+  expr2 "a>0? sqrt( r*r+g*g+b*b ): 1"
+  channel3 none
+  expr3 "sqrt( r*r+g*g+b*b )"
+  name sphere1
+  xpos -267
+  ypos 534
+  disable {{curve}}
+ }
+ Switch {
+  inputs 3
+  which {{parent.shape}}
+  name type
+  xpos -267
+  ypos 583
+ }
+ Clamp {
+  channels rgb
+  name ClampRGB
+  xpos -267
+  ypos 641
+ }
+ Invert {
+  name Invert2
+  xpos -267
+  ypos 667
+ }
+ Grade {
+  blackpoint {{parent.blackPoint}}
+  whitepoint {{parent.whitePoint}}
+  gamma {{parent.gamma}}
+  white_clamp true
+  name Grade
+  xpos -267
+  ypos 705
+ }
+ Invert {
+  name Invert3
+  xpos -267
+  ypos 731
+ }
+ Group {
+  name linearSmooth
+  xpos -267
+  ypos 775
+  addUserKnob {4 type t "linear -> same ( linear )\nplinear -> perceptually linear\nsmooth -> smooth both ends\nsmooth1 -> smooth towards 1\nsmooth0 -> smooth towards 0\n" M {linear plinear smooth smooth1 smooth0 "" "" "" "" ""}}
+  type smooth
+ }
+  Input {
+   inputs 0
+   name Input1
+   xpos 170
+   ypos 94
+  }
+  Dot {
+   name Dot1
+   xpos 204
+   ypos 134
+  }
+set N6c8e3500 [stack 0]
+  Dot {
+   name Dot5
+   xpos 302
+   ypos 134
+  }
+set N6c8e3180 [stack 0]
+  Expression {
+   expr0 r*r*r
+   expr1 g*g*g
+   expr2 b*b*b
+   channel3 none
+   name perceptualLinear
+   xpos 268
+   ypos 181
+  }
+push $N6c8e3180
+  Dot {
+   name Dot3
+   xpos 406
+   ypos 134
+  }
+set N6c8e2700 [stack 0]
+  Dot {
+   name Dot4
+   xpos 531
+   ypos 134
+  }
+set N6c8e2380 [stack 0]
+  Dot {
+   name Dot2
+   xpos 644
+   ypos 134
+  }
+  Expression {
+   expr0 "r*r*(2-r )"
+   expr1 "g*g*(2-g )"
+   expr2 "b*b*(2-b )"
+   channel3 none
+   name smooth0
+   xpos 610
+   ypos 184
+  }
+  Dot {
+   name Dot6
+   xpos 644
+   ypos 263
+  }
+push $N6c8e2380
+  Expression {
+   expr0 "r*r*( 3-2*r )"
+   expr1 "g*g*( 3-2*g )"
+   expr2 "b*b*( 3-2*b )"
+   channel3 none
+   name smooth1
+   xpos 497
+   ypos 183
+  }
+  Dot {
+   name Dot7
+   xpos 531
+   ypos 236
+  }
+push $N6c8e2700
+  Expression {
+   expr0 "r*( 1+r*( 1-r ) )"
+   expr1 "g*( 1+g*( 1-g ) )"
+   expr2 "b*( 1+b*( 1-b ) )"
+   channel3 none
+   name smooth
+   xpos 372
+   ypos 181
+  }
+  Dot {
+   name Dot8
+   xpos 406
+   ypos 221
+  }
+push $N6c8e3500
+  NoOp {
+   name linear
+   xpos 170
+   ypos 181
+  }
+  Switch {
+   inputs 5
+   which {{parent.parent.smoothing}}
+   name Switch2
+   xpos 170
+   ypos 260
+  }
+  Output {
+   name Output1
+   xpos 170
+   ypos 314
+  }
+ end_group
+ Invert {
+  channels rgb
+  name Invert1
+  xpos -267
+  ypos 831
+  disable {{parent.invert}}
+ }
+ Remove {
+  operation keep
+  channels rgba
+  name rgba
+  xpos -267
+  ypos 870
+ }
+ Expression {
+  channel0 alpha
+  expr0 "a>0? 1: 0"
+  name fullAlpha
+  xpos -267
+  ypos 894
+  disable {{parent.premult}}
+ }
+ Premult {
+  name Premult
+  xpos -267
+  ypos 918
+ }
+ Shuffle {
+  alpha red
+  name ShuffleAlpha
+  xpos -267
+  ypos 948
+ }
+ Dot {
+  name Dot4
+  xpos -233
+  ypos 991
+ }
+set N978b3c00 [stack 0]
+ Dissolve {
+  inputs 2
+  which {{parent.overlay}}
+  name Dissolve1
+  xpos -390
+  ypos 981
+ }
+push $N74b1880
+ Dot {
+  name Dot2
+  xpos -478
+  ypos -197
+ }
+ ShuffleCopy {
+  inputs 2
+  alpha green
+  name ShuffleCopy1
+  xpos -512
+  ypos 987
+ }
+ Dot {
+  name Dot7
+  xpos -478
+  ypos 1117
+ }
+push $N978b3c00
+ Switch {
+  inputs 2
+  which {{parent.pickCenterMode}}
+  name Switch1
+  xpos -267
+  ypos 1113
+ }
+ Output {
+  name Output
+  xpos -267
+  ypos 1215
+ }
+ Axis2 {
+  inputs 0
+  display off
+  xform_order RTS
+  translate {{"\[exists parent.input1]? \[topnode parent.input1].translate: 0"} {"\[exists parent.input1]? \[topnode parent.input1].translate: 0"} {"\[exists parent.input1]? \[topnode parent.input1].translate: 0"}}
+  rotate {{"\[exists parent.input1]? \[topnode parent.input1].rotate: 0"} {"\[exists parent.input1]? \[topnode parent.input1].rotate: 0"} {"\[exists parent.input1]? \[topnode parent.input1].rotate: 0"}}
+  scaling {{"\[exists parent.input1]? \[topnode parent.input1].scaling: 0"} {"\[exists parent.input1]? \[topnode parent.input1].scaling: 0"} {"\[exists parent.input1]? \[topnode parent.input1].scaling: 0"}}
+  uniform_scale {{"\[exists parent.input1]? 1/\[topnode parent.input1].uniform_scale: 0"}}
+  name AxisClone
+  xpos -145
+  ypos -30
+  disable {{"!\[exists parent.input1]"}}
+ }
+ Axis2 {
+  inputs 0
+  display off
+  selectable false
+  xform_order RTS
+  rot_order ZYX
+  translate {{parent.translate.x} {parent.translate.y} {parent.translate.z}}
+  rotate {{parent.rotate.x} {parent.rotate.y} {parent.rotate.z}}
+  scaling {{1/parent.scale.x} {1/parent.scale.y} {1/parent.scale.z}}
+  uniform_scale {{1/parent.uniformScale}}
+  name matrix3D
+  xpos -142
+  ypos 115
+ }
+ Input {
+  inputs 0
+  name axis
+  xpos -120
+  ypos -460
+  number 1
+ }
+end_group

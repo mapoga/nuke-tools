@@ -1,0 +1,101 @@
+Group {
+ name Frame_Skip
+ knobChanged "n=nuke.thisNode()\nk=nuke.thisKnob()\nif k.name() == 'use_frequency':\n\trefEnable = \['frequency']\n\tfor knob in refEnable:\n\t\tif k.value() == True:\n\t\t\tn.knob(knob).setEnabled(True)\n\t\telse:\n\t\t\tn.knob(knob).setEnabled(False)"
+ selected true
+ addUserKnob {20 Frame_Skip}
+ addUserKnob {3 start_frame l "start frame"}
+ start_frame {2}
+ addUserKnob {6 use_frequency l frequency +STARTLINE}
+ use_frequency true
+ addUserKnob {3 frequency l "" +STARTLINE}
+ frequency {3}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 509
+  ypos 179
+ }
+ Dot {
+  name Dot1
+  xpos 543
+  ypos 230
+ }
+set N34029500 [stack 0]
+ TimeClip {
+  time ""
+  first {{input.first_frame}}
+  last {{input.last_frame}}
+  frame frame+count_clamped
+  origfirst {{first}}
+  origlast {{last}}
+  origset true
+  name FrameSkip1
+  selected true
+  xpos 509
+  ypos 302
+  addUserKnob {3 offset l "frame skip start"}
+  offset {{parent.start_frame}}
+  addUserKnob {3 interval}
+  interval {{parent.frequency-1}}
+  addUserKnob {3 count}
+  count {{floor((frame+interval-offset)/interval)}}
+  addUserKnob {3 count_clamped}
+  count_clamped {{count<0?0:count}}
+  addUserKnob {7 total_count_adj}
+  total_count_adj {{(input.last_frame+1-offset)/(interval+1)}}
+  addUserKnob {7 last_frame_prev}
+  last_frame_prev {{last-ceil(total_count_adj)}}
+ }
+ FrameRange {
+  first_frame {{input.first_frame}}
+  last_frame {{input.last_frame_prev}}
+  time ""
+  name FrameRange2
+  xpos 509
+  ypos 371
+ }
+push $N34029500
+ Dot {
+  name Dot2
+  xpos 414
+  ypos 230
+ }
+ TimeClip {
+  time ""
+  first {{input.first_frame}}
+  last {{input.last_frame}}
+  frame frame<parent.start_frame?frame:frame+1
+  origfirst {{first}}
+  origlast {{last}}
+  origset true
+  name TimeClip1
+  xpos 380
+  ypos 317
+ }
+ FrameRange {
+  first_frame {{input.first_frame}}
+  last_frame {{input.last_frame-1}}
+  time ""
+  name FrameRange1
+  xpos 380
+  ypos 343
+ }
+ Dot {
+  name Dot3
+  xpos 414
+  ypos 470
+ }
+ Switch {
+  inputs 2
+  which {{parent.use_frequency}}
+  name Switch1
+  xpos 509
+  ypos 536
+ }
+ Output {
+  name Output1
+  xpos 509
+  ypos 581
+ }
+end_group

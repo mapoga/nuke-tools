@@ -1,0 +1,526 @@
+add_layer {N N.red N.green N.blue N.alpha}
+Group {
+ name N_Facing
+ selected true
+ addUserKnob {20 N_Facing l "N Facing"}
+ addUserKnob {26 normal_sep l "NORMAL               "}
+ addUserKnob {41 in l layer T N_Layer.in}
+ addUserKnob {6 colorPickerMode l "color picker mode" +STARTLINE}
+ addUserKnob {18 direction}
+ direction {0 0 1}
+ addUserKnob {26 overlay_sep l "OVERLAY              "}
+ addUserKnob {7 overlay l "overlay mix"}
+ overlay 0.025
+ addUserKnob {41 in_1 l "overlay layer" T ColorPickerOverlayBg.in}
+ addUserKnob {26 angle_sep l "ANGLE                 "}
+ addUserKnob {7 AngleMax l spread R 0 90}
+ AngleMax 45
+ addUserKnob {26 falloff l "FALLOFF               "}
+ addUserKnob {7 blackpoint}
+ addUserKnob {7 whitepoint}
+ whitepoint 1
+ addUserKnob {7 gamma}
+ gamma 1
+ addUserKnob {41 type l interpolation T LinearSmooth.type}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 509
+  ypos -175
+ }
+ AddChannels {
+  channels N
+  channels2 rgba
+  name AddChannels1
+  xpos 509
+  ypos -146
+ }
+set N944ff000 [stack 0]
+ Shuffle {
+  in N
+  name N_Layer
+  xpos 509
+  ypos -108
+ }
+ Group {
+  name V_Normalize
+  xpos 509
+  ypos -61
+  addUserKnob {20 Vector_Normalize}
+ }
+  Input {
+   inputs 0
+   name vector
+   xpos 509
+   ypos 209
+  }
+set Na8d6000 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 sqrt((r*r)+(g*g)+(b*b))
+   channel1 none
+   channel2 none
+   channel3 none
+   name Magnitude
+   xpos 580
+   ypos 255
+  }
+push $Na8d6000
+  MergeExpression {
+   inputs 2
+   expr0 Br/Ar
+   expr1 Bg/Ag
+   expr2 Bb/Ab
+   channel3 none
+   name MergeExpression1
+   xpos 509
+   ypos 312
+  }
+  Output {
+   name Output1
+   xpos 509
+   ypos 376
+  }
+ end_group
+ Dot {
+  name Dot1
+  xpos 543
+  ypos -14
+ }
+set Na5fa800 [stack 0]
+ Dot {
+  name Dot3
+  xpos 470
+  ypos -14
+ }
+set Na625400 [stack 0]
+ Dot {
+  name Dot11
+  xpos 315
+  ypos -14
+ }
+ Group {
+  name V_Magnitude
+  xpos 281
+  ypos 483
+  addUserKnob {20 Vector_Magnitude}
+ }
+  Input {
+   inputs 0
+   name vector
+   xpos 509
+   ypos 209
+  }
+  Expression {
+   channel0 rgb
+   expr0 sqrt((r*r)+(g*g)+(b*b))
+   channel1 none
+   channel2 none
+   channel3 none
+   name Expression1
+   xpos 509
+   ypos 249
+  }
+  Output {
+   name Output1
+   xpos 509
+   ypos 349
+  }
+ end_group
+ Expression {
+  channel0 rgba
+  expr0 "isnan(r)? 0: r"
+  channel1 none
+  channel2 none
+  name nan1
+  xpos 281
+  ypos 507
+ }
+ Expression {
+  channel0 rgba
+  expr0 "isinf(r)? 0: r"
+  channel1 none
+  channel2 none
+  name inf1
+  xpos 281
+  ypos 531
+ }
+ Shuffle {
+  alpha red
+  name Shuffle2
+  xpos 281
+  ypos 596
+ }
+ Dot {
+  name Dot12
+  xpos 315
+  ypos 687
+ }
+push $N944ff000
+ Dot {
+  name Dot5
+  xpos 798
+  ypos -136
+ }
+ Shuffle {
+  in rgb
+  name ColorPickerOverlayBg
+  xpos 764
+  ypos -69
+ }
+ Grade {
+  white_clamp true
+  name Grade1
+  xpos 764
+  ypos -45
+ }
+ ColorCorrect {
+  saturation 0
+  name ColorCorrect1
+  xpos 764
+  ypos -21
+ }
+ Shuffle {
+  green red
+  blue red
+  alpha red
+  name Shuffle1
+  xpos 764
+  ypos 3
+ }
+ Dot {
+  name Dot8
+  xpos 798
+  ypos 444
+ }
+ Dot {
+  name Dot6
+  xpos 574
+  ypos 444
+ }
+push $Na5fa800
+ Dot {
+  name Dot2
+  xpos 616
+  ypos -14
+ }
+set Na5fa400 [stack 0]
+ Grade {
+  multiply 0
+  name Constant
+  xpos 582
+  ypos 39
+ }
+ Grade {
+  black {{parent.direction} {parent.direction} {parent.direction} {parent.direction}}
+  black_clamp false
+  name normal
+  xpos 582
+  ypos 63
+ }
+ Group {
+  name V_Normalize1
+  xpos 582
+  ypos 128
+  addUserKnob {20 Vector_Normalize}
+ }
+  Input {
+   inputs 0
+   name vector
+   xpos 509
+   ypos 209
+  }
+set N4cd10400 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 sqrt((r*r)+(g*g)+(b*b))
+   channel1 none
+   channel2 none
+   channel3 none
+   name Magnitude
+   xpos 580
+   ypos 255
+  }
+push $N4cd10400
+  MergeExpression {
+   inputs 2
+   expr0 Br/Ar
+   expr1 Bg/Ag
+   expr2 Bb/Ab
+   channel3 none
+   name MergeExpression1
+   xpos 509
+   ypos 312
+  }
+  Output {
+   name Output1
+   xpos 509
+   ypos 376
+  }
+ end_group
+ Dot {
+  name Dot4
+  xpos 616
+  ypos 190
+ }
+push $Na625400
+ Group {
+  inputs 2
+  name V_Dot
+  xpos 436
+  ypos 187
+  addUserKnob {20 Vector_Dot}
+ }
+  Input {
+   inputs 0
+   name vectorA
+   xpos 686
+   ypos 183
+   number 1
+  }
+  Dot {
+   name Dot1
+   xpos 720
+   ypos 252
+  }
+  Input {
+   inputs 0
+   name vectorB
+   xpos 509
+   ypos 180
+  }
+  MergeExpression {
+   inputs 2
+   channel0 rgb
+   expr0 Br*Ar+Bg*Ag+Bb*Ab
+   channel1 none
+   channel2 none
+   channel3 none
+   name MergeExpression1
+   xpos 509
+   ypos 249
+  }
+  Output {
+   name Output1
+   xpos 509
+   ypos 349
+  }
+ end_group
+ Expression {
+  channel0 {rgba.red rgba.green rgba.blue rgba.alpha}
+  expr0 degrees(acos(r))
+  channel1 none
+  channel2 none
+  name divergence
+  xpos 436
+  ypos 211
+ }
+ Expression {
+  channel0 {rgba.red rgba.green rgba.blue rgba.alpha}
+  expr0 "isnan(r)? 0: r"
+  channel1 none
+  channel2 none
+  name nan
+  xpos 436
+  ypos 235
+ }
+ Expression {
+  channel0 {rgba.red rgba.green rgba.blue rgba.alpha}
+  expr0 "isinf(r)? 0: r"
+  channel1 none
+  channel2 none
+  name inf
+  xpos 436
+  ypos 259
+ }
+ Grade {
+  channels rgba
+  whitepoint {{parent.AngleMax}}
+  white_clamp true
+  name Range
+  xpos 436
+  ypos 286
+ }
+ Invert {
+  name Invert1
+  xpos 436
+  ypos 310
+ }
+ Grade {
+  channels rgba
+  blackpoint {{parent.blackpoint}}
+  whitepoint {{parent.whitepoint}}
+  gamma {{parent.gamma}}
+  white_clamp true
+  name Grade2
+  xpos 436
+  ypos 348
+ }
+ Group {
+  name LinearSmooth
+  xpos 436
+  ypos 372
+  addUserKnob {4 type t "linear -> same ( linear )\nplinear -> perceptually linear\nsmooth -> smooth both ends\nsmooth1 -> smooth towards 1\nsmooth0 -> smooth towards 0\n" M {linear plinear smooth smooth1 smooth0 "" "" "" "" ""}}
+  type smooth0
+ }
+  Input {
+   inputs 0
+   name Input1
+   xpos 170
+   ypos 94
+  }
+  Dot {
+   name Dot1
+   xpos 204
+   ypos 134
+  }
+set N4d2b8c00 [stack 0]
+  Dot {
+   name Dot5
+   xpos 302
+   ypos 134
+  }
+set N4d2b8800 [stack 0]
+  Expression {
+   expr0 r*r*r
+   expr1 g*g*g
+   expr2 b*b*b
+   expr3 a*a*a
+   name perceptualLinear
+   selected true
+   xpos 268
+   ypos 181
+  }
+push $N4d2b8800
+  Dot {
+   name Dot3
+   xpos 406
+   ypos 134
+  }
+set N4d309800 [stack 0]
+  Dot {
+   name Dot4
+   xpos 531
+   ypos 134
+  }
+set N4d309400 [stack 0]
+  Dot {
+   name Dot2
+   xpos 644
+   ypos 134
+  }
+  Expression {
+   expr0 "r*r*(2-r )"
+   expr1 "g*g*(2-g )"
+   expr2 "b*b*(2-b )"
+   expr3 "a*a*(2-a )"
+   name smooth0
+   xpos 610
+   ypos 184
+  }
+  Dot {
+   name Dot6
+   xpos 644
+   ypos 263
+  }
+push $N4d309400
+  Expression {
+   expr0 "r*r*( 3-2*r )"
+   expr1 "g*g*( 3-2*g )"
+   expr2 "b*b*( 3-2*b )"
+   expr3 "a*a*( 3-2*a )"
+   name smooth1
+   xpos 497
+   ypos 183
+  }
+  Dot {
+   name Dot7
+   xpos 531
+   ypos 236
+  }
+push $N4d309800
+  Expression {
+   expr0 "r*( 1+r*( 1-r ) )"
+   expr1 "g*( 1+g*( 1-g ) )"
+   expr2 "b*( 1+b*( 1-b ) )"
+   expr3 "a*( 1+a*( 1-a ) )"
+   name smooth
+   xpos 372
+   ypos 181
+  }
+  Dot {
+   name Dot8
+   xpos 406
+   ypos 221
+  }
+push $N4d2b8c00
+  NoOp {
+   name linear
+   xpos 170
+   ypos 181
+  }
+  Switch {
+   inputs 5
+   which {{parent.type}}
+   name Switch2
+   xpos 170
+   ypos 259
+  }
+  Output {
+   name Output1
+   xpos 170
+   ypos 314
+  }
+ end_group
+ Dot {
+  name Dot7
+  xpos 470
+  ypos 472
+ }
+set Na68ac00 [stack 0]
+ Dissolve {
+  inputs 2
+  which {{parent.overlay}}
+  name Dissolve1
+  xpos 540
+  ypos 462
+ }
+push $Na5fa400
+ Dot {
+  name Dot10
+  xpos 702
+  ypos -14
+ }
+ ShuffleCopy {
+  inputs 2
+  name ShuffleCopy1
+  xpos 668
+  ypos 469
+ }
+ Dot {
+  name Dot9
+  xpos 702
+  ypos 591
+ }
+push $Na68ac00
+ Switch {
+  inputs 2
+  which {{parent.colorPickerMode}}
+  name ColorPickerSwitch
+  xpos 436
+  ypos 588
+ }
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge1
+  xpos 436
+  ypos 684
+ }
+ Output {
+  name Output1
+  xpos 436
+  ypos 741
+ }
+end_group

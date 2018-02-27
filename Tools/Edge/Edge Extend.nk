@@ -1,0 +1,80 @@
+set cut_paste_input [stack 0]
+version 11.0 v1
+push $cut_paste_input
+Group {
+ name Edge_extend
+ selected true
+ xpos 591
+ ypos 12
+ addUserKnob {20 User}
+ addUserKnob {6 premult +STARTLINE}
+ addUserKnob {7 size R 0 100}
+ size 100
+ addUserKnob {6 effect_only l "effect only" +STARTLINE}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 509
+  ypos 255
+ }
+ Premult {
+  name Premult1
+  xpos 509
+  ypos 281
+  disable {{1-parent.premult}}
+ }
+set N3f9f8000 [stack 0]
+push $N3f9f8000
+ Blur {
+  channels rgba
+  size {{parent.size}}
+  name Blur5
+  xpos 591
+  ypos 350
+ }
+ Unpremult {
+  name Unpremult1
+  xpos 591
+  ypos 376
+ }
+ Expression {
+  channel0 alpha
+  expr0 a>0?1:0
+  name Expression1
+  xpos 591
+  ypos 404
+ }
+set N424cd500 [stack 0]
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 509
+  ypos 434
+ }
+set N424cce00 [stack 0]
+push 0
+push 0
+ Viewer {
+  inputs 3
+  frame_range 0-155
+  input_number 2
+  name Viewer1
+  xpos 619
+  ypos 255
+ }
+push $N424cd500
+push $N424cce00
+ Switch {
+  inputs 2
+  which {{parent.effect_only}}
+  name Switch1
+  xpos 508
+  ypos 496
+ }
+ Output {
+  name Output1
+  xpos 508
+  ypos 571
+ }
+end_group

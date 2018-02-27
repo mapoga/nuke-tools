@@ -1,0 +1,115 @@
+Group {
+ name LinearSmooth
+ selected true
+ addUserKnob {20 LinearSmooth l "Linear Smooth"}
+ addUserKnob {4 type t "linear -> same ( linear )\nplinear -> perceptually linear\nsmooth -> smooth both ends\nsmooth1 -> smooth towards 1\nsmooth0 -> smooth towards 0\n" M {linear plinear smooth smooth1 smooth0 "" "" "" "" ""}}
+ type smooth
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 170
+  ypos 94
+ }
+ Dot {
+  name Dot1
+  xpos 204
+  ypos 134
+ }
+set N491d6000 [stack 0]
+ Dot {
+  name Dot5
+  xpos 302
+  ypos 134
+ }
+set N49205c00 [stack 0]
+ Expression {
+  expr0 r*r*r
+  expr1 g*g*g
+  expr2 b*b*b
+  expr3 a*a*a
+  name perceptualLinear
+  xpos 268
+  ypos 181
+ }
+push $N49205c00
+ Dot {
+  name Dot3
+  xpos 406
+  ypos 134
+ }
+set N49205000 [stack 0]
+ Dot {
+  name Dot4
+  xpos 531
+  ypos 134
+ }
+set N49204c00 [stack 0]
+ Dot {
+  name Dot2
+  xpos 644
+  ypos 134
+ }
+ Expression {
+  expr0 "r*r*(2-r )"
+  expr1 "g*g*(2-g )"
+  expr2 "b*b*(2-b )"
+  expr3 "a*a*(2-a )"
+  name smooth0
+  xpos 610
+  ypos 184
+ }
+ Dot {
+  name Dot6
+  xpos 644
+  ypos 263
+ }
+push $N49204c00
+ Expression {
+  expr0 "r*r*( 3-2*r )"
+  expr1 "g*g*( 3-2*g )"
+  expr2 "b*b*( 3-2*b )"
+  expr3 "a*a*( 3-2*a )"
+  name smooth1
+  xpos 497
+  ypos 183
+ }
+ Dot {
+  name Dot7
+  xpos 531
+  ypos 236
+ }
+push $N49205000
+ Expression {
+  expr0 "r*( 1+r*( 1-r ) )"
+  expr1 "g*( 1+g*( 1-g ) )"
+  expr2 "b*( 1+b*( 1-b ) )"
+  expr3 "a*( 1+a*( 1-a ) )"
+  name smooth
+  xpos 372
+  ypos 181
+ }
+ Dot {
+  name Dot8
+  xpos 406
+  ypos 221
+ }
+push $N491d6000
+ NoOp {
+  name linear
+  xpos 170
+  ypos 181
+ }
+ Switch {
+  inputs 5
+  which {{parent.type}}
+  name Switch2
+  xpos 170
+  ypos 259
+ }
+ Output {
+  name Output1
+  xpos 170
+  ypos 314
+ }
+end_group

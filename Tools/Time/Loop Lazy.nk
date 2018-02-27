@@ -1,0 +1,61 @@
+Group {
+ name Loop_Lazy
+ selected true
+ addUserKnob {20 Loop_Lazy l "Loop Lazy"}
+ addUserKnob {3 fade_duration l "fade duration"}
+ fade_duration 24
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 188
+  ypos 393
+ }
+ Dot {
+  name Dot2
+  xpos 222
+  ypos 465
+ }
+set N98b25180 [stack 0]
+ Dot {
+  name Dot3
+  xpos 345
+  ypos 465
+ }
+ TimeOffset {
+  time_offset {{-(input.last_frame-parent.fade_duration)}}
+  time ""
+  name TimeOffset3
+  xpos 311
+  ypos 531
+ }
+ Dot {
+  name Dot1
+  xpos 345
+  ypos 621
+ }
+push $N98b25180
+ TimeClip {
+  time ""
+  first {{input.first_frame}}
+  last {{input.last_frame-parent.fade_duration}}
+  origfirst {{TimeClip4.first}}
+  origlast {{TimeClip4.last}}
+  origset true
+  name TimeClip4
+  xpos 188
+  ypos 529
+ }
+ Dissolve {
+  inputs 2
+  which {{1-clamp(frame/parent.fade_duration)}}
+  name Dissolve1
+  xpos 188
+  ypos 611
+ }
+ Output {
+  name Output1
+  xpos 188
+  ypos 700
+ }
+end_group

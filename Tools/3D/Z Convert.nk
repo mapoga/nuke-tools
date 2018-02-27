@@ -1,0 +1,336 @@
+Group {
+ name Z_Convert
+ selected true
+ addUserKnob {20 Z_Convert l "Z Convert"}
+ addUserKnob {26 from_div l From}
+ addUserKnob {41 from0 l "z channel" T Z_From.from0}
+ addUserKnob {4 from l space t "depth: Z is distance in front of camera (arnold)\nfar=0: Z is 1/distance (nuke, prman)\nfar=1: near plane=0, far plane=1 (openGL)\n-depth: Z is distance in front of camera\nfar=-0: Z is -1/distance (Maya)\nfar=-1: near plane=0, far plane=-1" M {"depth (arnold)" "far=0 (nuke, prman)" "far=1 (openGL)" -depth "far=-0 (Maya)" far=-1 "" ""}}
+ addUserKnob {20 slice_grp l Slice n 1}
+ slice_grp 0
+ addUserKnob {6 slice_enable l enable +STARTLINE}
+ addUserKnob {7 near_slice l near}
+ near_slice 0.11
+ addUserKnob {7 far_slice l far R 0 10000}
+ far_slice 9999
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 to_div l To}
+ addUserKnob {4 to l space t "depth: Z is distance in front of camera (arnold)\nfar=0: Z is 1/distance (nuke, prman)\nfar=1: near plane=0, far plane=1 (openGL)\n-depth: Z is distance in front of camera\nfar=-0: Z is -1/distance (Maya)\nfar=-1: near plane=0, far plane=-1" M {"depth (arnold)" "far=0 (nuke, prman)" "far=1 (openGL)" -depth far=-0 far=-1 "" "" "" ""}}
+ to "far=0 (nuke, prman)"
+ addUserKnob {41 to0 l "z channel" T Z_To.to0}
+ addUserKnob {26 camera_div l Camera}
+ addUserKnob {7 near_plane l "near plane"}
+ near_plane 0.1
+ addUserKnob {7 far_plane l "far plane" R 1 10000}
+ far_plane 10000
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 531
+  ypos -24
+ }
+ AddChannels {
+  channels depth
+  channels2 rgba
+  name AddChannels1
+  xpos 531
+  ypos 2
+ }
+set Neaf54380 [stack 0]
+push $Neaf54380
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 depth.Z
+  name Z_From
+  xpos 531
+  ypos 40
+ }
+ Dot {
+  name Dot5
+  xpos 565
+  ypos 101
+ }
+set N578a2a80 [stack 0]
+ Dot {
+  name Dot6
+  xpos 668
+  ypos 101
+ }
+set N578a2000 [stack 0]
+ Dot {
+  name Dot8
+  xpos 778
+  ypos 101
+ }
+set N6143e380 [stack 0]
+ Dot {
+  name Dot20
+  xpos 885
+  ypos 101
+ }
+set N6143e000 [stack 0]
+ Dot {
+  name Dot7
+  xpos 993
+  ypos 101
+ }
+set N9f25ae00 [stack 0]
+ Dot {
+  name Dot10
+  xpos 1099
+  ypos 101
+ }
+ Grade {
+  channels depth
+  whitepoint {{1/parent.far_plane}}
+  black_clamp false
+  name far_1_in2
+  xpos 1065
+  ypos 143
+ }
+ set C7c3ab180 [stack 0]
+ Expression {
+  channel0 depth
+  expr0 -z
+  name Expression1
+  xpos 1065
+  ypos 181
+ }
+ set C7c3ab500 [stack 0]
+ Dot {
+  name Dot18
+  xpos 1099
+  ypos 229
+ }
+push $N9f25ae00
+ Expression {
+  channel0 depth
+  expr0 -(z>0?1/z:1)
+  name far_min_0
+  xpos 959
+  ypos 151
+ }
+ Dot {
+  name Dot24
+  xpos 993
+  ypos 229
+ }
+push $N6143e000
+ Expression {
+  channel0 depth
+  expr0 -z
+  name min_depth
+  xpos 851
+  ypos 150
+ }
+ Dot {
+  name Dot21
+  xpos 885
+  ypos 229
+ }
+push $N6143e380
+clone $C7c3ab180 {
+  xpos 744
+  ypos 149
+  selected false
+ }
+ Dot {
+  name Dot22
+  xpos 778
+  ypos 229
+ }
+push $N578a2000
+ Expression {
+  temp_name0 far
+  temp_expr0 parent.far_plane
+  channel0 depth
+  expr0 z>0?1/z:far
+  name far_0_in
+  xpos 634
+  ypos 152
+ }
+ Dot {
+  name Dot23
+  xpos 668
+  ypos 229
+ }
+push $N578a2a80
+ Expression {
+  channel0 depth
+  name depth_in
+  xpos 531
+  ypos 152
+ }
+ Switch {
+  inputs 6
+  which {{parent.from}}
+  name from
+  xpos 531
+  ypos 225
+ }
+ Expression {
+  temp_name0 near
+  temp_expr0 parent.near_slice
+  temp_name1 far
+  temp_expr1 parent.far_slice
+  channel0 depth
+  expr0 "z>=far? 0: z<=near?0:z"
+  channel1 none
+  channel2 none
+  channel3 none
+  name slice
+  xpos 531
+  ypos 276
+  disable {{1-parent.slice_enable}}
+ }
+ NoOp {
+  name depth
+  xpos 531
+  ypos 348
+ }
+ Dot {
+  name Dot1
+  xpos 565
+  ypos 407
+ }
+set N6674700 [stack 0]
+ Dot {
+  name Dot4
+  xpos 667
+  ypos 407
+ }
+set N6674380 [stack 0]
+ Dot {
+  name Dot9
+  xpos 777
+  ypos 407
+ }
+set N6674000 [stack 0]
+ Dot {
+  name Dot11
+  xpos 887
+  ypos 407
+ }
+set Nc3023c00 [stack 0]
+ Dot {
+  name Dot3
+  xpos 997
+  ypos 407
+ }
+set Nc3023880 [stack 0]
+ Dot {
+  name Dot2
+  xpos 1099
+  ypos 407
+ }
+ Grade {
+  channels depth
+  whitepoint {{parent.far_plane}}
+  black_clamp false
+  name to_far_1
+  xpos 1065
+  ypos 468
+ }
+ set Cc3023180 [stack 0]
+clone $C7c3ab500 {
+  xpos 1065
+  ypos 506
+  selected false
+ }
+ Dot {
+  name Dot12
+  xpos 1099
+  ypos 553
+ }
+push $Nc3023880
+ Expression {
+  channel0 depth
+  expr0 -1/z
+  name to_far_min_0
+  xpos 963
+  ypos 473
+ }
+ Dot {
+  name Dot13
+  xpos 997
+  ypos 553
+ }
+push $Nc3023c00
+ Expression {
+  channel0 depth
+  expr0 -z
+  name to_min_depth
+  xpos 853
+  ypos 473
+ }
+ Dot {
+  name Dot14
+  xpos 887
+  ypos 553
+ }
+push $N6674000
+clone $Cc3023180 {
+  xpos 743
+  ypos 470
+  selected false
+ }
+ Dot {
+  name Dot16
+  xpos 777
+  ypos 553
+ }
+push $N6674380
+ Expression {
+  channel0 depth
+  expr0 1/z
+  name to_far_0
+  xpos 633
+  ypos 475
+ }
+ Dot {
+  name Dot17
+  xpos 667
+  ypos 553
+ }
+push $N6674700
+ Expression {
+  channel0 depth
+  name to_depth
+  xpos 531
+  ypos 474
+ }
+ Switch {
+  inputs 6
+  which {{parent.to}}
+  name to
+  xpos 531
+  ypos 549
+ }
+set N6e91500 [stack 0]
+push $N6e91500
+ Copy {
+  inputs 2
+  from0 depth.Z
+  to0 depth.Z
+  name Z_To
+  xpos 531
+  ypos 575
+ }
+ Output {
+  name Output1
+  xpos 531
+  ypos 665
+ }
+push $N578a2000
+push 0
+push 0
+ Viewer {
+  inputs 3
+  frame_range 1-100
+  input_number 2
+  name Viewer1
+  xpos 198
+  ypos 348
+ }
+end_group
