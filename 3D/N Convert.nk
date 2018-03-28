@@ -1,0 +1,616 @@
+Group {
+ inputs 2
+ name Normal_Convert
+ selected true
+ addUserKnob {20 Normal_Convert l Convert_Normals}
+ addUserKnob {6 UseFOV l "Use FOV" +STARTLINE}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0xaaaaaa00
+  label "Rotation Matrix\nY"
+  note_font_size 42
+  xpos 119
+  ypos 1078
+  bdwidth 310
+  bdheight 350
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0x388e8e00
+  label "Rotation Matrix\nX"
+  note_font_size 42
+  xpos 213
+  ypos 1439
+  bdwidth 312
+  bdheight 351
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode3
+  tile_color 0x71c67100
+  label "FOV Angle Offset\nFrom Camera Matrix"
+  note_font_size 20
+  xpos 318
+  ypos 747
+  bdwidth 207
+  bdheight 217
+ }
+ Input {
+  inputs 0
+  name N
+  xpos 129
+  ypos 468
+ }
+ Dot {
+  name Dot28
+  xpos 163
+  ypos 574
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID ae44b100-126e-11e8-830b-74d02b2b0a3c
+ }
+set N5d9c2e00 [stack 0]
+ Dot {
+  name Dot27
+  xpos 362
+  ypos 574
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID ac6801c0-126e-11e8-a651-74d02b2b0a3c
+ }
+set N5d9c2a80 [stack 0]
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha black
+  name Shuffle1
+  xpos 328
+  ypos 827
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 1328791e-11c1-11e8-b714-74d02b2b0a3c
+ }
+ NoOp {
+  name FOV
+  xpos 328
+  ypos 888
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {14 FOV_rad R 0 100}
+  FOV_rad {{2*atan(parent.Camera3.haperture/(2*parent.Camera3.focal))} {2*atan(parent.Camera3.vaperture/(2*parent.Camera3.focal))}}
+  addUserKnob {14 FOV_deg R 0 100}
+  FOV_deg {{degrees(FOV_rad.w)} {degrees(FOV_rad.h)}}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 8bc3bbcf-11ba-11e8-a413-74d02b2b0a3c
+ }
+ Expression {
+  temp_name0 w
+  temp_expr0 (width-1)/2
+  temp_name1 h
+  temp_expr1 (height-1)/2
+  expr0 (x-w)/w
+  expr1 (y-h)/h*-1
+  channel2 none
+  channel3 none
+  name PixelDistFromCenter1
+  xpos 328
+  ypos 912
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 054aab1e-11c1-11e8-a1a5-74d02b2b0a3c
+ }
+ Expression {
+  temp_name0 thetaH
+  temp_expr0 parent.FOV.FOV_rad.w/2
+  temp_name1 thetaV
+  temp_expr1 parent.FOV.FOV_rad.h/2
+  expr0 atan(sin(thetaH)*r/cos(thetaH))
+  expr1 atan(sin(thetaV)*g/cos(thetaV))
+  channel2 none
+  channel3 none
+  name RadiansFromCenter
+  xpos 328
+  ypos 936
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 66c7750f-11c4-11e8-9695-74d02b2b0a3c
+ }
+set N5d9df880 [stack 0]
+ Dot {
+  name Dot22
+  xpos 503
+  ypos 939
+ }
+ Dot {
+  name Dot25
+  xpos 503
+  ypos 1519
+ }
+ Dot {
+  name Dot14
+  label "\nA"
+  xpos 308
+  ypos 1519
+ }
+ Dot {
+  name Dot15
+  xpos 308
+  ypos 1583
+ }
+set N5d9de700 [stack 0]
+ Dot {
+  name Dot16
+  xpos 401
+  ypos 1583
+ }
+set N5d9de380 [stack 0]
+ Dot {
+  name Dot17
+  xpos 501
+  ypos 1583
+ }
+push $N5d9df880
+ Dot {
+  name Dot26
+  xpos 362
+  ypos 1158
+ }
+ Dot {
+  name Dot4
+  label "\nA"
+  xpos 214
+  ypos 1158
+ }
+ Dot {
+  name Dot11
+  xpos 214
+  ypos 1222
+ }
+set N5d9fd500 [stack 0]
+ Dot {
+  name Dot12
+  xpos 307
+  ypos 1222
+ }
+set N5d9fd180 [stack 0]
+ Dot {
+  name Dot13
+  xpos 407
+  ypos 1222
+ }
+push $N5d9c2e00
+ ColorMatrix {
+  matrix {
+      {{parent.Camera3.world_matrix.0} {parent.Camera3.world_matrix.1} {parent.Camera3.world_matrix.2}}
+      {{parent.Camera3.world_matrix.4} {parent.Camera3.world_matrix.5} {parent.Camera3.world_matrix.6}}
+      {{parent.Camera3.world_matrix.8} {parent.Camera3.world_matrix.9} {parent.Camera3.world_matrix.10}}
+    }
+  invert true
+  name ColorMatrix1
+  xpos 129
+  ypos 653
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 1f6510ae-11b5-11e8-a041-74d02b2b0a3c
+ }
+ Dot {
+  name Dot38
+  xpos 163
+  ypos 802
+ }
+set N5d9fc700 [stack 0]
+ Dot {
+  name Dot7
+  label "\nB"
+  xpos 163
+  ypos 1159
+ }
+set N5d9fc380 [stack 0]
+ Dot {
+  name Dot8
+  xpos 163
+  ypos 1251
+ }
+set N5d9fc000 [stack 0]
+ Dot {
+  name Dot9
+  xpos 257
+  ypos 1251
+ }
+set N5da19c00 [stack 0]
+ Dot {
+  name Dot10
+  xpos 357
+  ypos 1251
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 rx
+  temp_expr0 -sin(Ar)
+  temp_name1 ry
+  temp_expr1 0
+  temp_name2 rz
+  temp_expr2 cos(Ar)
+  channel0 {-rgba.red -rgba.green rgba.blue none}
+  expr0 (Br*rx)+(Bg*ry)+(Bb*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name MergeExpression3
+  xpos 323
+  ypos 1295
+ }
+ Dot {
+  name Dot5
+  xpos 357
+  ypos 1355
+ }
+push $N5d9fd500
+push $N5d9fc000
+ MergeExpression {
+  inputs 2
+  temp_name0 rx
+  temp_expr0 cos(Ar)
+  temp_name1 ry
+  temp_expr1 0
+  temp_name2 rz
+  temp_expr2 sin(Ar)
+  expr0 (Br*rx)+(Bg*ry)+(Bb*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name MergeExpression1
+  xpos 129
+  ypos 1294
+ }
+ Dot {
+  name Dot6
+  xpos 163
+  ypos 1329
+ }
+push $N5d9fd180
+push $N5da19c00
+ MergeExpression {
+  inputs 2
+  temp_name0 rx
+  temp_expr0 0
+  temp_name1 ry
+  temp_expr1 1
+  temp_name2 rz
+  temp_expr2 0
+  channel0 {-rgba.red rgba.green -rgba.blue none}
+  expr0 (Br*rx)+(Bg*ry)+(Bb*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name MergeExpression2
+  xpos 223
+  ypos 1294
+ }
+ ShuffleCopy {
+  inputs 2
+  red red
+  alpha alpha2
+  name ShuffleCopy3
+  xpos 223
+  ypos 1325
+ }
+ ShuffleCopy {
+  inputs 2
+  blue blue
+  alpha alpha2
+  name ShuffleCopy4
+  xpos 223
+  ypos 1352
+ }
+ Dot {
+  name Dot39
+  xpos 257
+  ypos 1402
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 1773aec0-126e-11e8-acb7-74d02b2b0a3c
+ }
+ Dot {
+  name Dot18
+  label "\nB"
+  xpos 257
+  ypos 1520
+ }
+ Dot {
+  name Dot19
+  xpos 257
+  ypos 1612
+ }
+set N5da34a80 [stack 0]
+ Dot {
+  name Dot20
+  xpos 351
+  ypos 1612
+ }
+set N5da34700 [stack 0]
+ Dot {
+  name Dot21
+  xpos 451
+  ypos 1612
+ }
+ MergeExpression {
+  inputs 2
+  temp_name0 rx
+  temp_expr0 0
+  temp_name1 ry
+  temp_expr1 sin(Ag)
+  temp_name2 rz
+  temp_expr2 cos(Ag)
+  channel0 {-rgba.red -rgba.green rgba.blue none}
+  expr0 (Br*rx)+(Bg*ry)+(Bb*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name MergeExpression4
+  xpos 417
+  ypos 1657
+ }
+ Dot {
+  name Dot23
+  xpos 451
+  ypos 1716
+ }
+push $N5d9de700
+push $N5da34a80
+ MergeExpression {
+  inputs 2
+  temp_name0 rx
+  temp_expr0 1
+  temp_name1 ry
+  temp_expr1 0
+  temp_name2 rz
+  temp_expr2 0
+  expr0 (Br*rx)+(Bg*ry)+(Bb*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name MergeExpression5
+  xpos 223
+  ypos 1655
+ }
+ Dot {
+  name Dot24
+  xpos 257
+  ypos 1690
+ }
+push $N5d9de380
+push $N5da34700
+ MergeExpression {
+  inputs 2
+  temp_name0 rx
+  temp_expr0 0
+  temp_name1 ry
+  temp_expr1 cos(Ag)
+  temp_name2 rz
+  temp_expr2 -sin(Ag)
+  channel0 {-rgba.red rgba.green -rgba.blue none}
+  expr0 (Br*rx)+(Bg*ry)+(Bb*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name MergeExpression6
+  xpos 317
+  ypos 1660
+ }
+ ShuffleCopy {
+  inputs 2
+  red red
+  alpha alpha2
+  name ShuffleCopy5
+  xpos 317
+  ypos 1686
+ }
+ ShuffleCopy {
+  inputs 2
+  blue blue
+  alpha alpha2
+  name ShuffleCopy6
+  xpos 317
+  ypos 1710
+ }
+ Dot {
+  name Dot40
+  xpos 351
+  ypos 1768
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 1e092b1e-126e-11e8-8bfc-74d02b2b0a3c
+ }
+ Dot {
+  name Dot30
+  xpos 351
+  ypos 1954
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 33d27321-126f-11e8-9efd-74d02b2b0a3c
+ }
+push $N5d9fc700
+ Dot {
+  name Dot29
+  xpos -68
+  ypos 802
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 25e38e21-126f-11e8-8d4b-74d02b2b0a3c
+ }
+ Switch {
+  inputs 2
+  which {{parent.UseFOV}}
+  name Switch1
+  xpos -102
+  ypos 1951
+ }
+ Output {
+  name Output1
+  xpos -102
+  ypos 2079
+ }
+ NoOp {
+  inputs 0
+  name ctrl
+  xpos -18
+  ypos 1804
+  addUserKnob {20 Normal_Convert l Normal_convert}
+  addUserKnob {6 useFOV l "Use FOV" +STARTLINE}
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 5b13bc4f-126f-11e8-8048-74d02b2b0a3c
+ }
+push $N5d9c2a80
+ Dot {
+  name Dot1
+  xpos 1172
+  ypos 512
+ }
+set N5814e700 [stack 0]
+ Expression {
+  temp_name0 rx
+  temp_expr0 Normal_Convert.Camera3.world_matrix.8
+  temp_name1 ry
+  temp_expr1 Normal_Convert.Camera3.world_matrix.9
+  temp_name2 rz
+  temp_expr2 Normal_Convert.Camera3.world_matrix.10
+  channel0 {-rgba.red -rgba.green rgba.blue none}
+  expr0 (r*rx)+(g*ry)+(b*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name Expression4
+  xpos 1238
+  ypos 565
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID a91e86e1-11d0-11e8-b0b1-74d02b2b0a3c
+ }
+ Dot {
+  name Dot2
+  xpos 1272
+  ypos 622
+ }
+push $N5814e700
+ Expression {
+  temp_name0 rx
+  temp_expr0 Normal_Convert.Camera3.world_matrix.0
+  temp_name1 ry
+  temp_expr1 Normal_Convert.Camera3.world_matrix.1
+  temp_name2 rz
+  temp_expr2 Normal_Convert.Camera3.world_matrix.2
+  expr0 (r*rx)+(g*ry)+(b*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name Expression1
+  xpos 1044
+  ypos 565
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID a91e86e1-11d0-11e8-b0b1-74d02b2b0a3c
+ }
+ Dot {
+  name Dot3
+  xpos 1078
+  ypos 596
+ }
+push $N5814e700
+ Expression {
+  temp_name0 rx
+  temp_expr0 Normal_Convert.Camera3.world_matrix.4
+  temp_name1 ry
+  temp_expr1 Normal_Convert.Camera3.world_matrix.5
+  temp_name2 rz
+  temp_expr2 Normal_Convert.Camera3.world_matrix.6
+  channel0 {-rgba.red rgba.green -rgba.blue none}
+  expr0 (r*rx)+(g*ry)+(b*rz)
+  channel1 none
+  channel2 none
+  channel3 none
+  name Expression3
+  xpos 1138
+  ypos 568
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID a91e86e1-11d0-11e8-b0b1-74d02b2b0a3c
+ }
+ ShuffleCopy {
+  inputs 2
+  red red
+  alpha alpha2
+  name ShuffleCopy1
+  xpos 1138
+  ypos 592
+ }
+ ShuffleCopy {
+  inputs 2
+  blue blue
+  alpha alpha2
+  name ShuffleCopy2
+  xpos 1138
+  ypos 618
+ }
+ Input {
+  inputs 0
+  name Camera
+  xpos -55
+  ypos 486
+  number 1
+ }
+ Camera2 {
+  focal {{input1.focal}}
+  haperture {{parent.input1.haperture}}
+  vaperture {{parent.input1.vaperture}}
+  name Camera3
+  xpos -45
+  ypos 563
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {3 resolution_width +DISABLED}
+  resolution_width 1920
+  addUserKnob {1 nodeType +DISABLED}
+  nodeType Camera
+  addUserKnob {3 resolution_height +DISABLED}
+  resolution_height 1080
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID d5acf62e-10d9-11e8-976f-74d02b2b0a3c
+  addUserKnob {20 "Create camera projection"}
+  addUserKnob {26 Camera_projection l "Camera projection"}
+  addUserKnob {22 create l "Create Projection" -STARTLINE T "import callbacks.init_callback_functions\ncallbacks.init_callback_functions.cam_to_projection()"}
+ }
+push $N5d9c2a80
+ ColorMatrix {
+  matrix {
+      {{parent.Camera3.world_matrix.0} {parent.Camera3.world_matrix.1} {parent.Camera3.world_matrix.2}}
+      {{parent.Camera3.world_matrix.4} {parent.Camera3.world_matrix.5} {parent.Camera3.world_matrix.6}}
+      {{parent.Camera3.world_matrix.8} {parent.Camera3.world_matrix.9} {parent.Camera3.world_matrix.10}}
+    }
+  name ColorMatrix2
+  xpos 890
+  ypos 606
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID 1f6510ae-11b5-11e8-a041-74d02b2b0a3c
+ }
+push $N5d9fc380
+push 0
+ Viewer {
+  inputs 2
+  frame_range 1-60
+  input_number 2
+  colour_sample_bbox {0.353125006 0.07604166865 0.3541666567 0.07708333433}
+  samplepoints {{-0.9968749881 -0.09687499702}
+    }
+  name Viewer1
+  xpos 989
+  ypos 833
+  addUserKnob {20 vgas l Vgas +INVISIBLE}
+  addUserKnob {1 nativeUID +DISABLED}
+  nativeUID d4a2c75e-11c4-11e8-b620-74d02b2b0a3c
+ }
+end_group

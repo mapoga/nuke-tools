@@ -1,0 +1,105 @@
+Group {
+ name dg_Horizon
+ tile_color 0x7bcfaeff
+ addUserKnob {20 hotizon}
+ addUserKnob {41 op l "line opacity" T c.op}
+ addUserKnob {41 br l "line width" T c.br}
+ addUserKnob {41 sp l "line spacing" T c.sp}
+ addUserKnob {20 vanishing l "vanishing points"}
+ addUserKnob {12 vp1}
+ vp1 {697.7400822 438.2895818}
+ addUserKnob {12 vp2}
+ vp2 {-18353.49839 824.3729904}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 29
+  ypos -280
+ }
+ RotoPaint {
+  curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 512}
+    {t x44bf8000 x448fa000}
+    {a}
+    {cubiccurve Brush1 512 catmullrom
+     {cc
+      {f 2080}
+      {p
+       {{=0 x444a8000}
+        {=-K*parent.vp1.x+parent.vp1.y x448d4000}       1}
+       {{=width x44898000}
+        {=K*(width-parent.vp1.x)+parent.vp1.y x4487a000}       1}}}
+     {t x4477f333 x448f999a}
+     {a ro 0 go 0 bo 0 ao 0 bs
+      {=br*5
+       {{0 x41700000}}}     bsp
+      {=sp x3fc00000}     h 1 bu 1 str 1 spx x44bf8000 spy x448fa000 sb 1 tt x41880000 opc
+      {=op 1}}}}}}}
+  toolbox {selectAll {
+  { selectAll str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush str 1 ssx 1 ssy 1 sf 1 sb 1 tt 17 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+  toolbar_show_paint_selection true
+  toolbar_brush_hardness 0.200000003
+  toolbar_lifetime_type single
+  toolbar_source_transform_scale {1 1}
+  toolbar_source_transform_center {1532 1149}
+  colorOverlay {0 0 0 0}
+  lifetime_type "all frames"
+  view {}
+  motionblur_on true
+  brush_size {{br*5 15}}
+  brush_spacing {{sp 1.5}}
+  brush_hardness 1
+  source_black_outside true
+  createNewTrack {{-1} "-1\t(none)\t-1" "1000\tNew Track Layer\t1000"}
+  name horizon1
+  selected true
+  xpos 29
+  ypos -241
+  addUserKnob {20 User}
+  addUserKnob {7 sp R 0 3}
+  sp {{parent.c.sp}}
+  addUserKnob {7 op}
+  op {{parent.c.op}}
+  addUserKnob {7 br R 0 3}
+  br {{parent.c.br}}
+  addUserKnob {7 K}
+  K {{(parent.vp2.y-parent.vp1.y)/(parent.vp2.x-parent.vp1.x)}}
+ }
+ NoOp {
+  name c
+  xpos 29
+  ypos -217
+  addUserKnob {20 User}
+  addUserKnob {7 br R 0 3}
+  br 1
+  addUserKnob {7 op}
+  op 0.75
+  addUserKnob {7 sp R 0 3}
+  sp 1.5
+ }
+ Output {
+  name Output1
+  xpos 29
+  ypos -140
+ }
+end_group

@@ -1,0 +1,233 @@
+Gizmo {
+ tile_color 0x24f5d7ff
+ addUserKnob {20 BaseLines l "base lines"}
+ addUserKnob {22 R T "nuke.thisNode()\['add_1'].setValue(\[1,0,0,1])" +STARTLINE}
+ addUserKnob {22 G -STARTLINE T "nuke.thisNode()\['add_1'].setValue(\[0,1,0,1])"}
+ addUserKnob {22 B -STARTLINE T "nuke.thisNode()\['add_1'].setValue(\[0,0,1,1])"}
+ addUserKnob {41 add_1 l color T Grade9.add}
+ addUserKnob {41 mix l opacity T Grade9.mix}
+ addUserKnob {41 linewidth l "line width" T contr7.linewidth}
+ addUserKnob {26 line1 l "line 1"}
+ addUserKnob {41 p00 T contr7.p00}
+ addUserKnob {41 p01 -STARTLINE T contr7.p01}
+ addUserKnob {26 line2 l "line 2"}
+ addUserKnob {41 p10 T contr7.p10}
+ addUserKnob {41 p11 -STARTLINE T contr7.p11}
+ addUserKnob {41 PT l INVISIBLE +INVISIBLE T contr7.PT}
+}
+ NoOp {
+  inputs 0
+  name addC
+  xpos -852
+  ypos 142
+  addUserKnob {20 User}
+  addUserKnob {22 add T "gn=nuke.thisGroup()\ngn.node('add').selectOnly()\nnuke.nodeCopy('%clipboard%' )\ngn.node('base').selectOnly()\nn=nuke.nodePaste('%clipboard%')\ntn=nuke.thisNode()\n" +STARTLINE}
+ }
+ Input {
+  inputs 0
+  name Input1
+  xpos -704
+  ypos 49
+ }
+add_layer {persp persp.mask persp.additional}
+ Shuffle {
+  in none
+  out persp
+  name Shuffle7
+  xpos -704
+  ypos 150
+ }
+ RotoPaint {
+  output {persp.mask -persp.additional}
+  curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 512}
+    {t x44800000 x44428000}
+    {a}
+    {cubiccurve Brush2 512 catmullrom
+     {cc
+      {f 2080}
+      {p
+       {{=contr7.p10.x<contr7.PT.x?0:width x441f7334}
+     {=contr7.k1*((contr7.p10.x<contr7.PT.x?0:width)-contr7.p10.x)+contr7.p10.y x435c0000}    1}
+       {{=contr7.PT.x x4424199a}
+     {=contr7.PT.y x43be8001}    1}}}
+     {t x43b51555 x43f2c000}
+     {a ro 0 go 0 bo 0 ao 0 bs
+   {=base.curves.Brush1.brush_size
+    {{0 x41e80000}}}     bsp
+   {=base.curves.Brush1.brush_spacing
+    {{0 x3d4ccccd}}}     h
+   {=base.curves.Brush1.brush_hardness
+    {{0 x3e4ccccd}}}     bu 1 str 1 spx x44800000 spy x44428000 sb 1 tt x41880000}}
+    {cubiccurve Brush1 576 catmullrom
+     {cc
+      {f 2080}
+      {p
+       {{=contr7.p00.x<contr7.PT.x?0:width x43920000}
+     {=contr7.k0*((contr7.p00.x<contr7.PT.x?0:width)-contr7.p00.x)+contr7.p00.y x43d70000}    1}
+       {{=contr7.PT.x x43db0000}
+     {=contr7.PT.y x44040000}    1}}}
+     {t x43b51555 x43f2c000}
+     {a ro 0 go 0 bo 0 ao 0 bs
+   {=contr7.linewidth*3
+    {{0 x41e80000}}}     h 1 bu 1 str 1 spx x44800000 spy x44428000 sb 1 tt x41880000}}}}}}
+  toolbox {selectAll {
+  { selectAll str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush str 1 ssx 1 ssy 1 sf 1 sb 1 tt 17 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+  toolbar_show_paint_selection true
+  toolbar_brush_hardness 0.200000003
+  toolbar_lifetime_type single
+  toolbar_source_transform_scale {1 1}
+  toolbar_source_transform_center {1024 778}
+  colorOverlay {0 0 0 0}
+  lifetime_type "all frames"
+  motionblur_on true
+  brush_size {{contr7.linewidth*3 29}}
+  brush_spacing 0.05000000075
+  brush_hardness 1
+  source_black_outside true
+  createNewTrack {{-1} "-1\t(none)\t-1" "1000\tNew Track Layer\t1000"}
+  name base
+  xpos -704
+  ypos 215
+ }
+ Dot {
+  name Dot1
+  xpos -676
+  ypos 348
+ }
+set N1db3ace0 [stack 0]
+ ChannelMerge {
+  A persp.additional
+  B persp.mask
+  name ChannelMerge8
+  xpos -535
+  ypos 406
+ }
+push $N1db3ace0
+ Grade {
+  inputs 1+1
+  white 0
+  add {1 0 0 1}
+  mix 0.75
+  name Grade9
+  xpos -704
+  ypos 501
+ }
+ Output {
+  name Output1
+  xpos -704
+  ypos 596
+ }
+ NoOp {
+  inputs 0
+  name contr7
+  xpos -857
+  ypos 317
+  addUserKnob {20 User l Base}
+  addUserKnob {7 linewidth l "line width" R 0 3}
+  linewidth 1
+  addUserKnob {12 PT}
+  PT {{(p10.y-p00.y+k0*p00.x-k1*p10.x)/(k0-k1)} {k0*(PT.x-p00.x)+p00.y}}
+  addUserKnob {20 df}
+  addUserKnob {26 ""}
+  addUserKnob {7 k0}
+  k0 {{(p01.y-p00.y)/(p01.x-p00.x)}}
+  addUserKnob {12 p00}
+  addUserKnob {12 p01}
+  p01 {682 518}
+  addUserKnob {26 ""}
+  addUserKnob {7 k1}
+  k1 {{(p11.y-p10.y)/(p11.x-p10.x)}}
+  addUserKnob {12 p10}
+  p10 {1365 518}
+  addUserKnob {12 p11}
+  p11 {2048 0}
+ }
+ RotoPaint {
+  inputs 0
+  output {-persp.mask persp.additional}
+  curves {{{v x3f99999a}
+  {f 0}
+  {n
+   {layer Root
+    {f 512}
+    {t x44800000 x44428000}
+    {a}
+    {cubiccurve Brush1 576 catmullrom
+     {cc
+      {f 2080}
+      {p
+       {{=contr7.PT.x x43280003}
+     {=contr7.PT.y x43dcffff}    1}
+       {{=p.x<contr7.PT.x?0:width x447d8000}
+     {=K*((p.x<contr7.PT.x?0:width)-p.x)+p.y x445f8001}    1}}}
+     {t x43c8d99a x4463f99a}
+     {a ro 0 go 0 bo 0 ao 0 bs
+   {=base.curves.Brush1.brush_size
+    {{0 x41e80000}}}     bsp
+   {=base.curves.Brush1.brush_spacing
+    {{0 x3d9374bc}}}     h
+   {=base.curves.Brush1.brush_hardness
+    {{0 x3ebae148}}}     dt 0 str 1 spx x44800000 spy x44428000 sb 1 tt x41880000}}}}}}
+  toolbox {selectAll {
+  { selectAll str 1 ssx 1 ssy 1 sf 1 }
+  { createBezier str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBezierCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createBSpline str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createEllipse str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangle str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { createRectangleCusped str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { brush str 1 ssx 1 ssy 1 sf 1 sb 1 tt 17 }
+  { eraser src 2 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { clone src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { reveal src 3 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { dodge src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { burn src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { blur src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { sharpen src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+  { smear src 1 str 1 ssx 1 ssy 1 sf 1 sb 1 }
+} }
+  toolbar_show_paint_selection true
+  toolbar_brush_hardness 0.200000003
+  toolbar_lifetime_type single
+  toolbar_source_transform_scale {1 1}
+  toolbar_source_transform_center {1024 778}
+  colorOverlay {0 0 0 0}
+  lifetime_type "all frames"
+  motionblur_on true
+  brush_size {{base.curves.Brush1.brush_size 29}}
+  brush_spacing {{base.curves.Brush1.brush_spacing 0.0719999969}}
+  brush_hardness {{base.curves.Brush1.brush_hardness 0.3650000095}}
+  dynamic_transparency false
+  buildup false
+  source_black_outside true
+  createNewTrack {{-1} "-1\t(none)\t-1" "1000\tNew Track Layer\t1000"}
+  name add
+  xpos -877
+  ypos 211
+  addUserKnob {20 User}
+  addUserKnob {7 K}
+  K {{(contr7.PT.y-p.y)/(contr7.PT.x-p.x)}}
+  addUserKnob {12 p}
+  p {855 425}
+ }
+end_group
