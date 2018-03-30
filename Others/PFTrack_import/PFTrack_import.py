@@ -11,7 +11,6 @@ import sys
 import os
 import re
 import nuke
-from PySide import QtGui, QtCore
 
 
 
