@@ -12,8 +12,57 @@ trackers = [
 
 """
 import nuke
+# Nuke 11 switched to PySide2
+try:
+    from PySide import QtGui
+    QtWidgets = QtGui
+except:
+    from PySide2 import QtGui, QtWidgets
 
 
+class KeyFrame():
+    """
+    frame is an integer.
+    attrs is a dict of parameters with their values
+    """
+
+    def __init__(self, frame, attrs):
+        self.frame = frame
+        self.attrs = attrs
+
+    def nuke_anim_key(self, attr):
+        return nuke.AnimationKey(self.frame, self.attrs[attr])
+
+
+class Tracker():
+
+    FILETYPES = ['pftrack', ]
+
+    def from_file(cls, filepath, filetype):
+        pass
+
+    def __init__(self, name, keyframes):
+        self.name = name
+        self.keyframes = keyframes
+
+    def nuke_attr_keys(self, attr):
+        return [nuke.AnimationKey(key['frame'], key['x'])
+                for key in track['keys']]
+
+    def frames(self):
+        return sorted([k.frame for k in self.keyframes])
+
+    def attrs(self):
+        if self.keyframes:
+            return self.keyframes[0].attrs.keys()
+        else:
+            return []
+
+    def nuke_tracker3(self):
+        pass
+
+    def nuke_tracker4(self):
+        pass
 
 def create_tracker3(trackers, label=''):
 
