@@ -16,8 +16,10 @@ import nuke
 # Nuke 11 switched to PySide2
 try:
     from PySide import QtGui
+    from PySide.QtGui import QApplication as QApp
 except:
     from PySide2 import QtGui
+    from PySide2.QtGui import QGuiApplication as QApp
 
 
 def create_tracker3(trackers, label=''):
@@ -187,7 +189,7 @@ def create_tracker4_copy(trackers, label=''):
 def paste_string(node_string):
     """ Pastes a given string and restore the previous clipboard"""
 
-    clip = QtGui.QGuiApplication.clipboard()
+    clip = QApp.clipboard()
     bkp_txt = clip.text()
     clip.setText(node_string)
     nuke.nodePaste(r'%clipboard%')
@@ -200,6 +202,7 @@ def create_tracker4(trackers, label):
 
     try:
         node_string = create_tracker4_copy(trackers, label)
+        print('node_string')
         paste_string(node_string)
     except:
         try:
