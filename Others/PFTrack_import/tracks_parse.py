@@ -1,3 +1,18 @@
+"""
+Parse exported 2d trackers.
+ 
+trackers = [
+    {'name': 'TrackerName',
+     'keys': [
+        {'frame': 0,
+         'x': 10,
+         'y': 20}},
+     ]
+    }},
+]
+
+"""
+
 import re
 
 

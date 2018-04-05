@@ -75,7 +75,7 @@ class ImportTracks(QtWidgets.QDialog):
 
         # ACTION
         self.chk_tracker3 = QtWidgets.QCheckBox('Use tracker3 node')
-        self.chk_tracker3.setChecked(True)
+        self.chk_tracker3.setChecked(False)
         lay_action = QtWidgets.QHBoxLayout()
         lay_action.setAlignment(QtCore.Qt.AlignRight)
 

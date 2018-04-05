@@ -1,0 +1,162 @@
+#! C:/Program Files/Nuke11.0v1/nuke-11.0.1.dll -nx
+version 11.0 v1
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="-8" y="-8" w="1920" h="1017" maximized="1" screen="0">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="1124" stretch="1"/>
+            <splitter orientation="2">
+                <split size="479"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                </dock>
+                <split size="487"/>
+                <dock id="" activePageId="DAG.1">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                </dock>
+            </splitter>
+            <split size="748"/>
+            <splitter orientation="2">
+                <split size="460"/>
+                <dock id="" activePageId="Properties.1">
+                    <page id="Properties.1"/>
+                    <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+                </dock>
+                <split size="506"/>
+                <dock id="" activePageId="uk.co.thefoundry.scripteditor.1">
+                    <page id="uk.co.thefoundry.scripteditor.1"/>
+                </dock>
+            </splitter>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+inputs 0
+name C:/Users/Mapoga/Documents/GitHub/nuke-tools/Others/PFTrack_import/tests/og_short.nk
+frame 61
+format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+proxy_type scale
+proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+colorManagement Nuke
+workingSpaceLUT linear
+monitorLut sRGB
+int8Lut sRGB
+int16Lut sRGB
+logLut Cineon
+floatLut linear
+}
+Tracker4 {
+inputs 0
+tracks { { 1 31 2 } 
+{ { 5 1 20 enable e 1 } 
+{ 3 1 75 name name 1 } 
+{ 2 1 58 track_x track_x 1 } 
+{ 2 1 58 track_y track_y 1 } 
+{ 2 1 63 offset_x offset_x 1 } 
+{ 2 1 63 offset_y offset_y 1 } 
+{ 4 1 27 T T 1 } 
+{ 4 1 27 R R 1 } 
+{ 4 1 27 S S 1 } 
+{ 2 0 45 error error 1 } 
+{ 1 1 0 error_min error_min 1 } 
+{ 1 1 0 error_max error_max 1 } 
+{ 1 1 0 pattern_x pattern_x 1 } 
+{ 1 1 0 pattern_y pattern_y 1 } 
+{ 1 1 0 pattern_r pattern_r 1 } 
+{ 1 1 0 pattern_t pattern_t 1 } 
+{ 1 1 0 search_x search_x 1 } 
+{ 1 1 0 search_y search_y 1 } 
+{ 1 1 0 search_r search_r 1 } 
+{ 1 1 0 search_t search_t 1 } 
+{ 2 1 0 key_track key_track 1 } 
+{ 2 1 0 key_search_x key_search_x 1 } 
+{ 2 1 0 key_search_y key_search_y 1 } 
+{ 2 1 0 key_search_r key_search_r 1 } 
+{ 2 1 0 key_search_t key_search_t 1 } 
+{ 2 1 0 key_track_x key_track_x 1 } 
+{ 2 1 0 key_track_y key_track_y 1 } 
+{ 2 1 0 key_track_r key_track_r 1 } 
+{ 2 1 0 key_track_t key_track_t 1 } 
+{ 2 1 0 key_centre_offset_x key_centre_offset_x 1 } 
+{ 2 1 0 key_centre_offset_y key_centre_offset_y 1 } 
+} 
+{ 
+ { {}  "track 1" {curve x1 2596.495605 2592.638428 2588.777832} {curve x1 1143.949219 1147.038574 1147.031982} {}  {}  1 0 0 {}  1 0 -32 -32 32 32 -22 -22 22 22 {} {}  {}  {}  {}  {}  {}  {}  {}  {}  {}   } 
+ { {}  "track 2" {curve x1 2386.86499 2379.695313 x98 1390.097412 x99 1381.626465 1373.262695} {curve x1 1234.031128 1235.484009 x98 1276.505371 x99 1276.30188 1275.418823} {}  {}  0 0 0 {}  1 0 -32 -32 32 32 -22 -22 22 22 {} {}  {}  {}  {}  {}  {}  {}  {}  {}  {}   } 
+} 
+}
+
+center {1024 778}
+selected_tracks 0
+name Tracker1
+label A004C011_short
+xpos -289
+ypos -99
+}
+push 0
+push 0
+Viewer {
+inputs 3
+frame 61
+frame_range 1-100
+input_number 2
+name Viewer1
+xpos -166
+ypos -246
+}
+Tracker4 {
+inputs 0
+tracks { { 1 31 2 } 
+{ { 5 1 20 enable e 1 } 
+{ 3 1 75 name name 1 } 
+{ 2 1 58 track_x track_x 1 } 
+{ 2 1 58 track_y track_y 1 } 
+{ 2 1 63 offset_x offset_x 1 } 
+{ 2 1 63 offset_y offset_y 1 } 
+{ 4 1 27 T T 1 } 
+{ 4 1 27 R R 1 } 
+{ 4 1 27 S S 1 } 
+{ 2 0 45 error error 1 } 
+{ 1 1 0 error_min error_min 1 } 
+{ 1 1 0 error_max error_max 1 } 
+{ 1 1 0 pattern_x pattern_x 1 } 
+{ 1 1 0 pattern_y pattern_y 1 } 
+{ 1 1 0 pattern_r pattern_r 1 } 
+{ 1 1 0 pattern_t pattern_t 1 } 
+{ 1 1 0 search_x search_x 1 } 
+{ 1 1 0 search_y search_y 1 } 
+{ 1 1 0 search_r search_r 1 } 
+{ 1 1 0 search_t search_t 1 } 
+{ 2 1 0 key_track key_track 1 } 
+{ 2 1 0 key_search_x key_search_x 1 } 
+{ 2 1 0 key_search_y key_search_y 1 } 
+{ 2 1 0 key_search_r key_search_r 1 } 
+{ 2 1 0 key_search_t key_search_t 1 } 
+{ 2 1 0 key_track_x key_track_x 1 } 
+{ 2 1 0 key_track_y key_track_y 1 } 
+{ 2 1 0 key_track_r key_track_r 1 } 
+{ 2 1 0 key_track_t key_track_t 1 } 
+{ 2 1 0 key_centre_offset_x key_centre_offset_x 1 } 
+{ 2 1 0 key_centre_offset_y key_centre_offset_y 1 } 
+} 
+{ 
+ { {curve} "Tracker0023" {curve x1 2596.495605 2592.638428 2588.777832} {curve x1 1143.949219 1147.038574 1147.031982} {curve} {curve} 1 0 0 {curve} 1 0 -32 -32 32 32 -22 -22 22 22 {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve}  } 
+ { {curve} "Tracker0024" {curve x1 2386.86499 2379.695313 x98 1390.097412 x99 1381.626465 1373.262695} {curve x1 1234.031128 1235.484009 x98 1276.505371 x99 1276.30188 1275.418823} {curve} {curve} 1 0 0 {curve} 1 0 -32 -32 32 32 -22 -22 22 22 {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve} {curve}  } 
+} 
+}
+
+center {1000 1000}
+selected_tracks 0
+name Tracker2
+label Blop
+selected true
+xpos -64
+ypos -54
+}
