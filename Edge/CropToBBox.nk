@@ -1,0 +1,50 @@
+Group {
+ name CropToBBox1
+ onCreate "n = nuke.thisNode()\nwith n:  # enables group scope\n\toverscan = nuke.toNode(\"overscan\")\n\tform = nuke.toNode(\"format\")\n\toverscan_knobs = [\"original_bbox\", \"original_format\"]\n\tform_knobs = [\"new_format\", \"factor\"]\n\tFLAGS = {\"READ_ONLY\": 0x10000000,\n\t\t\t \"NO_HANDLES\": 0x00008000}\n\tfor f in FLAGS.values():\n\t\tfor k in overscan_knobs:\n\t\t\toverscan.knob(k).setFlag(f)\n\t\tfor k in form_knobs:\n\t\t\tform.knob(k).setFlag(f)"
+ selected true
+ addUserKnob {20 CropToBBox}
+ addUserKnob {41 original_bbox l "original bbox" T overscan.original_bbox}
+ addUserKnob {41 original_format l "original format" T overscan.original_format}
+ addUserKnob {41 new_format l "new format" T format.new_format}
+ addUserKnob {41 factor T format.factor}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 509
+  ypos 120
+ }
+ NoOp {
+  name overscan
+  xpos 509
+  ypos 160
+  addUserKnob {20 User}
+  addUserKnob {15 original_bbox l "original bbox"}
+  original_bbox {{bbox.x} {bbox.y} {bbox.r} {bbox.t}}
+  addUserKnob {14 original_format l "original format" R 0 100}
+  original_format {{width} {height}}
+ }
+ Crop {
+  box {{bbox.x} {bbox.y} {bbox.r} {bbox.t}}
+  reformat true
+  crop false
+  name Crop2
+  xpos 509
+  ypos 186
+ }
+ NoOp {
+  name format
+  xpos 509
+  ypos 232
+  addUserKnob {20 User}
+  addUserKnob {14 new_format l "new format" R 0 100}
+  new_format {{format.w} {format.h}}
+  addUserKnob {14 factor R 0 100}
+  factor {{new_format.w/overscan.original_format.w} {new_format.h/overscan.original_format.h}}
+ }
+ Output {
+  name Output1
+  xpos 509
+  ypos 286
+ }
+end_group
