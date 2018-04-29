@@ -1,0 +1,35 @@
+Group {
+ name overscan1
+ onCreate "n = nuke.thisNode()\nwith n:  # enables group scope\n\tnode = nuke.toNode(\"NoOp1\")\n\tknobs = \[\"overscan_filmback\"]\n\tFLAGS = \{\"READ_ONLY\": 0x10000000,\n\t\t\t \"NO_HANDLES\": 0x00008000\}\n\tfor f in FLAGS.values():\n\t\tfor k in knobs:\n\t\t\tnode.knob(k).setFlag(f)"
+ selected true
+ xpos 275
+ ypos 704
+ addUserKnob {20 User}
+ addUserKnob {41 original_filmback l "original filmback" T NoOp1.original_filmback}
+ addUserKnob {41 factor T NoOp1.factor}
+ addUserKnob {41 overscan_filmback l "overscan filmback" T NoOp1.overscan_filmback}
+}
+ Input {
+  inputs 0
+  name Input
+  xpos 302
+  ypos 405
+ }
+ NoOp {
+  name NoOp1
+  xpos 302
+  ypos 469
+  addUserKnob {20 User}
+  addUserKnob {14 original_filmback l "original filmback" R 0 100}
+  original_filmback {{LD_3DE4_P1070948.tde4_filmback_width_cm} {LD_3DE4_P1070948.tde4_filmback_height_cm}}
+  addUserKnob {14 factor R 0 100}
+  factor {{CropToBBox1.format.factor.w} {CropToBBox1.format.factor.h}}
+  addUserKnob {14 overscan_filmback l "overscan filmback" R 0 100}
+  overscan_filmback {{original_filmback.w*factor.w} {original_filmback.h*factor.h}}
+ }
+ Output {
+  name Output1
+  xpos 302
+  ypos 545
+ }
+end_group

@@ -1,10 +1,13 @@
 Group {
- name CropToBBox1
- onCreate "n = nuke.thisNode()\nwith n:  # enables group scope\n\toverscan = nuke.toNode(\"overscan\")\n\tform = nuke.toNode(\"format\")\n\toverscan_knobs = [\"original_bbox\", \"original_format\"]\n\tform_knobs = [\"new_format\", \"factor\"]\n\tFLAGS = {\"READ_ONLY\": 0x10000000,\n\t\t\t \"NO_HANDLES\": 0x00008000}\n\tfor f in FLAGS.values():\n\t\tfor k in overscan_knobs:\n\t\t\toverscan.knob(k).setFlag(f)\n\t\tfor k in form_knobs:\n\t\t\tform.knob(k).setFlag(f)"
+ name CropToBBox0
+ onCreate "n = nuke.thisNode()\nwith n:  # enables group scope\n\toverscan = nuke.toNode(\"overscan\")\n\tform = nuke.toNode(\"format\")\n\toverscan_knobs = [\"original_bbox\", \"original_format\"]\n\tform_knobs = [\"new_bbox\", \"new_format\", \"factor\"]\n\tFLAGS = {\"READ_ONLY\": 0x10000000,\n\t\t\t \"NO_HANDLES\": 0x00008000}\n\tfor f in FLAGS.values():\n\t\tfor k in overscan_knobs:\n\t\t\toverscan.knob(k).setFlag(f)\n\t\tfor k in form_knobs:\n\t\t\tform.knob(k).setFlag(f)"
  selected true
  addUserKnob {20 CropToBBox}
  addUserKnob {41 original_bbox l "original bbox" T overscan.original_bbox}
  addUserKnob {41 original_format l "original format" T overscan.original_format}
+ addUserKnob {6 centered +STARTLINE}
+ centered true
+ addUserKnob {41 new_bbox l "new bbox" T format.new_bbox}
  addUserKnob {41 new_format l "new format" T format.new_format}
  addUserKnob {41 factor T format.factor}
 }
@@ -12,31 +15,71 @@ Group {
   inputs 0
   name Input
   xpos 509
-  ypos 120
+  ypos 50
  }
  NoOp {
   name overscan
   xpos 509
-  ypos 160
+  ypos 90
   addUserKnob {20 User}
   addUserKnob {15 original_bbox l "original bbox"}
   original_bbox {{bbox.x} {bbox.y} {bbox.r} {bbox.t}}
   addUserKnob {14 original_format l "original format" R 0 100}
   original_format {{width} {height}}
+  addUserKnob {14 bbox_rt R 0 100}
+  bbox_rt {{original_bbox.r-original_format.w} {original_bbox.t-original_format.h}}
+  addUserKnob {14 centered_offset R 0 100}
+  centered_offset {{"abs(original_bbox.x)>abs(bbox_rt.w) ? abs(original_bbox.x) : abs(bbox_rt.w)"} {"abs(original_bbox.y)>abs(bbox_rt.h) ? abs(original_bbox.y) : abs(-bbox_rt.h)"}}
+  addUserKnob {15 centered_bbox}
+  centered_bbox {{-centered_offset.w} {-centered_offset.h} {original_format.w+centered_offset.w} {original_format.h+centered_offset.h}}
  }
+ Dot {
+  name Dot3
+  xpos 543
+  ypos 141
+ }
+set N89510e00 [stack 0]
+ Dot {
+  name Dot2
+  xpos 639
+  ypos 141
+ }
+ Crop {
+  box {{CropToBBox0.overscan.centered_bbox.x} {CropToBBox0.overscan.centered_bbox.y} {CropToBBox0.overscan.centered_bbox.r} {CropToBBox0.overscan.centered_bbox.t}}
+  reformat true
+  crop false
+  name CropCentered
+  xpos 605
+  ypos 185
+ }
+ Dot {
+  name Dot1
+  xpos 639
+  ypos 235
+ }
+push $N89510e00
  Crop {
   box {{bbox.x} {bbox.y} {bbox.r} {bbox.t}}
   reformat true
   crop false
   name Crop2
   xpos 509
-  ypos 186
+  ypos 184
+ }
+ Switch {
+  inputs 2
+  which {{parent.centered}}
+  name is_center
+  xpos 509
+  ypos 231
  }
  NoOp {
   name format
   xpos 509
-  ypos 232
+  ypos 266
   addUserKnob {20 User}
+  addUserKnob {15 new_bbox l "new bbox"}
+  new_bbox {{"is_center.which ? CropCentered.box.x : Crop2.box.x"} {"is_center.which ? CropCentered.box.y : Crop2.box.y"} {"is_center.which ? CropCentered.box.r : Crop2.box.r"} {"is_center.which ? CropCentered.box.t : Crop2.box.t"}}
   addUserKnob {14 new_format l "new format" R 0 100}
   new_format {{format.w} {format.h}}
   addUserKnob {14 factor R 0 100}
@@ -45,6 +88,6 @@ Group {
  Output {
   name Output1
   xpos 509
-  ypos 286
+  ypos 321
  }
 end_group
