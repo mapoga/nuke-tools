@@ -1,0 +1,79 @@
+Group {
+ name ParentGeo
+ addUserKnob {20 User}
+ addUserKnob {3 reference_frame}
+ reference_frame 40
+ addUserKnob {6 center_only l "center only" +STARTLINE}
+}
+ Axis2 {
+  inputs 0
+  xform_order TRS
+  translate {{-parent.input1.translate} {-parent.input1.translate} {-parent.input1.translate}}
+  rotate {{-parent.input1.rotate} {-parent.input1.rotate} {-parent.input1.rotate}}
+  scaling {{1/parent.input1.scaling} {1/parent.input1.scaling} {1/parent.input1.scaling}}
+  uniform_scale {{1/parent.input1.uniform_scale}}
+  skew {{-parent.input1.skew} {-parent.input1.skew} {-parent.input1.skew}}
+  pivot {{-parent.input1.pivot} {-parent.input1.pivot} {-parent.input1.pivot}}
+  name parent_inverted
+  xpos -515
+  ypos 212
+ }
+ FrameHold {
+  first_frame {{parent.reference_frame}}
+  name FrameHold1
+  xpos -525
+  ypos 305
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos -292
+  ypos 179
+ }
+ TransformGeo {
+  inputs 2
+  name center
+  xpos -292
+  ypos 311
+ }
+set N669b8380 [stack 0]
+ Input {
+  inputs 0
+  name parent
+  xpos -398
+  ypos 178
+  number 1
+ }
+push $N669b8380
+ TransformGeo {
+  inputs 2
+  name reposition
+  xpos -398
+  ypos 385
+ }
+ Switch {
+  inputs 2
+  which {{parent.center_only}}
+  name use_center_only
+  xpos -292
+  ypos 443
+ }
+ Output {
+  name Output1
+  xpos -292
+  ypos 502
+ }
+ Axis2 {
+  inputs 0
+  xform_order TRS
+  translate {{-parent.input1.translate} {-parent.input1.translate} {-parent.input1.translate}}
+  rotate {{-parent.input1.rotate} {-parent.input1.rotate} {-parent.input1.rotate}}
+  scaling {{1/parent.input1.scaling} {1/parent.input1.scaling} {1/parent.input1.scaling}}
+  uniform_scale {{1/parent.input1.uniform_scale}}
+  skew {{-parent.input1.skew} {-parent.input1.skew} {-parent.input1.skew}}
+  pivot {{-parent.input1.pivot} {-parent.input1.pivot} {-parent.input1.pivot}}
+  name parent_inverted1
+  xpos -774
+  ypos 56
+ }
+end_group
