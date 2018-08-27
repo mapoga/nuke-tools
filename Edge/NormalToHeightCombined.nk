@@ -1,0 +1,2262 @@
+Group {
+ name NormalToHeightCombined
+ selected true
+ addUserKnob {20 User}
+ addUserKnob {7 size}
+ size 30
+ addUserKnob {7 multiply}
+ multiply 7
+ addUserKnob {7 offset}
+ offset 0.5
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 501
+  ypos 409
+ }
+ Dot {
+  name Dot4
+  xpos 535
+  ypos 449
+ }
+set Nc59ae000 [stack 0]
+ Dot {
+  name Dot13
+  xpos 645
+  ypos 449
+ }
+set N67157c00 [stack 0]
+ Dot {
+  name Dot15
+  xpos 770
+  ypos 449
+ }
+set N67157880 [stack 0]
+ Dot {
+  name Dot12
+  xpos 884
+  ypos 449
+ }
+set N73c0f180 [stack 0]
+ Group {
+  name Filter11
+  xpos 850
+  ypos 501
+  addUserKnob {20 User}
+  addUserKnob {3 size}
+  size {{int(parent.size/10)}}
+  addUserKnob {6 radial -STARTLINE}
+  addUserKnob {7 multiply}
+  multiply 1
+  addUserKnob {6 normalize -STARTLINE}
+  addUserKnob {7 center}
+ }
+  BackdropNode {
+   inputs 0
+   name BackdropNode1
+   tile_color 0xaaaaaa00
+   label Filter
+   note_font_size 42
+   xpos 203
+   ypos 342
+   bdwidth 488
+   bdheight 585
+  }
+  Constant {
+   inputs 0
+   channels rgb
+   format "256 256 0 0 256 256 1 square_256"
+   name Constant2
+   xpos 296
+   ypos 454
+  }
+  Reformat {
+   type "to box"
+   box_width {{1+(parent.size*2)}}
+   scale 0.1
+   name Reformat1
+   xpos 296
+   ypos 526
+  }
+set N54b82e00 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression10
+   xpos 550
+   ypos 573
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade17
+   xpos 550
+   ypos 599
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade18
+   xpos 550
+   ypos 625
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression11
+   xpos 550
+   ypos 651
+  }
+  Grade {
+   gamma 0.1
+   black_clamp false
+   name Grade21
+   xpos 550
+   ypos 677
+  }
+  Grade {
+   white 0.2
+   black_clamp false
+   name Grade22
+   xpos 550
+   ypos 703
+  }
+  Grade {
+   white {{2/width}}
+   black_clamp false
+   name Grade19
+   xpos 550
+   ypos 731
+   disable true
+  }
+push $N54b82e00
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression5
+   xpos 387
+   ypos 555
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade12
+   xpos 387
+   ypos 581
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade13
+   xpos 387
+   ypos 607
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression6
+   xpos 387
+   ypos 675
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression7
+   xpos 387
+   ypos 701
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?1:0
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression8
+   xpos 387
+   ypos 727
+  }
+  Switch {
+   inputs 2
+   which {{parent.radial}}
+   name Switch1
+   xpos 387
+   ypos 763
+  }
+push $N54b82e00
+  Expression {
+   channel0 rgb
+   expr0 (y+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression1
+   xpos 296
+   ypos 552
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade10
+   xpos 296
+   ypos 578
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade11
+   xpos 296
+   ypos 604
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression2
+   xpos 296
+   ypos 672
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression3
+   xpos 296
+   ypos 698
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?0:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression4
+   xpos 296
+   ypos 724
+  }
+  Expression {
+   channel0 rgb
+   expr0 y/height<0.5?-r:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression9
+   xpos 296
+   ypos 750
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name Merge4
+   xpos 296
+   ypos 810
+  }
+set N415be700 [stack 0]
+  Transform {
+   rotate 90
+   center {{width/2} {height/2}}
+   filter Impulse
+   black_outside false
+   name Transform6
+   xpos 428
+   ypos 810
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop1
+   xpos 428
+   ypos 836
+  }
+push $N415be700
+  ShuffleCopy {
+   inputs 2
+   green green
+   blue black
+   alpha black
+   name ShuffleCopy3
+   xpos 296
+   ypos 863
+  }
+set N96784e00 [stack 0]
+  PostageStamp {
+   name PostageStamp1
+   xpos 296
+   ypos 956
+   postage_stamp true
+  }
+  Dot {
+   name Dot7
+   xpos 134
+   ypos 983
+  }
+set Nf62ae380 [stack 0]
+  Dot {
+   name Dot4
+   xpos 134
+   ypos 1022
+  }
+  Input {
+   inputs 0
+   name Input
+   xpos -185
+   ypos 751
+  }
+  Dot {
+   name Dot1
+   xpos -151
+   ypos 877
+  }
+set Nf62afc00 [stack 0]
+  Dot {
+   name Dot2
+   xpos 24
+   ypos 877
+  }
+  Shuffle {
+   red green
+   blue green
+   alpha green
+   name Shuffle2
+   xpos -10
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.green
+   normalize false
+   name Convolve2
+   xpos -10
+   ypos 1018
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop3
+   xpos -10
+   ypos 1044
+  }
+  Grade {
+   white -1
+   black_clamp false
+   name Grade2
+   xpos -10
+   ypos 1076
+  }
+  set C50809180 [stack 0]
+  Grade {
+   white {{1/(parent.size*4)}}
+   black_clamp false
+   name Grade4
+   xpos -10
+   ypos 1116
+   disable {{1-parent.normalize}}
+  }
+  set Cbe8ce380 [stack 0]
+  Grade {
+   white {{parent.multiply}}
+   black_clamp false
+   name Grade1
+   xpos -10
+   ypos 1142
+  }
+  set Cbe8cf500 [stack 0]
+  Grade {
+   add {{parent.center}}
+   black_clamp false
+   name Grade3
+   xpos -10
+   ypos 1182
+  }
+  set Cbe8ce000 [stack 0]
+  Dot {
+   name Dot3
+   xpos 24
+   ypos 1247
+  }
+push $Nf62ae380
+  Dot {
+   name Dot6
+   xpos -63
+   ypos 983
+  }
+  Dot {
+   name Dot5
+   xpos -63
+   ypos 1024
+  }
+push $Nf62afc00
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle1
+   xpos -185
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.red
+   normalize false
+   name Convolve1
+   xpos -185
+   ypos 1020
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop2
+   xpos -185
+   ypos 1046
+  }
+clone $C50809180 {
+   xpos -185
+   ypos 1078
+   selected false
+  }
+clone $Cbe8ce380 {
+   xpos -185
+   ypos 1118
+   selected false
+  }
+clone $Cbe8cf500 {
+   xpos -185
+   ypos 1144
+   selected false
+  }
+clone $Cbe8ce000 {
+   xpos -185
+   ypos 1184
+   selected false
+  }
+  Merge2 {
+   inputs 2
+   operation average
+   name Merge1
+   xpos -185
+   ypos 1243
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle3
+   xpos -185
+   ypos 1269
+  }
+  Output {
+   name Output1
+   xpos -185
+   ypos 1335
+  }
+push $N96784e00
+push 0
+push 0
+  Viewer {
+   inputs 3
+   frame 1080239
+   frame_range 1080237-1080387
+   input_number 2
+   name Viewer1
+   selected true
+   xpos 406
+   ypos 863
+  }
+ end_group
+push $Nc59ae000
+ Group {
+  name Filter10
+  selected true
+  xpos 501
+  ypos 503
+  addUserKnob {20 User}
+  addUserKnob {3 size}
+  size {{int(parent.size)}}
+  addUserKnob {6 radial -STARTLINE}
+  radial true
+  addUserKnob {7 multiply}
+  multiply 1
+  addUserKnob {6 normalize -STARTLINE}
+  addUserKnob {7 center}
+ }
+  BackdropNode {
+   inputs 0
+   name BackdropNode1
+   tile_color 0xaaaaaa00
+   label Filter
+   note_font_size 42
+   xpos 203
+   ypos 342
+   bdwidth 488
+   bdheight 585
+  }
+  Constant {
+   inputs 0
+   channels rgb
+   format "256 256 0 0 256 256 1 square_256"
+   name Constant2
+   xpos 296
+   ypos 454
+  }
+  Reformat {
+   type "to box"
+   box_width {{1+(parent.size*2)}}
+   scale 0.1
+   name Reformat1
+   xpos 296
+   ypos 526
+  }
+set Ne0c7c00 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression10
+   xpos 550
+   ypos 573
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade17
+   xpos 550
+   ypos 599
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade18
+   xpos 550
+   ypos 625
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression11
+   xpos 550
+   ypos 651
+  }
+  Grade {
+   gamma 0.1
+   black_clamp false
+   name Grade21
+   xpos 550
+   ypos 677
+  }
+  Grade {
+   white 0.2
+   black_clamp false
+   name Grade22
+   xpos 550
+   ypos 703
+  }
+  Grade {
+   white {{2/width}}
+   black_clamp false
+   name Grade19
+   xpos 550
+   ypos 731
+   disable true
+  }
+push $Ne0c7c00
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression5
+   xpos 387
+   ypos 555
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade12
+   xpos 387
+   ypos 581
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade13
+   xpos 387
+   ypos 607
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression6
+   xpos 387
+   ypos 675
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression7
+   xpos 387
+   ypos 701
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?1:0
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression8
+   xpos 387
+   ypos 727
+  }
+  Switch {
+   inputs 2
+   which {{parent.radial}}
+   name Switch1
+   xpos 387
+   ypos 763
+  }
+push $Ne0c7c00
+  Expression {
+   channel0 rgb
+   expr0 (y+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression1
+   xpos 296
+   ypos 552
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade10
+   xpos 296
+   ypos 578
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade11
+   xpos 296
+   ypos 604
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression2
+   xpos 296
+   ypos 672
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression3
+   xpos 296
+   ypos 698
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?0:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression4
+   xpos 296
+   ypos 724
+  }
+  Expression {
+   channel0 rgb
+   expr0 y/height<0.5?-r:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression9
+   selected true
+   xpos 296
+   ypos 750
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name Merge4
+   xpos 296
+   ypos 810
+  }
+set N165e8700 [stack 0]
+  Transform {
+   rotate 90
+   center {{width/2} {height/2}}
+   filter Impulse
+   black_outside false
+   name Transform6
+   xpos 428
+   ypos 810
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop1
+   xpos 428
+   ypos 836
+  }
+push $N165e8700
+  ShuffleCopy {
+   inputs 2
+   green green
+   blue black
+   alpha black
+   name ShuffleCopy3
+   xpos 296
+   ypos 863
+  }
+  PostageStamp {
+   name PostageStamp1
+   xpos 296
+   ypos 956
+   postage_stamp true
+  }
+  Dot {
+   name Dot7
+   xpos 134
+   ypos 983
+  }
+set N4428b180 [stack 0]
+  Dot {
+   name Dot4
+   xpos 134
+   ypos 1022
+  }
+  Input {
+   inputs 0
+   name Input
+   xpos -185
+   ypos 751
+  }
+  Dot {
+   name Dot1
+   xpos -151
+   ypos 877
+  }
+set N4428b880 [stack 0]
+  Dot {
+   name Dot2
+   xpos 24
+   ypos 877
+  }
+  Shuffle {
+   red green
+   blue green
+   alpha green
+   name Shuffle2
+   xpos -10
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.green
+   normalize false
+   name Convolve2
+   xpos -10
+   ypos 1018
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop3
+   xpos -10
+   ypos 1044
+  }
+  Grade {
+   white -1
+   black_clamp false
+   name Grade2
+   xpos -10
+   ypos 1076
+  }
+  set C289bfc00 [stack 0]
+  Grade {
+   white {{1/(parent.size*4)}}
+   black_clamp false
+   name Grade4
+   xpos -10
+   ypos 1116
+   disable {{1-parent.normalize}}
+  }
+  set C289be700 [stack 0]
+  Grade {
+   white {{parent.multiply}}
+   black_clamp false
+   name Grade1
+   xpos -10
+   ypos 1142
+  }
+  set C289bee00 [stack 0]
+  Grade {
+   add {{parent.center}}
+   black_clamp false
+   name Grade3
+   xpos -10
+   ypos 1182
+  }
+  set C289bf180 [stack 0]
+  Dot {
+   name Dot3
+   xpos 24
+   ypos 1247
+  }
+push $N4428b180
+  Dot {
+   name Dot6
+   xpos -63
+   ypos 983
+  }
+  Dot {
+   name Dot5
+   xpos -63
+   ypos 1024
+  }
+push $N4428b880
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle1
+   xpos -185
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.red
+   normalize false
+   name Convolve1
+   xpos -185
+   ypos 1020
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop2
+   xpos -185
+   ypos 1046
+  }
+clone $C289bfc00 {
+   xpos -185
+   ypos 1078
+   selected false
+  }
+clone $C289be700 {
+   xpos -185
+   ypos 1118
+   selected false
+  }
+clone $C289bee00 {
+   xpos -185
+   ypos 1144
+   selected false
+  }
+clone $C289bf180 {
+   xpos -185
+   ypos 1184
+   selected false
+  }
+  Merge2 {
+   inputs 2
+   operation average
+   name Merge1
+   xpos -185
+   ypos 1243
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle3
+   xpos -185
+   ypos 1269
+  }
+  Output {
+   name Output1
+   xpos -185
+   ypos 1335
+  }
+ end_group
+push $N67157c00
+ Group {
+  name Filter16
+  xpos 611
+  ypos 507
+  addUserKnob {20 User}
+  addUserKnob {3 size}
+  size {{int(parent.size/2)}}
+  addUserKnob {6 radial -STARTLINE}
+  radial true
+  addUserKnob {7 multiply}
+  multiply 1
+  addUserKnob {6 normalize -STARTLINE}
+  addUserKnob {7 center}
+ }
+  BackdropNode {
+   inputs 0
+   name BackdropNode1
+   tile_color 0xaaaaaa00
+   label Filter
+   note_font_size 42
+   xpos 203
+   ypos 342
+   bdwidth 488
+   bdheight 585
+  }
+  Constant {
+   inputs 0
+   channels rgb
+   format "256 256 0 0 256 256 1 square_256"
+   name Constant2
+   xpos 296
+   ypos 454
+  }
+  Reformat {
+   type "to box"
+   box_width {{1+(parent.size*2)}}
+   scale 0.1
+   name Reformat1
+   xpos 296
+   ypos 526
+  }
+set Na31b7500 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression10
+   xpos 550
+   ypos 573
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade17
+   xpos 550
+   ypos 599
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade18
+   xpos 550
+   ypos 625
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression11
+   xpos 550
+   ypos 651
+  }
+  Grade {
+   gamma 0.1
+   black_clamp false
+   name Grade21
+   xpos 550
+   ypos 677
+  }
+  Grade {
+   white 0.2
+   black_clamp false
+   name Grade22
+   xpos 550
+   ypos 703
+  }
+  Grade {
+   white {{2/width}}
+   black_clamp false
+   name Grade19
+   xpos 550
+   ypos 731
+   disable true
+  }
+push $Na31b7500
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression5
+   xpos 387
+   ypos 555
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade12
+   xpos 387
+   ypos 581
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade13
+   xpos 387
+   ypos 607
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression6
+   xpos 387
+   ypos 675
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression7
+   xpos 387
+   ypos 701
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?1:0
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression8
+   xpos 387
+   ypos 727
+  }
+  Switch {
+   inputs 2
+   which {{parent.radial}}
+   name Switch1
+   xpos 387
+   ypos 763
+  }
+push $Na31b7500
+  Expression {
+   channel0 rgb
+   expr0 (y+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression1
+   xpos 296
+   ypos 552
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade10
+   xpos 296
+   ypos 578
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade11
+   xpos 296
+   ypos 604
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression2
+   xpos 296
+   ypos 672
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression3
+   xpos 296
+   ypos 698
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?0:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression4
+   xpos 296
+   ypos 724
+  }
+  Expression {
+   channel0 rgb
+   expr0 y/height<0.5?-r:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression9
+   selected true
+   xpos 296
+   ypos 750
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name Merge4
+   xpos 296
+   ypos 810
+  }
+set N2ed8f880 [stack 0]
+  Transform {
+   rotate 90
+   center {{width/2} {height/2}}
+   filter Impulse
+   black_outside false
+   name Transform6
+   xpos 428
+   ypos 810
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop1
+   xpos 428
+   ypos 836
+  }
+push $N2ed8f880
+  ShuffleCopy {
+   inputs 2
+   green green
+   blue black
+   alpha black
+   name ShuffleCopy3
+   xpos 296
+   ypos 863
+  }
+  PostageStamp {
+   name PostageStamp1
+   xpos 296
+   ypos 956
+   postage_stamp true
+  }
+  Dot {
+   name Dot7
+   xpos 134
+   ypos 983
+  }
+set N40742700 [stack 0]
+  Dot {
+   name Dot4
+   xpos 134
+   ypos 1022
+  }
+  Input {
+   inputs 0
+   name Input
+   xpos -185
+   ypos 751
+  }
+  Dot {
+   name Dot1
+   xpos -151
+   ypos 877
+  }
+set Necdc7500 [stack 0]
+  Dot {
+   name Dot2
+   xpos 24
+   ypos 877
+  }
+  Shuffle {
+   red green
+   blue green
+   alpha green
+   name Shuffle2
+   xpos -10
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.green
+   normalize false
+   name Convolve2
+   xpos -10
+   ypos 1018
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop3
+   xpos -10
+   ypos 1044
+  }
+  Grade {
+   white -1
+   black_clamp false
+   name Grade2
+   xpos -10
+   ypos 1076
+  }
+  set C5d9bb500 [stack 0]
+  Grade {
+   white {{1/(parent.size*4)}}
+   black_clamp false
+   name Grade4
+   xpos -10
+   ypos 1116
+   disable {{1-parent.normalize}}
+  }
+  set Ca7053180 [stack 0]
+  Grade {
+   white {{parent.multiply}}
+   black_clamp false
+   name Grade1
+   xpos -10
+   ypos 1142
+  }
+  set Ca7052e00 [stack 0]
+  Grade {
+   add {{parent.center}}
+   black_clamp false
+   name Grade3
+   xpos -10
+   ypos 1182
+  }
+  set C4dc94a80 [stack 0]
+  Dot {
+   name Dot3
+   xpos 24
+   ypos 1247
+  }
+push $N40742700
+  Dot {
+   name Dot6
+   xpos -63
+   ypos 983
+  }
+  Dot {
+   name Dot5
+   xpos -63
+   ypos 1024
+  }
+push $Necdc7500
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle1
+   xpos -185
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.red
+   normalize false
+   name Convolve1
+   xpos -185
+   ypos 1020
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop2
+   xpos -185
+   ypos 1046
+  }
+clone $C5d9bb500 {
+   xpos -185
+   ypos 1078
+   selected false
+  }
+clone $Ca7053180 {
+   xpos -185
+   ypos 1118
+   selected false
+  }
+clone $Ca7052e00 {
+   xpos -185
+   ypos 1144
+   selected false
+  }
+clone $C4dc94a80 {
+   xpos -185
+   ypos 1184
+   selected false
+  }
+  Merge2 {
+   inputs 2
+   operation average
+   name Merge1
+   xpos -185
+   ypos 1243
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle3
+   xpos -185
+   ypos 1269
+  }
+  Output {
+   name Output1
+   xpos -185
+   ypos 1335
+  }
+ end_group
+push 0
+push $N73c0f180
+ Dot {
+  name Dot18
+  xpos 981
+  ypos 449
+ }
+ Group {
+  name Filter12
+  xpos 947
+  ypos 501
+  addUserKnob {20 User}
+  addUserKnob {3 size}
+  size 1
+  addUserKnob {6 radial -STARTLINE}
+  addUserKnob {7 multiply}
+  multiply 1
+  addUserKnob {6 normalize -STARTLINE}
+  addUserKnob {7 center}
+ }
+  BackdropNode {
+   inputs 0
+   name BackdropNode1
+   tile_color 0xaaaaaa00
+   label Filter
+   note_font_size 42
+   xpos 203
+   ypos 342
+   bdwidth 488
+   bdheight 585
+  }
+  Constant {
+   inputs 0
+   channels rgb
+   format "256 256 0 0 256 256 1 square_256"
+   name Constant2
+   xpos 296
+   ypos 454
+  }
+  Reformat {
+   type "to box"
+   box_width {{1+(parent.size*2)}}
+   scale 0.1
+   name Reformat1
+   xpos 296
+   ypos 526
+  }
+set N561c1500 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression10
+   xpos 550
+   ypos 573
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade17
+   xpos 550
+   ypos 599
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade18
+   xpos 550
+   ypos 625
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression11
+   xpos 550
+   ypos 651
+  }
+  Grade {
+   gamma 0.1
+   black_clamp false
+   name Grade21
+   xpos 550
+   ypos 677
+  }
+  Grade {
+   white 0.2
+   black_clamp false
+   name Grade22
+   xpos 550
+   ypos 703
+  }
+  Grade {
+   white {{2/width}}
+   black_clamp false
+   name Grade19
+   xpos 550
+   ypos 731
+   disable true
+  }
+push $N561c1500
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression5
+   xpos 387
+   ypos 555
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade12
+   xpos 387
+   ypos 581
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade13
+   xpos 387
+   ypos 607
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression6
+   xpos 387
+   ypos 675
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression7
+   xpos 387
+   ypos 701
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?1:0
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression8
+   xpos 387
+   ypos 727
+  }
+  Switch {
+   inputs 2
+   which {{parent.radial}}
+   name Switch1
+   xpos 387
+   ypos 763
+  }
+push $N561c1500
+  Expression {
+   channel0 rgb
+   expr0 (y+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression1
+   xpos 296
+   ypos 552
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade10
+   xpos 296
+   ypos 578
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade11
+   xpos 296
+   ypos 604
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression2
+   xpos 296
+   ypos 672
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression3
+   xpos 296
+   ypos 698
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?0:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression4
+   xpos 296
+   ypos 724
+  }
+  Expression {
+   channel0 rgb
+   expr0 y/height<0.5?-r:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression9
+   selected true
+   xpos 296
+   ypos 750
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name Merge4
+   xpos 296
+   ypos 810
+  }
+set Nff77ee00 [stack 0]
+  Transform {
+   rotate 90
+   center {{width/2} {height/2}}
+   filter Impulse
+   black_outside false
+   name Transform6
+   xpos 428
+   ypos 810
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop1
+   xpos 428
+   ypos 836
+  }
+push $Nff77ee00
+  ShuffleCopy {
+   inputs 2
+   green green
+   blue black
+   alpha black
+   name ShuffleCopy3
+   xpos 296
+   ypos 863
+  }
+  PostageStamp {
+   name PostageStamp1
+   xpos 296
+   ypos 956
+   postage_stamp true
+  }
+  Dot {
+   name Dot7
+   xpos 134
+   ypos 983
+  }
+set N77addc00 [stack 0]
+  Dot {
+   name Dot4
+   xpos 134
+   ypos 1022
+  }
+  Input {
+   inputs 0
+   name Input
+   xpos -185
+   ypos 751
+  }
+  Dot {
+   name Dot1
+   xpos -151
+   ypos 877
+  }
+set N344cb880 [stack 0]
+  Dot {
+   name Dot2
+   xpos 24
+   ypos 877
+  }
+  Shuffle {
+   red green
+   blue green
+   alpha green
+   name Shuffle2
+   xpos -10
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.green
+   normalize false
+   name Convolve2
+   xpos -10
+   ypos 1018
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop3
+   xpos -10
+   ypos 1044
+  }
+  Grade {
+   white -1
+   black_clamp false
+   name Grade2
+   xpos -10
+   ypos 1076
+  }
+  set Cd46a0a80 [stack 0]
+  Grade {
+   white {{1/(parent.size*4)}}
+   black_clamp false
+   name Grade4
+   xpos -10
+   ypos 1116
+   disable {{1-parent.normalize}}
+  }
+  set Cd46a0380 [stack 0]
+  Grade {
+   white {{parent.multiply}}
+   black_clamp false
+   name Grade1
+   xpos -10
+   ypos 1142
+  }
+  set C566c8380 [stack 0]
+  Grade {
+   add {{parent.center}}
+   black_clamp false
+   name Grade3
+   xpos -10
+   ypos 1182
+  }
+  set C566c9500 [stack 0]
+  Dot {
+   name Dot3
+   xpos 24
+   ypos 1247
+  }
+push $N77addc00
+  Dot {
+   name Dot6
+   xpos -63
+   ypos 983
+  }
+  Dot {
+   name Dot5
+   xpos -63
+   ypos 1024
+  }
+push $N344cb880
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle1
+   xpos -185
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.red
+   normalize false
+   name Convolve1
+   xpos -185
+   ypos 1020
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop2
+   xpos -185
+   ypos 1046
+  }
+clone $Cd46a0a80 {
+   xpos -185
+   ypos 1078
+   selected false
+  }
+clone $Cd46a0380 {
+   xpos -185
+   ypos 1118
+   selected false
+  }
+clone $C566c8380 {
+   xpos -185
+   ypos 1144
+   selected false
+  }
+clone $C566c9500 {
+   xpos -185
+   ypos 1184
+   selected false
+  }
+  Merge2 {
+   inputs 2
+   operation average
+   name Merge1
+   xpos -185
+   ypos 1243
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle3
+   xpos -185
+   ypos 1269
+  }
+  Output {
+   name Output1
+   xpos -185
+   ypos 1335
+  }
+ end_group
+push $N67157880
+ Group {
+  name Filter15
+  xpos 736
+  ypos 502
+  addUserKnob {20 User}
+  addUserKnob {3 size}
+  size {{int(parent.size/6)}}
+  addUserKnob {6 radial -STARTLINE}
+  radial true
+  addUserKnob {7 multiply}
+  multiply 1
+  addUserKnob {6 normalize -STARTLINE}
+  addUserKnob {7 center}
+ }
+  BackdropNode {
+   inputs 0
+   name BackdropNode1
+   tile_color 0xaaaaaa00
+   label Filter
+   note_font_size 42
+   xpos 203
+   ypos 342
+   bdwidth 488
+   bdheight 585
+  }
+  Constant {
+   inputs 0
+   channels rgb
+   format "256 256 0 0 256 256 1 square_256"
+   name Constant2
+   xpos 296
+   ypos 454
+  }
+  Reformat {
+   type "to box"
+   box_width {{1+(parent.size*2)}}
+   scale 0.1
+   name Reformat1
+   xpos 296
+   ypos 526
+  }
+set N708d3c00 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression10
+   xpos 550
+   ypos 573
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade17
+   xpos 550
+   ypos 599
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade18
+   xpos 550
+   ypos 625
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression11
+   xpos 550
+   ypos 651
+  }
+  Grade {
+   gamma 0.1
+   black_clamp false
+   name Grade21
+   xpos 550
+   ypos 677
+  }
+  Grade {
+   white 0.2
+   black_clamp false
+   name Grade22
+   xpos 550
+   ypos 703
+  }
+  Grade {
+   white {{2/width}}
+   black_clamp false
+   name Grade19
+   xpos 550
+   ypos 731
+   disable true
+  }
+push $N708d3c00
+  Expression {
+   channel0 rgb
+   expr0 (x+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression5
+   xpos 387
+   ypos 555
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade12
+   xpos 387
+   ypos 581
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade13
+   xpos 387
+   ypos 607
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression6
+   xpos 387
+   ypos 675
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression7
+   xpos 387
+   ypos 701
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?1:0
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression8
+   xpos 387
+   ypos 727
+  }
+  Switch {
+   inputs 2
+   which {{parent.radial}}
+   name Switch1
+   xpos 387
+   ypos 763
+  }
+push $N708d3c00
+  Expression {
+   channel0 rgb
+   expr0 (y+0.5)/height
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression1
+   xpos 296
+   ypos 552
+  }
+  Grade {
+   add -0.5
+   black_clamp false
+   name Grade10
+   xpos 296
+   ypos 578
+  }
+  Grade {
+   white 2
+   black_clamp false
+   name Grade11
+   xpos 296
+   ypos 604
+  }
+  Expression {
+   channel0 rgb
+   expr0 1-(abs(r))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression2
+   xpos 296
+   ypos 672
+  }
+  Expression {
+   channel0 rgb
+   expr0 r+(2*(1/height))
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression3
+   xpos 296
+   ypos 698
+  }
+  Expression {
+   channel0 rgb
+   expr0 r>1?0:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression4
+   xpos 296
+   ypos 724
+  }
+  Expression {
+   channel0 rgb
+   expr0 y/height<0.5?-r:r
+   channel1 {-rgba.red -rgba.green -rgba.blue none}
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 none
+   name Expression9
+   selected true
+   xpos 296
+   ypos 750
+  }
+  Merge2 {
+   inputs 2
+   operation multiply
+   name Merge4
+   xpos 296
+   ypos 810
+  }
+set N11274000 [stack 0]
+  Transform {
+   rotate 90
+   center {{width/2} {height/2}}
+   filter Impulse
+   black_outside false
+   name Transform6
+   xpos 428
+   ypos 810
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop1
+   xpos 428
+   ypos 836
+  }
+push $N11274000
+  ShuffleCopy {
+   inputs 2
+   green green
+   blue black
+   alpha black
+   name ShuffleCopy3
+   xpos 296
+   ypos 863
+  }
+  PostageStamp {
+   name PostageStamp1
+   xpos 296
+   ypos 956
+   postage_stamp true
+  }
+  Dot {
+   name Dot7
+   xpos 134
+   ypos 983
+  }
+set N7fc8d180 [stack 0]
+  Dot {
+   name Dot4
+   xpos 134
+   ypos 1022
+  }
+  Input {
+   inputs 0
+   name Input
+   xpos -185
+   ypos 751
+  }
+  Dot {
+   name Dot1
+   xpos -151
+   ypos 877
+  }
+set Necfac000 [stack 0]
+  Dot {
+   name Dot2
+   xpos 24
+   ypos 877
+  }
+  Shuffle {
+   red green
+   blue green
+   alpha green
+   name Shuffle2
+   xpos -10
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.green
+   normalize false
+   name Convolve2
+   xpos -10
+   ypos 1018
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop3
+   xpos -10
+   ypos 1044
+  }
+  Grade {
+   white -1
+   black_clamp false
+   name Grade2
+   xpos -10
+   ypos 1076
+  }
+  set Cecfed500 [stack 0]
+  Grade {
+   white {{1/(parent.size*4)}}
+   black_clamp false
+   name Grade4
+   xpos -10
+   ypos 1116
+   disable {{1-parent.normalize}}
+  }
+  set Cecfed180 [stack 0]
+  Grade {
+   white {{parent.multiply}}
+   black_clamp false
+   name Grade1
+   xpos -10
+   ypos 1142
+  }
+  set Cecfec380 [stack 0]
+  Grade {
+   add {{parent.center}}
+   black_clamp false
+   name Grade3
+   xpos -10
+   ypos 1182
+  }
+  set C5f384000 [stack 0]
+  Dot {
+   name Dot3
+   xpos 24
+   ypos 1247
+  }
+push $N7fc8d180
+  Dot {
+   name Dot6
+   xpos -63
+   ypos 983
+  }
+  Dot {
+   name Dot5
+   xpos -63
+   ypos 1024
+  }
+push $Necfac000
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle1
+   xpos -185
+   ypos 949
+  }
+  Convolve2 {
+   inputs 2
+   channels rgb
+   filter_channel rgba.red
+   normalize false
+   name Convolve1
+   xpos -185
+   ypos 1020
+  }
+  Crop {
+   box {0 0 {width} {height}}
+   crop false
+   name Crop2
+   xpos -185
+   ypos 1046
+  }
+clone $Cecfed500 {
+   xpos -185
+   ypos 1078
+   selected false
+  }
+clone $Cecfed180 {
+   xpos -185
+   ypos 1118
+   selected false
+  }
+clone $Cecfec380 {
+   xpos -185
+   ypos 1144
+   selected false
+  }
+clone $C5f384000 {
+   xpos -185
+   ypos 1184
+   selected false
+  }
+  Merge2 {
+   inputs 2
+   operation average
+   name Merge1
+   xpos -185
+   ypos 1243
+  }
+  Shuffle {
+   green red
+   blue red
+   alpha red
+   name Shuffle3
+   xpos -185
+   ypos 1269
+  }
+  Output {
+   name Output1
+   xpos -185
+   ypos 1335
+  }
+ end_group
+ Merge2 {
+  inputs 5+1
+  operation plus
+  name Merge13
+  xpos 501
+  ypos 558
+ }
+ Grade {
+  multiply {{0.25/200}}
+  black_clamp false
+  name Grade24
+  xpos 501
+  ypos 584
+ }
+ Grade {
+  multiply {{parent.multiply}}
+  black_clamp false
+  name Grade25
+  xpos 501
+  ypos 610
+ }
+ Grade {
+  add {{parent.offset}}
+  black_clamp false
+  name Grade26
+  xpos 501
+  ypos 636
+ }
+ Output {
+  name Output1
+  xpos 501
+  ypos 683
+ }
+end_group
