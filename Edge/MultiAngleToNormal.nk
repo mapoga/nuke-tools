@@ -1,0 +1,228 @@
+Group {
+ name MultiAngleToNormal
+ selected true
+ addUserKnob {20 User}
+ addUserKnob {26 ""}
+ addUserKnob {7 Flat}
+ Flat 0.3
+}
+ Input {
+  inputs 0
+  name Right
+  xpos 731
+  ypos 364
+  number 2
+ }
+ Input {
+  inputs 0
+  name Left
+  xpos 968
+  ypos 369
+ }
+ Dot {
+  name Dot2
+  xpos 1002
+  ypos 469
+ }
+ Merge2 {
+  inputs 2
+  operation from
+  name Merge1
+  xpos 731
+  ypos 465
+ }
+ Dot {
+  name Dot3
+  xpos 765
+  ypos 523
+ }
+ Input {
+  inputs 0
+  name Bottom
+  xpos 851
+  ypos 366
+  number 3
+ }
+ Dot {
+  name Dot1
+  xpos 885
+  ypos 426
+ }
+ Input {
+  inputs 0
+  name Top
+  xpos 619
+  ypos 363
+  number 1
+ }
+ Merge2 {
+  inputs 2
+  operation from
+  name Merge4
+  xpos 619
+  ypos 422
+ }
+ ShuffleCopy {
+  inputs 2
+  green red
+  blue black
+  alpha black
+  name ShuffleCopy2
+  xpos 619
+  ypos 519
+ }
+set N3417dc00 [stack 0]
+ Dot {
+  name Dot4
+  xpos 653
+  ypos 574
+ }
+set N32aef180 [stack 0]
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  black {{parent.Flat}}
+  black_clamp false
+  name Grade2
+  xpos 619
+  ypos 644
+ }
+ Group {
+  name V3_Norm
+  xpos 619
+  ypos 670
+  addUserKnob {20 Vector3_Normalize}
+ }
+  Input {
+   inputs 0
+   name vector
+   xpos 509
+   ypos 209
+  }
+set N57e32700 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 sqrt((r*r)+(g*g)+(b*b))
+   channel1 none
+   channel2 none
+   channel3 none
+   name Magnitude
+   selected true
+   xpos 580
+   ypos 255
+  }
+push $N57e32700
+  MergeExpression {
+   inputs 2
+   expr0 Br/Ar
+   expr1 Bg/Ag
+   expr2 Bb/Ab
+   channel3 none
+   name MergeExpression1
+   xpos 509
+   ypos 312
+  }
+  Output {
+   name Output1
+   xpos 509
+   ypos 376
+  }
+ end_group
+set Na5149000 [stack 0]
+push $N3417dc00
+push 0
+ Viewer {
+  inputs 3
+  frame_range 1080237-1080387
+  input_number 2
+  colour_sample_bbox {-0.2119752169 0.3262216151 -0.2112869918 0.3269098401}
+  name Viewer1
+  xpos 319
+  ypos 337
+ }
+push $N32aef180
+ Dot {
+  name Dot5
+  selected true
+  xpos 835
+  ypos 574
+ }
+ Grade {
+  white 0.2
+  black_clamp false
+  name Grade12
+  xpos 801
+  ypos 602
+ }
+ Grade {
+  add 0.2
+  black_clamp false
+  name Grade13
+  xpos 801
+  ypos 628
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  black 1
+  black_clamp false
+  name Grade11
+  xpos 801
+  ypos 654
+ }
+ Group {
+  name V3_Norm3
+  xpos 801
+  ypos 680
+  addUserKnob {20 Vector3_Normalize}
+ }
+  Input {
+   inputs 0
+   name vector
+   xpos 509
+   ypos 209
+  }
+set N3267e700 [stack 0]
+  Expression {
+   channel0 rgb
+   expr0 sqrt((r*r)+(g*g)+(b*b))
+   channel1 none
+   channel2 none
+   channel3 none
+   name Magnitude
+   xpos 580
+   ypos 255
+  }
+push $N3267e700
+  MergeExpression {
+   inputs 2
+   expr0 Br/Ar
+   expr1 Bg/Ag
+   expr2 Bb/Ab
+   channel3 none
+   name MergeExpression1
+   xpos 509
+   ypos 312
+  }
+  Output {
+   name Output1
+   xpos 509
+   ypos 376
+  }
+ end_group
+ Dot {
+  name Dot6
+  xpos 835
+  ypos 776
+ }
+push $Na5149000
+ Switch {
+  inputs 2
+  name Switch1
+  xpos 619
+  ypos 772
+ }
+ Output {
+  name Output1
+  xpos 619
+  ypos 813
+ }
+end_group
