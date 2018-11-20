@@ -1,0 +1,70 @@
+Group {
+ name Tile_Lazy
+ selected true
+ addUserKnob {20 TileLazy l "Tile Lazy"}
+ addUserKnob {14 scale R 0 100}
+ scale 1
+ addUserKnob {7 aspect}
+ aspect 0.5
+ addUserKnob {41 filter T Tile1.filter}
+ addUserKnob {6 noAlpha +STARTLINE}
+ noAlpha true
+}
+ Input {
+  inputs 0
+  name seamless
+  xpos 545
+  ypos -23
+  number 1
+ }
+ Shuffle {
+  alpha black
+  name Shuffle1
+  xpos 545
+  ypos 3
+  disable {{1-parent.noAlpha}}
+ }
+set Nf0e5ea80 [stack 0]
+ Reformat {
+  type "to box"
+  box_width {{Format.width}}
+  box_height {{Format.height}}
+  box_fixed true
+  box_pixel_aspect {{Format.pixel_aspect}}
+  resize distort
+  center false
+  filter Impulse
+  name Reformat1
+  selected true
+  xpos 545
+  ypos 58
+ }
+ Tile {
+  rows {{Format.width/seamless.width*parent.scale.w*(parent.aspect*2)}}
+  columns {{Format.height/seamless.height*parent.scale.h*((1-parent.aspect)*2)}}
+  name Tile1
+  xpos 545
+  ypos 137
+ }
+ Output {
+  name Output1
+  xpos 545
+  ypos 221
+ }
+push $Nf0e5ea80
+push 0
+ Viewer {
+  inputs 3
+  frame_range 1-100
+  input_number 2
+  name Viewer1
+  xpos 655
+  ypos 58
+ }
+ Input {
+  inputs 0
+  name Format
+  xpos 417
+  ypos 33
+ }
+end_group

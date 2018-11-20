@@ -1,0 +1,289 @@
+Group {
+ name Seamless
+ selected true
+ addUserKnob {20 Seamless}
+ addUserKnob {7 seamx l "seam x"}
+ seamx 0.3
+ addUserKnob {7 biasx l "bias x"}
+ addUserKnob {7 seamy l "seam y"}
+ seamy 0.3
+ addUserKnob {7 biasy l "bias y"}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x999999ff
+  label "seamless X"
+  note_font_size 40
+  xpos 290
+  ypos -182
+  bdwidth 219
+  bdheight 199
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode2
+  tile_color 0xaaaaaa00
+  label "offset X"
+  note_font_size 42
+  xpos 195
+  ypos 37
+  bdwidth 294
+  bdheight 224
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode3
+  tile_color 0xaaaaaa00
+  label "seamless Y"
+  note_font_size 42
+  xpos 290
+  ypos 270
+  bdwidth 219
+  bdheight 199
+ }
+ BackdropNode {
+  inputs 0
+  name BackdropNode4
+  tile_color 0xaaaaaaff
+  label "offset y"
+  note_font_size 42
+  xpos 195
+  ypos 477
+  bdwidth 294
+  bdheight 224
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos 300
+  ypos -233
+ }
+ Dot {
+  name Dot1
+  xpos 334
+  ypos -102
+ }
+set N40c52e00 [stack 0]
+ Dot {
+  name Dot2
+  xpos 453
+  ypos -102
+ }
+ Transform {
+  translate {{"(parent.seamx*width*0.5) - width"} 0}
+  center {1024 778}
+  name Transform_x
+  xpos 419
+  ypos -68
+ }
+set Ne52c7500 [stack 0]
+ Expression {
+  temp_name0 offset
+  temp_expr0 parent.seamx*width*0.5
+  channel0 {none none none rgba.alpha}
+  expr0 clamp(1-((x/width)/(offset/width)))
+  channel1 none
+  channel2 none
+  channel3 none
+  name alpha_x
+  xpos 419
+  ypos -13
+ }
+push $Ne52c7500
+push $N40c52e00
+ Crop {
+  box {0 0 {width-(parent.seamx*width*0.5) x1 1542} {height x1 658}}
+  reformat true
+  crop false
+  name Crop_x
+  xpos 300
+  ypos -68
+ }
+ Merge2 {
+  inputs 2+1
+  operation copy
+  bbox B
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  Bchannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Merge_x
+  xpos 300
+  ypos -13
+ }
+ Dot {
+  name Dot5
+  xpos 334
+  ypos 117
+ }
+set N14b67180 [stack 0]
+ Dot {
+  name Dot7
+  xpos 433
+  ypos 117
+ }
+ Transform {
+  translate {{width+(parent.biasx*width)} 0}
+  center {1024 778}
+  name Transform3
+  xpos 399
+  ypos 145
+ }
+push $N14b67180
+ Dot {
+  name Dot6
+  xpos 239
+  ypos 117
+ }
+ Transform {
+  translate {{-width+(parent.biasx*width)} 0}
+  center {1024 778}
+  name Transform2
+  xpos 205
+  ypos 144
+ }
+push $N14b67180
+ Transform {
+  translate {{parent.biasx*width} 0}
+  center {1024 778}
+  name Transform1
+  xpos 300
+  ypos 146
+ }
+ Merge2 {
+  inputs 2
+  name Merge1
+  xpos 300
+  ypos 179
+ }
+ Merge2 {
+  inputs 2
+  name Merge2
+  xpos 300
+  ypos 205
+ }
+ Reformat {
+  type scale
+  resize none
+  center false
+  name Reformat1
+  xpos 300
+  ypos 231
+ }
+ Dot {
+  name Dot3
+  xpos 334
+  ypos 350
+ }
+set N454a2380 [stack 0]
+ Dot {
+  name Dot4
+  xpos 453
+  ypos 350
+ }
+ Transform {
+  translate {0 {"(parent.seamy*height*0.5) - height"}}
+  center {1024 778}
+  name Transform_y
+  xpos 419
+  ypos 384
+ }
+set Nf5c03880 [stack 0]
+ Expression {
+  temp_name0 offset
+  temp_expr0 parent.seamy*height*0.5
+  channel0 {none none none rgba.alpha}
+  expr0 clamp(1-((y/height)/(offset/height)))
+  channel1 none
+  channel2 none
+  channel3 none
+  name alpha_y
+  xpos 419
+  ypos 439
+ }
+push $Nf5c03880
+push $N454a2380
+ Crop {
+  box {0 0 {width x1 1542} {height-(parent.seamy*height*0.5) x1 658}}
+  reformat true
+  crop false
+  name Crop_y
+  xpos 300
+  ypos 384
+ }
+ Merge2 {
+  inputs 2+1
+  operation copy
+  bbox B
+  Achannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  Bchannels {rgba.red rgba.green rgba.blue -rgba.alpha}
+  output {rgba.red rgba.green rgba.blue -rgba.alpha}
+  name Merge_y
+  xpos 300
+  ypos 439
+ }
+ Dot {
+  name Dot8
+  xpos 334
+  ypos 557
+ }
+set N42c86380 [stack 0]
+ Dot {
+  name Dot9
+  xpos 433
+  ypos 557
+ }
+ Transform {
+  translate {0 {height+(parent.biasy*height)}}
+  center {1024 778}
+  name Transform4
+  xpos 399
+  ypos 575
+ }
+push $N42c86380
+ Dot {
+  name Dot10
+  xpos 239
+  ypos 557
+ }
+ Transform {
+  translate {0 {-height+(parent.biasy*height)}}
+  center {1024 778}
+  name Transform5
+  xpos 205
+  ypos 575
+ }
+push $N42c86380
+ Transform {
+  translate {0 {parent.biasy*height}}
+  center {1024 778}
+  name Transform6
+  xpos 300
+  ypos 575
+ }
+ Merge2 {
+  inputs 2
+  name Merge3
+  xpos 300
+  ypos 619
+ }
+ Merge2 {
+  inputs 2
+  name Merge4
+  xpos 300
+  ypos 645
+ }
+ Reformat {
+  type scale
+  resize none
+  center false
+  name Reformat2
+  xpos 300
+  ypos 671
+ }
+ Output {
+  name Output1
+  xpos 300
+  ypos 793
+ }
+end_group
