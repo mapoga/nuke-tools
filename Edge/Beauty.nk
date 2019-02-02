@@ -1,0 +1,437 @@
+Group {
+ name mga_beauty
+ selected true
+ addUserKnob {20 User}
+ addUserKnob {20 Details n 1}
+ addUserKnob {26 zone_01 l "zone 01"}
+ addUserKnob {7 size_01 l size R 0 6}
+ size_01 1.5
+ addUserKnob {7 blur_01 l blur}
+ addUserKnob {7 sharpen_01 l sharpen}
+ addUserKnob {26 zone_02 l "zone 02"}
+ addUserKnob {7 size_02 l size}
+ size_02 13
+ addUserKnob {7 blur_02 l blur}
+ blur_02 100
+ addUserKnob {26 zone_03 l "zone 03"}
+ addUserKnob {7 size_03 l size}
+ size_03 30
+ addUserKnob {7 blur_03 l blur}
+ blur_03 13
+ addUserKnob {26 ""}
+ addUserKnob {7 sat_mix}
+ sat_mix 0.7
+ addUserKnob {7 Mix}
+ Mix 0.7
+ addUserKnob {20 endGroup n -1}
+ addUserKnob {26 ""}
+ addUserKnob {20 Hue n 1}
+ addUserKnob {7 hue_blend l "hue blend"}
+ hue_blend 1
+ addUserKnob {7 blend_size l size R 0 100}
+ blend_size 120
+ addUserKnob {7 hue_fix}
+ hue_fix 0.5
+ addUserKnob {20 endGroup_1 l endGroup n -1}
+}
+ Input {
+  inputs 0
+  name mask
+  xpos 719
+  ypos 1652
+  number 1
+ }
+set N977a2380 [stack 0]
+push $N977a2380
+push $N977a2380
+push $N977a2380
+ Input {
+  inputs 0
+  name Input
+  selected true
+  xpos 509
+  ypos 411
+ }
+ Dot {
+  name Dot13
+  xpos 543
+  ypos 451
+ }
+set Nb189c00 [stack 0]
+ Dot {
+  name Dot12
+  xpos 543
+  ypos 503
+ }
+set N9f132700 [stack 0]
+ Colorspace {
+  colorspace_out HSL
+  name Colorspace1
+  xpos 407
+  ypos 566
+ }
+set N98db7500 [stack 0]
+push $N98db7500
+push $N9f132700
+add_layer {HSV HSV.red HSV.green HSV.blue HSV.alpha}
+ ShuffleCopy {
+  inputs 2
+  alpha alpha2
+  black red
+  white green
+  red2 blue
+  green2 alpha
+  out2 HSV
+  name ShuffleCopy1
+  xpos 509
+  ypos 623
+ }
+ Dot {
+  name Dot1
+  xpos 543
+  ypos 682
+ }
+set Nff9c000 [stack 0]
+ Dot {
+  name Dot2
+  xpos 392
+  ypos 682
+ }
+ Blur {
+  size {{parent.size_01}}
+  name Blur1
+  xpos 358
+  ypos 762
+ }
+set N331e7180 [stack 0]
+ Dot {
+  name Dot4
+  xpos 392
+  ypos 846
+ }
+set N2dc7180 [stack 0]
+ Dot {
+  name Dot5
+  xpos 241
+  ypos 846
+ }
+ Blur {
+  size {{parent.size_02}}
+  name Blur2
+  xpos 207
+  ypos 971
+ }
+set Nbc622a80 [stack 0]
+ Dot {
+  name Dot8
+  xpos 241
+  ypos 1067
+ }
+set N98ea6700 [stack 0]
+ Dot {
+  name Dot9
+  xpos 90
+  ypos 1067
+ }
+ Blur {
+  size {{parent.size_03}}
+  name Blur5
+  xpos 56
+  ypos 1148
+ }
+set N98eaf180 [stack 0]
+ Dot {
+  name Dot10
+  xpos 90
+  ypos 1259
+ }
+push $N98eaf180
+push $N98ea6700
+ Merge2 {
+  inputs 2
+  operation from
+  also_merge all
+  name Merge5
+  xpos 207
+  ypos 1153
+ }
+ Blur {
+  size {{parent.blur_03}}
+  name Blur6
+  xpos 207
+  ypos 1179
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge all
+  name Merge6
+  xpos 207
+  ypos 1255
+ }
+ Dot {
+  name Dot6
+  xpos 241
+  ypos 1411
+ }
+push $Nbc622a80
+push $N2dc7180
+ Merge2 {
+  inputs 2
+  operation from
+  also_merge all
+  name Merge3
+  xpos 358
+  ypos 977
+ }
+ Blur {
+  size {{parent.blur_02}}
+  name Blur3
+  xpos 358
+  ypos 1003
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge all
+  name Merge4
+  xpos 358
+  ypos 1407
+ }
+ Dot {
+  name Dot3
+  xpos 392
+  ypos 1469
+ }
+push $N331e7180
+push $Nff9c000
+ Merge2 {
+  inputs 2
+  operation from
+  also_merge all
+  name Merge1
+  xpos 509
+  ypos 768
+ }
+ Blur {
+  size {{parent.blur_01}}
+  name Blur7
+  xpos 509
+  ypos 794
+ }
+ Grade {
+  multiply {{1+parent.sharpen_01}}
+  black_clamp false
+  name Grade1
+  xpos 509
+  ypos 832
+ }
+ Merge2 {
+  inputs 2
+  operation plus
+  also_merge all
+  name Merge2
+  xpos 509
+  ypos 1465
+ }
+set N97835500 [stack 0]
+ ShuffleCopy {
+  inputs 2
+  in2 HSV
+  red red
+  alpha alpha2
+  name ShuffleCopy2
+  xpos 414
+  ypos 1539
+ }
+ Colorspace {
+  colorspace_in HSL
+  name Colorspace2
+  xpos 414
+  ypos 1582
+ }
+push $N97835500
+ Dissolve {
+  inputs 2
+  which {{parent.sat_mix}}
+  name Dissolve2
+  xpos 509
+  ypos 1576
+ }
+ Dot {
+  name Dot11
+  xpos 543
+  ypos 1656
+ }
+push $Nb189c00
+ Dot {
+  name Dot7
+  xpos 643
+  ypos 451
+ }
+ Dissolve {
+  inputs 2+1
+  which {{parent.Mix}}
+  name Dissolve1
+  xpos 609
+  ypos 1646
+ }
+set N97834700 [stack 0]
+ Colorspace {
+  colorspace_out HSV
+  name Colorspace4
+  xpos 697
+  ypos 1755
+ }
+set N97835180 [stack 0]
+ Expression {
+  temp_name0 rot
+  temp_expr0 parent.hue_fix
+  expr0 (r+rot)%1
+  name Expression1
+  xpos 697
+  ypos 1781
+ }
+set N9797ea80 [stack 0]
+ Merge2 {
+  inputs 2
+  operation mask
+  name Merge7
+  xpos 820
+  ypos 1763
+ }
+ ShuffleCopy {
+  inputs 2
+  name ShuffleCopy3
+  xpos 820
+  ypos 1801
+ }
+ Group {
+  name Edge_extend
+  xpos 820
+  ypos 1837
+  addUserKnob {20 User}
+  addUserKnob {6 premult +STARTLINE}
+  addUserKnob {7 size R 0 100}
+  size {{parent.blend_size}}
+  addUserKnob {6 effect_only l "effect only" +STARTLINE}
+  effect_only true
+ }
+  Input {
+   inputs 0
+   name Input1
+   xpos 509
+   ypos 255
+  }
+  Premult {
+   name Premult1
+   xpos 509
+   ypos 281
+   disable {{1-parent.premult}}
+  }
+set N9797e700 [stack 0]
+push $N9797e700
+  Blur {
+   channels rgba
+   size {{parent.size}}
+   name Blur5
+   xpos 591
+   ypos 350
+  }
+  Unpremult {
+   name Unpremult1
+   xpos 591
+   ypos 376
+  }
+  Expression {
+   channel0 alpha
+   expr0 a>0?1:0
+   name Expression1
+   xpos 591
+   ypos 404
+  }
+set N97976e00 [stack 0]
+  Merge2 {
+   inputs 2
+   name Merge1
+   xpos 509
+   ypos 434
+  }
+set N98d6a700 [stack 0]
+push 0
+push 0
+  Viewer {
+   inputs 3
+   frame_range 0-155
+   input_number 2
+   name Viewer1
+   xpos 619
+   ypos 255
+  }
+push $N97976e00
+push $N98d6a700
+  Switch {
+   inputs 2
+   which {{parent.effect_only}}
+   name Switch1
+   selected true
+   xpos 508
+   ypos 496
+  }
+  Output {
+   name Output1
+   xpos 508
+   ypos 571
+  }
+ end_group
+push $N9797ea80
+ Merge2 {
+  inputs 2+1
+  operation copy
+  Achannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  Bchannels {rgba.red -rgba.green -rgba.blue -rgba.alpha}
+  output {rgba.red -rgba.green -rgba.blue rgba.alpha}
+  name Merge8
+  xpos 697
+  ypos 1831
+ }
+ Expression {
+  temp_name0 rot
+  temp_expr0 parent.hue_fix
+  expr0 (r+(1-rot))%1
+  name Expression2
+  xpos 697
+  ypos 1877
+ }
+set N9763f500 [stack 0]
+ Colorspace {
+  colorspace_in HSV
+  name Colorspace5
+  xpos 697
+  ypos 1917
+ }
+push $N97834700
+ Dissolve {
+  inputs 2
+  which {{parent.hue_blend}}
+  name Dissolve3
+  xpos 609
+  ypos 1960
+ }
+ Output {
+  name Output1
+  xpos 609
+  ypos 2019
+ }
+push $N9763f500
+push $N97835180
+push 0
+ Viewer {
+  inputs 3
+  frame_range 1-100
+  input_number 2
+  name Viewer1
+  xpos 619
+  ypos 800
+ }
+end_group
