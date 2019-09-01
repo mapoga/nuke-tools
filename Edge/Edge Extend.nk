@@ -1,75 +1,25 @@
 Group {
- name Edge_extend
- selected true
- addUserKnob {20 User}
- addUserKnob {6 premult +STARTLINE}
- addUserKnob {7 size R 0 100}
- size 100
- addUserKnob {6 effect_only l "effect only" +STARTLINE}
+ name EdgeExtend
+ onCreate "n = nuke.thisNode()\nk = n.knob(\"exponent\")\nexponent = int(k.value())\nprint(exponent)\nk.setValue(2)\nprint(k.setValue(exponent))"
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob()\nknobs = [\"exponent\", \"step\"]\nif k.name() in knobs:\n\twith n:  # enables group scope\n\t\tInput = n.node(\"Input\")\n\t\toutput = n.node(\"Output\")\n\t\tnodes = nuke.allNodes()\n\t\tnodes.remove(Input)\n\t\tnodes.remove(output)\n\t\texp = int(n.knob(\"exponent\").value())\n\t\tstep = n.knob(\"step\").value()\n\t\tunpre = n.knob(\"unpre\").value()\n\n\t\t# Clean\n\t\tif nodes:\n\t\t\tfor n in nodes:\n\t\t\t\tnuke.delete(n)\n\n\t\t# Create\n\t\tInput.setSelected(True)\n\t\tlayers = []\n\t\tfor i in range(exp):\n\t\t\tun = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\t\texpr = nuke.createNode(\"Expression\", \"expr3 a>0?1:0\", inpanel=False)\n\t\t\tblur = nuke.createNode(\"Blur\", \"size {0}\".format(step**i), inpanel=False)\n\t\t\tlayers.append(blur)\n\n\n\t\tprev = Input\n\t\tif layers:\n\t\t\tfor l in layers:\n\t\t\t\tmerge = nuke.createNode(\"Merge\", inpanel=False)\n\t\t\t\tmerge.setInput(0, l)\n\t\t\t\tmerge.setInput(1, prev)\n\t\t\t\tprev = merge\n\n\t\tprev.setSelected(True)\n\t\tunpreNode = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\tunpreNode.setName(\"output_unpremult\")\n\t\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\t\tnodes = nuke.allNodes()\n\t\tfor n in nodes:\n\t\t\tn.autoplace()\n\t\t\t\nelif k.name() == \"unpre\":\n\tunpre = k.value()\n\tunpreNode = n.node(\"output_unpremult\")\n\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\n"
+ addUserKnob {20 EdgeExtend}
+ addUserKnob {7 step R 1 10}
+ step 2
+ addUserKnob {3 exponent}
+ exponent 8
+ addUserKnob {6 unpre l unpremult +STARTLINE}
+ unpre 1
 }
  Input {
   inputs 0
-  name Input1
-  xpos 509
-  ypos 255
- }
- Premult {
-  name Premult1
-  xpos 509
-  ypos 281
-  disable {{1-parent.premult}}
- }
-set N3f9f8000 [stack 0]
-push $N3f9f8000
- Blur {
-  channels rgba
-  size {{parent.size}}
-  name Blur5
-  xpos 591
-  ypos 350
- }
- Unpremult {
-  name Unpremult1
-  xpos 591
-  ypos 376
- }
- Expression {
-  channel0 alpha
-  expr0 a>0?1:0
-  name Expression1
-  xpos 591
-  ypos 404
- }
-set N424cd500 [stack 0]
- Merge2 {
-  inputs 2
-  name Merge1
-  xpos 509
-  ypos 434
- }
-set N424cce00 [stack 0]
-push 0
-push 0
- Viewer {
-  inputs 3
-  frame_range 0-155
-  input_number 2
-  name Viewer1
-  xpos 619
-  ypos 255
- }
-push $N424cd500
-push $N424cce00
- Switch {
-  inputs 2
-  which {{parent.effect_only}}
-  name Switch1
-  xpos 508
-  ypos 496
+  name Input
+  selected true
+  xpos -40
+  ypos -10
  }
  Output {
-  name Output1
-  xpos 508
-  ypos 571
+  name Output
+  xpos -40
+  ypos 16
  }
 end_group
