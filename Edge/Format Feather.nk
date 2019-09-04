@@ -7,18 +7,19 @@ Group {
  addUserKnob {41 type l "Fade Type" T LinearSmooth.type}
  addUserKnob {6 OutputMask +STARTLINE}
  OutputMask true
+ addUserKnob {6 invert -STARTLINE}
 }
  Input {
   inputs 0
-  name Input1
+  name Input
   xpos -63
   ypos 13
  }
-set N205caa80 [stack 0]
+set N78b6a700 [stack 0]
  Expression {
   temp_name0 dist
   temp_expr0 parent.size
-  channel0 {rgba.red rgba.green rgba.blue rgba.alpha}
+  channel0 rgba
   expr0 x<dist?x/dist:1
   channel1 none
   channel2 none
@@ -96,7 +97,7 @@ set N205caa80 [stack 0]
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d6c2100-7c08-11e5-a29b-74d02b2b0a3c
   }
-set N3faeb500 [stack 0]
+set N3908a380 [stack 0]
   Dot {
    name Dot5
    xpos 302
@@ -107,7 +108,7 @@ set N3faeb500 [stack 0]
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d6c6f1e-7c08-11e5-a3c2-74d02b2b0a3c
   }
-set N3faeb180 [stack 0]
+set N3954fc00 [stack 0]
   Expression {
    expr0 r*r*r
    expr1 g*g*g
@@ -120,7 +121,7 @@ set N3faeb180 [stack 0]
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d6cbd40-7c08-11e5-adfb-74d02b2b0a3c
   }
-push $N3faeb180
+push $N3954fc00
   Dot {
    name Dot3
    xpos 406
@@ -131,7 +132,7 @@ push $N3faeb180
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d6d5980-7c08-11e5-b954-74d02b2b0a3c
   }
-set N3faea700 [stack 0]
+set N39125500 [stack 0]
   Dot {
    name Dot4
    xpos 531
@@ -142,7 +143,7 @@ set N3faea700 [stack 0]
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d6da7a1-7c08-11e5-8e60-74d02b2b0a3c
   }
-set N3faea380 [stack 0]
+set N3908c000 [stack 0]
   Dot {
    name Dot2
    xpos 644
@@ -175,7 +176,7 @@ set N3faea380 [stack 0]
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d6f2e40-7c08-11e5-8f7f-74d02b2b0a3c
   }
-push $N3faea380
+push $N3908c000
   Expression {
    expr0 "r*r*( 3-2*r )"
    expr1 "g*g*( 3-2*g )"
@@ -198,7 +199,7 @@ push $N3faea380
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d7018a1-7c08-11e5-9add-74d02b2b0a3c
   }
-push $N3faea700
+push $N39125500
   Expression {
    expr0 "r*( 1+r*( 1-r ) )"
    expr1 "g*( 1+g*( 1-g ) )"
@@ -221,7 +222,7 @@ push $N3faea700
    addUserKnob {1 nativeUID +DISABLED}
    nativeUID 9d712a0f-7c08-11e5-b357-74d02b2b0a3c
   }
-push $N3faeb500
+push $N3908a380
   NoOp {
    name linear
    xpos 170
@@ -254,9 +255,9 @@ push $N3faeb500
    nativeUID 9d72628f-7c08-11e5-94e1-74d02b2b0a3c
   }
  end_group
-set N205a3800 [stack 0]
-push $N205a3800
-push $N205caa80
+set N856f000 [stack 0]
+push $N856f000
+push $N78b6a700
  Merge2 {
   inputs 2
   operation mask

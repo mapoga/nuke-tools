@@ -1,0 +1,517 @@
+Group {
+ name Gradient
+ onCreate "n = nuke.thisNode()\nwith n:  # enables group scope\n\tk = n.knob(\"type\")\n\ttangent_knobs = [\"style\"]\n\tgradient_knobs = [\"multiply\", \"normalize\", \"ddd\", \"flip_x\", \"flip_y\", \"flip_z\"]\n\n\tif k.value() == \"Gradient\":\n\t\tfor knob in gradient_knobs:\n\t\t\tn.knob(knob).setVisible(True)\n\t\tfor knob in tangent_knobs:\n\t\t\tn.knob(knob).setVisible(False)\n\telse:\n\t\tfor knob in gradient_knobs:\n\t\t\tn.knob(knob).setVisible(False)\n\t\tfor knob in tangent_knobs:\n\t\t\tn.knob(knob).setVisible(True)"
+ knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob()\nif k.name() == \"type\":\n\twith n:  # enables group scope\n\t\ttangent_knobs = [\"style\"]\n\t\tgradient_knobs = [\"multiply\", \"normalize\", \"ddd\", \"flip_x\", \"flip_y\", \"flip_z\"]\n\n\t\tif k.value() == \"Gradient\":\n\t\t\tfor knob in gradient_knobs:\n\t\t\t\tn.knob(knob).setVisible(True)\n\t\t\tfor knob in tangent_knobs:\n\t\t\t\tn.knob(knob).setVisible(False)\n\t\telse:\n\t\t\tfor knob in gradient_knobs:\n\t\t\t\tn.knob(knob).setVisible(False)\n\t\t\tfor knob in tangent_knobs:\n\t\t\t\tn.knob(knob).setVisible(True)"
+ selected true
+ addUserKnob {20 User l Gradient}
+ addUserKnob {26 input_div l Input}
+ addUserKnob {41 saturation T ColorCorrect1.saturation}
+ addUserKnob {41 from0 l channel T input_channel.from0}
+ addUserKnob {26 mode_div l Mode}
+ addUserKnob {4 type M {Gradient Tangent}}
+ addUserKnob {7 height_val l height}
+ height_val 0.5
+ addUserKnob {4 style M {OpenGL DirectX}}
+ addUserKnob {7 multiply R 0 5}
+ multiply 1
+ addUserKnob {6 ddd l 3D +STARTLINE}
+ ddd true
+ addUserKnob {6 normalize -STARTLINE}
+ normalize true
+ addUserKnob {6 flip_x l "flip x" -STARTLINE}
+ addUserKnob {6 flip_y l "flip y" -STARTLINE}
+ addUserKnob {6 flip_z l "flip z" -STARTLINE}
+}
+ BackdropNode {
+  inputs 0
+  name BackdropNode1
+  tile_color 0x7f7fffff
+  label tangent
+  xpos 229
+  ypos 576
+  bdwidth 227
+  bdheight 368
+ }
+ Input {
+  inputs 0
+  name Input
+  xpos -45
+  ypos 172
+ }
+ ColorCorrect {
+  channels all
+  saturation 0
+  name ColorCorrect1
+  xpos -45
+  ypos 243
+ }
+set N19154e00 [stack 0]
+push $N19154e00
+ Copy {
+  inputs 2
+  from0 rgba.red
+  to0 rgba.alpha
+  name input_channel
+  xpos -45
+  ypos 281
+ }
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name Shuffle1
+  xpos -45
+  ypos 319
+ }
+ Dot {
+  name Dot1
+  xpos -11
+  ypos 409
+ }
+set N18f5a000 [stack 0]
+ Dot {
+  name Dot4
+  xpos -465
+  ypos 409
+ }
+ Dot {
+  name Dot5
+  xpos -465
+  ypos 1112
+ }
+push $N18f5a000
+ Dot {
+  name Dot3
+  xpos 104
+  ypos 409
+ }
+ Matrix {
+  matrix {
+      {0.5 1 0.5}
+      {0 0 0}
+      {-0.5 -1 -0.5}
+    }
+  name Matrix2
+  xpos 70
+  ypos 426
+ }
+ Dot {
+  name Dot2
+  xpos 104
+  ypos 469
+ }
+push $N18f5a000
+ Matrix {
+  matrix {
+      {-0.5 0 0.5}
+      {-1 0 1}
+      {-0.5 0 0.5}
+    }
+  name Matrix1
+  xpos -45
+  ypos 427
+ }
+ ShuffleCopy {
+  inputs 2
+  green green
+  blue black
+  alpha black
+  name ShuffleCopy1
+  xpos -45
+  ypos 465
+ }
+ Grade {
+  channels {rgba.red rgba.green -rgba.blue none}
+  multiply -1
+  black_clamp false
+  name Grade1
+  xpos -45
+  ypos 491
+ }
+ Dot {
+  name Dot7
+  xpos -11
+  ypos 549
+ }
+set N19168700 [stack 0]
+ Dot {
+  name Dot6
+  xpos 339
+  ypos 549
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  black {{1-parent.height_val}}
+  white_clamp true
+  name Grade9
+  xpos 305
+  ypos 644
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  gamma 0.2
+  white_clamp true
+  name Grade5
+  xpos 305
+  ypos 670
+ }
+ Grade {
+  channels {rgba.red rgba.green -rgba.blue none}
+  multiply {{parent.height_val}}
+  black_clamp false
+  name Grade12
+  xpos 305
+  ypos 696
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue}
+  black 1e-05
+  white_clamp true
+  name Grade2
+  xpos 305
+  ypos 722
+ }
+ Group {
+  name NormalizeVector3_
+  help "Normalize the magnitude of a Vector3 (to be of magnitude 1)"
+  xpos 305
+  ypos 760
+  addUserKnob {20 main_tab l "Normalize Vector3"}
+  addUserKnob {41 in l "Vector B Layer" t "Layer containing the vector information for input B" T vector_layer.in}
+  addUserKnob {26 ""}
+  addUserKnob {26 copyright l "" +STARTLINE T "v1.0 -  Mathieu Goulet-Aubin & Erwan Leroy - <a href=\"https://github.com/mapoga/nuke-vector-matrix\" style=\"color:#aaa\">Github</a>"}
+ }
+  Input {
+   inputs 0
+   name vectorB
+   xpos 0
+  }
+  Dot {
+   name Dot1
+   tile_color 0xcccccc00
+   xpos 34
+   ypos 108
+  }
+set N30387880 [stack 0]
+  Shuffle {
+   name vector_layer
+   xpos 140
+   ypos 104
+  }
+  Remove {
+   operation keep
+   channels rgba
+   name Remove1
+   xpos 140
+   ypos 130
+  }
+  Dot {
+   name Dot3
+   tile_color 0x9e3c6300
+   xpos 174
+   ypos 156
+  }
+set N28c6ce00 [stack 0]
+push $N28c6ce00
+  Dot {
+   name Dot4
+   tile_color 0x9e3c6300
+   xpos 377
+   ypos 156
+  }
+  Expression {
+   channel0 rgba
+   expr0 sqrt((r*r)+(g*g)+(b*b))
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 {none none none -rgba.alpha}
+   name Mag3
+   xpos 343
+   ypos 209
+  }
+  Dot {
+   name Dot5
+   tile_color 0xcccccc00
+   xpos 377
+   ypos 271
+  }
+  Merge2 {
+   inputs 2
+   operation divide
+   bbox B
+   name Merge1
+   xpos 140
+   ypos 267
+  }
+  Dot {
+   name Dot2
+   tile_color 0x4b5ec600
+   xpos 174
+   ypos 364
+  }
+push $N30387880
+  ShuffleCopy {
+   inputs 2
+   in2 none
+   red red
+   green green
+   blue blue
+   out {{{parent.UV_Channel.in}}}
+   name ShuffleCopy1
+   xpos 0
+   ypos 360
+  }
+  Output {
+   name Output1
+   xpos 0
+   ypos 506
+  }
+ end_group
+ Grade {
+  channels {rgba.red rgba.green -rgba.blue none}
+  multiply -1
+  black_clamp false
+  name Grade7
+  xpos 305
+  ypos 820
+  disable {{1-parent.style}}
+ }
+ Grade {
+  multiply 0.5
+  add 0.5
+  black_clamp false
+  name Grade6
+  xpos 305
+  ypos 869
+ }
+ Dot {
+  name Dot8
+  xpos 339
+  ypos 1054
+ }
+push $N19168700
+ Dot {
+  name Dot10
+  xpos -11
+  ypos 615
+ }
+set N1913f500 [stack 0]
+ Dot {
+  name Dot9
+  xpos 113
+  ypos 615
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  black {{1-parent.height_val}}
+  white_clamp true
+  name Grade3
+  xpos 79
+  ypos 647
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  gamma 0.2
+  white_clamp true
+  name Grade4
+  xpos 79
+  ypos 673
+ }
+ Grade {
+  channels {rgba.red rgba.green -rgba.blue}
+  multiply {{parent.height_val}}
+  black_clamp false
+  name Grade11
+  selected true
+  xpos 79
+  ypos 699
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  black 1e-07
+  white_clamp true
+  name Grade8
+  xpos 79
+  ypos 737
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue}
+  multiply -1
+  black_clamp false
+  name Grade10
+  xpos 79
+  ypos 763
+ }
+set N3039ce00 [stack 0]
+ Dot {
+  name Dot11
+  xpos 113
+  ypos 801
+ }
+push $N1913f500
+ Switch {
+  inputs 2
+  which {{parent.ddd}}
+  name ddd
+  xpos -45
+  ypos 797
+ }
+ Group {
+  name NormalizeVector3_1
+  help "Normalize the magnitude of a Vector3 (to be of magnitude 1)"
+  xpos -45
+  ypos 823
+  disable {{1-parent.normalize}}
+  addUserKnob {20 main_tab l "Normalize Vector3"}
+  addUserKnob {41 in l "Vector B Layer" t "Layer containing the vector information for input B" T vector_layer.in}
+  addUserKnob {26 ""}
+  addUserKnob {26 copyright l "" +STARTLINE T "v1.0 -  Mathieu Goulet-Aubin & Erwan Leroy - <a href=\"https://github.com/mapoga/nuke-vector-matrix\" style=\"color:#aaa\">Github</a>"}
+ }
+  Input {
+   inputs 0
+   name vectorB
+   xpos 0
+  }
+  Dot {
+   name Dot1
+   tile_color 0xcccccc00
+   xpos 34
+   ypos 108
+  }
+set N293d6000 [stack 0]
+  Shuffle {
+   name vector_layer
+   xpos 140
+   ypos 104
+  }
+  Remove {
+   operation keep
+   channels rgba
+   name Remove1
+   xpos 140
+   ypos 130
+  }
+  Dot {
+   name Dot3
+   tile_color 0x9e3c6300
+   xpos 174
+   ypos 156
+  }
+set N2ba51500 [stack 0]
+push $N2ba51500
+  Dot {
+   name Dot4
+   tile_color 0x9e3c6300
+   xpos 377
+   ypos 156
+  }
+  Expression {
+   channel0 rgba
+   expr0 sqrt((r*r)+(g*g)+(b*b))
+   channel2 {-rgba.red -rgba.green -rgba.blue none}
+   channel3 {none none none -rgba.alpha}
+   name Mag3
+   xpos 343
+   ypos 209
+  }
+  Dot {
+   name Dot5
+   tile_color 0xcccccc00
+   xpos 377
+   ypos 271
+  }
+  Merge2 {
+   inputs 2
+   operation divide
+   bbox B
+   name Merge1
+   xpos 140
+   ypos 267
+  }
+  Dot {
+   name Dot2
+   tile_color 0x4b5ec600
+   xpos 174
+   ypos 364
+  }
+push $N293d6000
+  ShuffleCopy {
+   inputs 2
+   in2 none
+   red red
+   green green
+   blue blue
+   out {{{parent.UV_Channel.in}}}
+   name ShuffleCopy1
+   xpos 0
+   ypos 360
+  }
+  Output {
+   name Output1
+   xpos 0
+   ypos 506
+  }
+ end_group
+ Grade {
+  channels {rgba.red -rgba.green -rgba.blue}
+  multiply -1
+  black_clamp false
+  name flip_x
+  xpos -45
+  ypos 894
+  disable {{1-parent.flip_x}}
+ }
+ Grade {
+  channels {-rgba.red rgba.green -rgba.blue none}
+  multiply -1
+  black_clamp false
+  name flip_y
+  xpos -45
+  ypos 932
+  disable {{1-parent.flip_y}}
+ }
+ Grade {
+  channels {-rgba.red -rgba.green rgba.blue none}
+  multiply -1
+  black_clamp false
+  name flip_z
+  xpos -45
+  ypos 958
+  disable {{1-parent.flip_z}}
+ }
+ Grade {
+  multiply {{parent.multiply}}
+  black_clamp false
+  name mult
+  xpos -45
+  ypos 992
+ }
+ Switch {
+  inputs 2
+  which {{parent.type}}
+  name type
+  xpos -45
+  ypos 1050
+ }
+ ShuffleCopy {
+  inputs 2
+  name ShuffleCopy2
+  xpos -45
+  ypos 1108
+ }
+ Output {
+  name Output
+  xpos -45
+  ypos 1134
+ }
+push $N3039ce00
+push 0
+push 0
+ Viewer {
+  inputs 3
+  frame_range 1-100
+  input_number 2
+  name Viewer1
+  xpos -503
+  ypos 483
+ }
+end_group
