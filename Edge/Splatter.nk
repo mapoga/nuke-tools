@@ -2,9 +2,15 @@ Group {
  inputs 2
  name Splatter
  onCreate "g = nuke.thisNode()\ng.knob(\"zoom\").setValue(1)\ng.knob(\"zoom\").setValue(2)"
- knobChanged "import math\nimport random\n\ng = nuke.thisNode()\nk = nuke.thisKnob()\n\ng.begin()\nbase = [\"source\", \"BG\", \"Output\", \"Seamless\", \"Shuffle\", \"Merge\"]\nbase = set([nuke.toNode(i) for i in base])\nnodes = nuke.allNodes()\nnodes = set(nodes)\nnodes = nodes - base\n\nknobs = [\"zoom\"]\nif bool(nodes) or (k.name() in knobs):\n\tnuke.toNode(\"Shuffle\").setInput(0, nuke.toNode(\"BG\"))\n\n\n\tdef idx(x, y):\n\t\tbase = int(x + y)\n\t\ta = sum([i+1 for i in range(base)])\n\t\treturn a + y\n\n\tdef disconnect(node):\n\t\tfor i in range(node.inputs()):\n\t\t\tnode.setInput(i, None)\n\n\tzoom = g.knob(\"zoom\").value()\n\tmerges = [nuke.toNode(\"Shuffle\")]\n\tfor x in range(int(math.ceil(zoom))):\n\t\tfor y in range(int(math.ceil(zoom))):\n\t\t\t# transform\n\t\t\ttrans_name = \"Transform_x{0}_y{1}_\".format(x, y)\n\t\t\tif not nuke.toNode(trans_name):\n\t\t\t\tt = nuke.createNode(\"Transform\")\n\t\t\t\tdisconnect(t)\n\t\t\t\tt.knob(\"name\").setValue(trans_name)\n\t\t\t\ti = nuke.Int_Knob(\"idx\")\n\t\t\t\ti.setValue(idx(x, y))\n\t\t\t\tt.addKnob(i)\n\t\t\t\ti = nuke.Int_Knob(\"pos_x\")\n\t\t\t\ti.setValue(x)\n\t\t\t\tt.addKnob(i)\n\t\t\t\ti = nuke.Int_Knob(\"pos_y\")\n\t\t\t\ti.setValue(y)\n\t\t\t\tt.addKnob(i)\n\t\t\t\tt.knob(\"center\").setExpression(\"input.width/2\", 0)\n\t\t\t\tt.knob(\"center\").setExpression(\"input.height/2\", 1)\n\t\t\t\tt.knob(\"scale\").setSingleValue(False)\n\t\t\t\tt.knob(\"scale\").setExpression(\"(parent.size_x+(parent.size_random*(random(idx+1)-0.5)))/width*BG.width/parent.zoom\", 0)\n\t\t\t\tt.knob(\"scale\").setExpression(\"(parent.size_y+(parent.size_random*(random(idx+1)-0.5)))/width*BG.width/parent.zoom\", 1)\n\t\t\t\tt.knob(\"translate\").setExpression(\"((pos_x)*BG.width/parent.zoom)-center.x+(BG.width/parent.zoom/2)+((random(idx+2.77)-0.5)*parent.position_random*BG.width)\", 0)\n\t\t\t\tt.knob(\"translate\").setExpression(\"((pos_y)*BG.height/parent.zoom)-center.y+(BG.height/parent.zoom/2)+((random(idx+12.1)-0.5)*parent.position_random*BG.height)\", 1)\n\n\t\t\t\tt.knob(\"rotate\").setExpression(\"parent.rotate_random*360*random(idx)\")\n\t\t\telse:\n\t\t\t\tt = nuke.toNode(trans_name)\n\t\t\t\tt.setInput(0, nuke.toNode(\"source\"))\n\n\t\t\t# merge\n\t\t\tmerge_name = \"Merge_x{0}_y{1}_\".format(x, y)\n\t\t\tif not nuke.toNode(merge_name):\n\t\t\t\tm = nuke.createNode(\"Merge\")\n\t\t\t\tdisconnect(m)\n\t\t\t\tm.knob(\"name\").setValue(merge_name)\n\t\t\telse:\n\t\t\t\tm = nuke.toNode(merge_name)\n\n\t\t\tm.setInput(0, merges[-1])\n\t\t\tm.setInput(1, t)\n\t\t\tmerges.append(m)\n\tdisconnect(nuke.toNode(\"Merge\"))\n\tnuke.toNode(\"Merge\").setInput(0, nuke.toNode(\"BG\"))\n\tnuke.toNode(\"Merge\").setInput(1, nuke.toNode(\"Seamless\"))\n\tnuke.toNode(\"Seamless\").setInput(0, merges[-1])\ng.end()"
+ knobChanged "import math\nimport random\n\ng = nuke.thisNode()\nk = nuke.thisKnob()\n\ng.begin()\nbase = [\"source\", \"BG\", \"Output\", \"Seamless\", \"Shuffle\", \"Merge\", \"FrameFeather\"]\nbase = set([nuke.toNode(i) for i in base])\nnodes = nuke.allNodes()\nnodes = set(nodes)\nnodes = nodes - base\n\nknobs = [\"zoom\"]\nif bool(nodes) or (k.name() in knobs):\n\tnuke.toNode(\"Shuffle\").setInput(0, nuke.toNode(\"BG\"))\n\tnuke.toNode(\"Merge\").setInput(0, nuke.toNode(\"BG\"))\n\tnuke.toNode(\"Merge\").setInput(1, nuke.toNode(\"Seamless\"))\n\tnuke.toNode(\"FrameFeather\").setInput(1, nuke.toNode(\"source\"))\n\n\n\tdef idx(x, y):\n\t\tbase = int(x + y)\n\t\ta = sum([i+1 for i in range(base)])\n\t\treturn a + y\n\n\tdef disconnect(node):\n\t\tfor i in range(node.inputs()):\n\t\t\tnode.setInput(i, None)\n\n\tzoom = g.knob(\"zoom\").value()\n\tmerges = [nuke.toNode(\"Shuffle\")]\n\tfor x in range(int(math.ceil(zoom))):\n\t\tfor y in range(int(math.ceil(zoom))):\n\t\t\t# transform\n\t\t\ttrans_name = \"Transform_x{0}_y{1}_\".format(x, y)\n\t\t\tif not nuke.toNode(trans_name):\n\t\t\t\tt = nuke.createNode(\"Transform\")\n\t\t\t\tdisconnect(t)\n\t\t\t\tt.knob(\"name\").setValue(trans_name)\n\t\t\t\ti = nuke.Int_Knob(\"idx\")\n\t\t\t\ti.setValue(idx(x, y))\n\t\t\t\tt.addKnob(i)\n\t\t\t\ti = nuke.Int_Knob(\"pos_x\")\n\t\t\t\ti.setValue(x)\n\t\t\t\tt.addKnob(i)\n\t\t\t\ti = nuke.Int_Knob(\"pos_y\")\n\t\t\t\ti.setValue(y)\n\t\t\t\tt.addKnob(i)\n\t\t\t\tt.knob(\"center\").setExpression(\"input.width/2\", 0)\n\t\t\t\tt.knob(\"center\").setExpression(\"input.height/2\", 1)\n\t\t\t\tt.knob(\"scale\").setSingleValue(False)\n\t\t\t\tt.knob(\"scale\").setExpression(\"(parent.size_x+(parent.size_random*(random(idx+1)-0.5)))/width*BG.width/parent.zoom\", 0)\n\t\t\t\tt.knob(\"scale\").setExpression(\"(parent.size_y+(parent.size_random*(random(idx+1)-0.5)))/width*BG.width/parent.zoom\", 1)\n\t\t\t\tt.knob(\"translate\").setExpression(\"((pos_x)*BG.width/parent.zoom)-center.x+(BG.width/parent.zoom/2)+((random(idx+2.77)-0.5)*parent.position_random*BG.width)\", 0)\n\t\t\t\tt.knob(\"translate\").setExpression(\"((pos_y)*BG.height/parent.zoom)-center.y+(BG.height/parent.zoom/2)+((random(idx+12.1)-0.5)*parent.position_random*BG.height)\", 1)\n\n\t\t\t\tt.knob(\"rotate\").setExpression(\"parent.rotate_random*360*random(idx)\")\n\t\t\telse:\n\t\t\t\tt = nuke.toNode(trans_name)\n\t\t\t\tt.setInput(0, nuke.toNode(\"FrameFeather\"))\n\n\t\t\t# merge\n\t\t\tmerge_name = \"Merge_x{0}_y{1}_\".format(x, y)\n\t\t\tif not nuke.toNode(merge_name):\n\t\t\t\tm = nuke.createNode(\"Merge\")\n\t\t\t\tdisconnect(m)\n\t\t\t\tm.knob(\"name\").setValue(merge_name)\n\t\t\telse:\n\t\t\t\tm = nuke.toNode(merge_name)\n\n\t\t\tm.setInput(0, merges[-1])\n\t\t\tm.setInput(1, t)\n\t\t\tmerges.append(m)\n\tnuke.toNode(\"Seamless\").setInput(0, merges[-1])\ng.end()"
  selected true
- addUserKnob {20 User}
+ addUserKnob {20 User l Splatter}
+ addUserKnob {26 source_grp l Source}
+ addUserKnob {6 alpha_fill l "source alpha fill" +STARTLINE}
+ alpha_fill true
+ addUserKnob {7 mask l "source mask"}
+ mask 0.5
+ addUserKnob {26 Splatter_grp l Splatter}
  addUserKnob {7 size_x l "size x" R 0 10}
  size_x 1.6
  addUserKnob {7 size_y l "size y" R 0 10}
@@ -16,6 +22,9 @@ Group {
  addUserKnob {7 size_random l "size random"}
  size_random 1
  addUserKnob {7 position_random l "position random"}
+ addUserKnob {26 out_grp l Output}
+ addUserKnob {7 seamless l "output seamless"}
+ seamless 0.5
 }
  Input {
   inputs 0
@@ -24,26 +33,328 @@ Group {
   ypos -120
   number 1
  }
+set N39849c00 [stack 0]
+push $N39849c00
+ Group {
+  inputs 2
+  name FrameFeather
+  xpos 0
+  ypos -74
+  addUserKnob {20 FrameFeather}
+  addUserKnob {6 fill_alpha l "alpha fill" +STARTLINE}
+  fill_alpha {{parent.alpha_fill}}
+  addUserKnob {7 size}
+  size {{parent.mask}}
+  addUserKnob {41 type l "Fade Type" T LinearSmooth.type}
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -63
+   ypos 13
+  }
+  Shuffle {
+   alpha white
+   name Shuffle1
+   selected true
+   xpos -63
+   ypos 39
+   disable {{1-parent.fill_alpha}}
+  }
+set N39849180 [stack 0]
+  Expression {
+   temp_name0 dist
+   temp_expr0 width/2*parent.size
+   channel0 rgba
+   expr0 x<dist?x/dist:1
+   channel1 none
+   channel2 none
+   channel3 none
+   name Left
+   xpos 68
+   ypos 82
+  }
+  Expression {
+   temp_name0 dist
+   temp_expr0 width/2*parent.size
+   temp_name1 rel
+   temp_expr1 width-dist
+   channel0 rgba
+   expr0 "x>rel ? r*(1-((x-rel+1)/dist)) : r"
+   channel1 none
+   channel2 none
+   channel3 none
+   name Right
+   xpos 68
+   ypos 108
+  }
+  Expression {
+   temp_name0 dist
+   temp_expr0 height/2*parent.size
+   temp_name1 rel
+   temp_expr1 height-dist
+   channel0 rgba
+   expr0 "y>rel ? r*(1-((y-rel+1)/dist)) : r"
+   channel1 none
+   channel2 none
+   channel3 none
+   name Top
+   xpos 68
+   ypos 134
+  }
+  Expression {
+   temp_name0 dist
+   temp_expr0 height/2*parent.size
+   channel0 rgba
+   expr0 y<dist?r*y/dist:r
+   channel1 none
+   channel2 none
+   channel3 none
+   name Bottom
+   xpos 68
+   ypos 160
+  }
+  Group {
+   name LinearSmooth
+   xpos 68
+   ypos 212
+   addUserKnob {20 User}
+   addUserKnob {4 type t "linear -> same ( linear )\nplinear -> perceptually linear\nsmooth -> smooth both ends\nsmooth1 -> smooth towards 1\nsmooth0 -> smooth towards 0\n" M {linear plinear smooth smooth1 smooth0 "" "" "" "" ""}}
+   type smooth
+  }
+   Input {
+    inputs 0
+    name Input1
+    xpos 170
+    ypos 94
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Input
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6bd2de-7c08-11e5-bd9a-74d02b2b0a3c
+   }
+   Dot {
+    name Dot1
+    xpos 204
+    ypos 134
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6c2100-7c08-11e5-a29b-74d02b2b0a3c
+   }
+set N8f128e00 [stack 0]
+   Dot {
+    name Dot5
+    xpos 302
+    ypos 134
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6c6f1e-7c08-11e5-a3c2-74d02b2b0a3c
+   }
+set N8f129180 [stack 0]
+   Expression {
+    expr0 r*r*r
+    expr1 g*g*g
+    expr2 b*b*b
+    expr3 a*a*a
+    name perceptualLinear
+    xpos 268
+    ypos 181
+    addUserKnob {20 User}
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6cbd40-7c08-11e5-adfb-74d02b2b0a3c
+   }
+push $N8f129180
+   Dot {
+    name Dot3
+    xpos 406
+    ypos 134
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6d5980-7c08-11e5-b954-74d02b2b0a3c
+   }
+set N1b95b500 [stack 0]
+   Dot {
+    name Dot4
+    xpos 531
+    ypos 134
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6da7a1-7c08-11e5-8e60-74d02b2b0a3c
+   }
+set N1b95b180 [stack 0]
+   Dot {
+    name Dot2
+    xpos 644
+    ypos 134
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6df5c0-7c08-11e5-bf31-74d02b2b0a3c
+   }
+   Expression {
+    expr0 "r*r*(2-r )"
+    expr1 "g*g*(2-g )"
+    expr2 "b*b*(2-b )"
+    expr3 "a*a*(2-a )"
+    name smooth0
+    xpos 610
+    ypos 184
+    addUserKnob {20 User}
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6e6aee-7c08-11e5-85f7-74d02b2b0a3c
+   }
+   Dot {
+    name Dot6
+    xpos 644
+    ypos 263
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6f2e40-7c08-11e5-8f7f-74d02b2b0a3c
+   }
+push $N1b95b180
+   Expression {
+    expr0 "r*r*( 3-2*r )"
+    expr1 "g*g*( 3-2*g )"
+    expr2 "b*b*( 3-2*b )"
+    expr3 "a*a*( 3-2*a )"
+    name smooth1
+    xpos 497
+    ypos 183
+    addUserKnob {20 User}
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d6f554f-7c08-11e5-a542-74d02b2b0a3c
+   }
+   Dot {
+    name Dot7
+    xpos 531
+    ypos 236
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d7018a1-7c08-11e5-9add-74d02b2b0a3c
+   }
+push $N1b95b500
+   Expression {
+    expr0 "r*( 1+r*( 1-r ) )"
+    expr1 "g*( 1+g*( 1-g ) )"
+    expr2 "b*( 1+b*( 1-b ) )"
+    expr3 "a*( 1+a*( 1-a ) )"
+    name smooth
+    xpos 372
+    ypos 181
+    addUserKnob {20 User}
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d7066c0-7c08-11e5-99fd-74d02b2b0a3c
+   }
+   Dot {
+    name Dot8
+    xpos 406
+    ypos 221
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Dot
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d712a0f-7c08-11e5-b357-74d02b2b0a3c
+   }
+push $N8f128e00
+   NoOp {
+    name linear
+    xpos 170
+    ypos 181
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType NoOp
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d71782e-7c08-11e5-ad73-74d02b2b0a3c
+   }
+   Switch {
+    inputs 5
+    which {{parent.type}}
+    name Switch2
+    selected true
+    xpos 170
+    ypos 259
+    addUserKnob {20 User}
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d71c64f-7c08-11e5-a096-74d02b2b0a3c
+   }
+   Output {
+    name Output1
+    xpos 170
+    ypos 314
+    addUserKnob {20 User}
+    addUserKnob {1 nodeType +DISABLED}
+    nodeType Output
+    addUserKnob {1 nativeUID +DISABLED}
+    nativeUID 9d72628f-7c08-11e5-94e1-74d02b2b0a3c
+   }
+  end_group
+set N8c24b400 [stack 0]
+push $N8c24b400
+push $N39849180
+  Merge2 {
+   inputs 2
+   operation mask
+   name Merge1
+   xpos -63
+   ypos 212
+  }
+  Switch {
+   inputs 2
+   which {{parent.OutputMask}}
+   name Switch1
+   xpos -63
+   ypos 284
+  }
+  Output {
+   name Output1
+   xpos -63
+   ypos 325
+  }
+push $N8c24b400
+push 0
+push 0
+  Viewer {
+   inputs 3
+   frame_range 1-100
+   input_number 2
+   name Viewer1
+   xpos 298
+   ypos 205
+  }
+ end_group
  Input {
   inputs 0
   name BG
   xpos 142
   ypos -126
  }
-set N1fc02a80 [stack 0]
+set N9dfaaa80 [stack 0]
  Shuffle {
   red black
   green black
   blue black
   alpha black
   name Shuffle
-  xpos -28
-  ypos 2
+  xpos 142
+  ypos -91
  }
  Group {
   name Seamless
-  xpos -28
-  ypos 141
+  xpos -135
+  ypos 157
   addUserKnob {20 Seamless}
   addUserKnob {7 seamx l "seam x"}
   addUserKnob {7 biasx l "bias x"}
@@ -83,13 +394,13 @@ set N1fc02a80 [stack 0]
    xpos 334
    ypos -137
   }
-set N7594f180 [stack 0]
+set N81c32a80 [stack 0]
   Dot {
    name Dot6
    xpos 693
    ypos -137
   }
-set Na115ce00 [stack 0]
+set N81c32700 [stack 0]
   Expression {
    channel0 rgba
    expr0 ((y/height)-0.5)*2
@@ -97,17 +408,17 @@ set Na115ce00 [stack 0]
    xpos 659
    ypos 337
   }
-set N5fabea80 [stack 0]
+set N81c32380 [stack 0]
   Grade {
    channels rgba
-   blackpoint 0.46
+   blackpoint {{1-parent.parent.seamless}}
    white_clamp true
    name Grade1
    xpos 659
    ypos 457
   }
-  set C8b7c1c00 [stack 0]
-push $Na115ce00
+  set C75309c00 [stack 0]
+push $N81c32700
   Expression {
    channel0 rgba
    expr0 ((x/width)-0.5)*2
@@ -115,19 +426,19 @@ push $Na115ce00
    xpos 591
    ypos 12
   }
-set N839cd180 [stack 0]
-clone $C8b7c1c00 {
+set N75309880 [stack 0]
+clone $C75309c00 {
    xpos 591
    ypos 132
    selected false
   }
-push $N7594f180
+push $N81c32a80
   Dot {
    name Dot1
    xpos 334
    ypos 17
   }
-set N53023880 [stack 0]
+set N75308e00 [stack 0]
   Dot {
    name Dot11
    xpos 209
@@ -140,7 +451,7 @@ set N53023880 [stack 0]
    xpos 175
    ypos 67
   }
-push $N839cd180
+push $N75309880
   Grade {
    channels rgba
    multiply -1
@@ -149,12 +460,13 @@ push $N839cd180
    xpos 522
    ypos 80
   }
-clone $C8b7c1c00 {
+clone $C75309c00 {
    xpos 522
    ypos 106
-   selected false
+   selected true
   }
-push $N53023880
+set N75308000 [stack 0]
+push $N75308e00
   Dot {
    name Dot2
    xpos 453
@@ -167,7 +479,7 @@ push $N53023880
    xpos 419
    ypos 55
   }
-push $N53023880
+push $N75308e00
   Merge2 {
    inputs 2+1
    bbox B
@@ -188,7 +500,7 @@ push $N53023880
    xpos 334
    ypos 342
   }
-set Nadea8e00 [stack 0]
+set N6ba00e00 [stack 0]
   Transform {
    translate {0 {height+(parent.biasy*height)}}
    center {1024 778}
@@ -196,7 +508,7 @@ set Nadea8e00 [stack 0]
    xpos 166
    ypos 382
   }
-push $N5fabea80
+push $N81c32380
   Grade {
    channels rgba
    multiply -1
@@ -205,12 +517,12 @@ push $N5fabea80
    xpos 590
    ypos 405
   }
-clone $C8b7c1c00 {
+clone $C75309c00 {
    xpos 590
    ypos 431
    selected false
   }
-push $Nadea8e00
+push $N6ba00e00
   Dot {
    name Dot4
    xpos 453
@@ -223,7 +535,7 @@ push $Nadea8e00
    xpos 419
    ypos 377
   }
-push $Nadea8e00
+push $N6ba00e00
   Merge2 {
    inputs 2+1
    bbox B
@@ -250,7 +562,7 @@ push $Nadea8e00
    xpos 300
    ypos 620
   }
-push $N5fabea80
+push $N75308000
 push 0
 push 0
   Viewer {
@@ -262,7 +574,7 @@ push 0
    ypos 337
   }
  end_group
-push $N1fc02a80
+push $N9dfaaa80
  Merge2 {
   inputs 2
   name Merge
