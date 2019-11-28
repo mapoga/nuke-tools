@@ -1,0 +1,277 @@
+Group {
+ inputs 2
+ name Splatter
+ onCreate "g = nuke.thisNode()\ng.knob(\"zoom\").setValue(1)\ng.knob(\"zoom\").setValue(2)"
+ knobChanged "import math\nimport random\n\ng = nuke.thisNode()\nk = nuke.thisKnob()\n\ng.begin()\nbase = [\"source\", \"BG\", \"Output\", \"Seamless\", \"Shuffle\", \"Merge\"]\nbase = set([nuke.toNode(i) for i in base])\nnodes = nuke.allNodes()\nnodes = set(nodes)\nnodes = nodes - base\n\nknobs = [\"zoom\"]\nif bool(nodes) or (k.name() in knobs):\n\tnuke.toNode(\"Shuffle\").setInput(0, nuke.toNode(\"BG\"))\n\n\n\tdef idx(x, y):\n\t\tbase = int(x + y)\n\t\ta = sum([i+1 for i in range(base)])\n\t\treturn a + y\n\n\tdef disconnect(node):\n\t\tfor i in range(node.inputs()):\n\t\t\tnode.setInput(i, None)\n\n\tzoom = g.knob(\"zoom\").value()\n\tmerges = [nuke.toNode(\"Shuffle\")]\n\tfor x in range(int(math.ceil(zoom))):\n\t\tfor y in range(int(math.ceil(zoom))):\n\t\t\t# transform\n\t\t\ttrans_name = \"Transform_x{0}_y{1}_\".format(x, y)\n\t\t\tif not nuke.toNode(trans_name):\n\t\t\t\tt = nuke.createNode(\"Transform\")\n\t\t\t\tdisconnect(t)\n\t\t\t\tt.knob(\"name\").setValue(trans_name)\n\t\t\t\ti = nuke.Int_Knob(\"idx\")\n\t\t\t\ti.setValue(idx(x, y))\n\t\t\t\tt.addKnob(i)\n\t\t\t\ti = nuke.Int_Knob(\"pos_x\")\n\t\t\t\ti.setValue(x)\n\t\t\t\tt.addKnob(i)\n\t\t\t\ti = nuke.Int_Knob(\"pos_y\")\n\t\t\t\ti.setValue(y)\n\t\t\t\tt.addKnob(i)\n\t\t\t\tt.knob(\"center\").setExpression(\"input.width/2\", 0)\n\t\t\t\tt.knob(\"center\").setExpression(\"input.height/2\", 1)\n\t\t\t\tt.knob(\"scale\").setSingleValue(False)\n\t\t\t\tt.knob(\"scale\").setExpression(\"(parent.size_x+(parent.size_random*(random(idx+1)-0.5)))/width*BG.width/parent.zoom\", 0)\n\t\t\t\tt.knob(\"scale\").setExpression(\"(parent.size_y+(parent.size_random*(random(idx+1)-0.5)))/width*BG.width/parent.zoom\", 1)\n\t\t\t\tt.knob(\"translate\").setExpression(\"((pos_x)*BG.width/parent.zoom)-center.x+(BG.width/parent.zoom/2)+((random(idx+2.77)-0.5)*parent.position_random*BG.width)\", 0)\n\t\t\t\tt.knob(\"translate\").setExpression(\"((pos_y)*BG.height/parent.zoom)-center.y+(BG.height/parent.zoom/2)+((random(idx+12.1)-0.5)*parent.position_random*BG.height)\", 1)\n\n\t\t\t\tt.knob(\"rotate\").setExpression(\"parent.rotate_random*360*random(idx)\")\n\t\t\telse:\n\t\t\t\tt = nuke.toNode(trans_name)\n\t\t\t\tt.setInput(0, nuke.toNode(\"source\"))\n\n\t\t\t# merge\n\t\t\tmerge_name = \"Merge_x{0}_y{1}_\".format(x, y)\n\t\t\tif not nuke.toNode(merge_name):\n\t\t\t\tm = nuke.createNode(\"Merge\")\n\t\t\t\tdisconnect(m)\n\t\t\t\tm.knob(\"name\").setValue(merge_name)\n\t\t\telse:\n\t\t\t\tm = nuke.toNode(merge_name)\n\n\t\t\tm.setInput(0, merges[-1])\n\t\t\tm.setInput(1, t)\n\t\t\tmerges.append(m)\n\tdisconnect(nuke.toNode(\"Merge\"))\n\tnuke.toNode(\"Merge\").setInput(0, nuke.toNode(\"BG\"))\n\tnuke.toNode(\"Merge\").setInput(1, nuke.toNode(\"Seamless\"))\n\tnuke.toNode(\"Seamless\").setInput(0, merges[-1])\ng.end()"
+ selected true
+ addUserKnob {20 User}
+ addUserKnob {7 size_x l "size x" R 0 10}
+ size_x 1.6
+ addUserKnob {7 size_y l "size y" R 0 10}
+ size_y 1.6
+ addUserKnob {7 zoom R 0 20}
+ zoom 2
+ addUserKnob {7 rotate_random l "rotate random"}
+ rotate_random 1
+ addUserKnob {7 size_random l "size random"}
+ size_random 1
+ addUserKnob {7 position_random l "position random"}
+}
+ Input {
+  inputs 0
+  name source
+  xpos 0
+  ypos -120
+  number 1
+ }
+ Input {
+  inputs 0
+  name BG
+  xpos 142
+  ypos -126
+ }
+set N1fc02a80 [stack 0]
+ Shuffle {
+  red black
+  green black
+  blue black
+  alpha black
+  name Shuffle
+  xpos -28
+  ypos 2
+ }
+ Group {
+  name Seamless
+  xpos -28
+  ypos 141
+  addUserKnob {20 Seamless}
+  addUserKnob {7 seamx l "seam x"}
+  addUserKnob {7 biasx l "bias x"}
+  addUserKnob {7 seamy l "seam y"}
+  addUserKnob {7 biasy l "bias y"}
+ }
+  BackdropNode {
+   inputs 0
+   name BackdropNode1
+   tile_color 0x999999ff
+   label "seamless X"
+   note_font_size 40
+   xpos 159
+   ypos -82
+   bdwidth 372
+   bdheight 289
+  }
+  BackdropNode {
+   inputs 0
+   name BackdropNode3
+   tile_color 0xaaaaaa00
+   label "seamless Y"
+   note_font_size 42
+   xpos 158
+   ypos 244
+   bdwidth 372
+   bdheight 293
+  }
+  Input {
+   inputs 0
+   name Input
+   xpos 300
+   ypos -233
+  }
+  Dot {
+   name Dot5
+   xpos 334
+   ypos -137
+  }
+set N7594f180 [stack 0]
+  Dot {
+   name Dot6
+   xpos 693
+   ypos -137
+  }
+set Na115ce00 [stack 0]
+  Expression {
+   channel0 rgba
+   expr0 ((y/height)-0.5)*2
+   name Expression2
+   xpos 659
+   ypos 337
+  }
+set N5fabea80 [stack 0]
+  Grade {
+   channels rgba
+   blackpoint 0.46
+   white_clamp true
+   name Grade1
+   xpos 659
+   ypos 457
+  }
+  set C8b7c1c00 [stack 0]
+push $Na115ce00
+  Expression {
+   channel0 rgba
+   expr0 ((x/width)-0.5)*2
+   name Expression1
+   xpos 591
+   ypos 12
+  }
+set N839cd180 [stack 0]
+clone $C8b7c1c00 {
+   xpos 591
+   ypos 132
+   selected false
+  }
+push $N7594f180
+  Dot {
+   name Dot1
+   xpos 334
+   ypos 17
+  }
+set N53023880 [stack 0]
+  Dot {
+   name Dot11
+   xpos 209
+   ypos 17
+  }
+  Transform {
+   translate {{width+(parent.biasx*width)} 0}
+   center {1024 778}
+   name Transform7
+   xpos 175
+   ypos 67
+  }
+push $N839cd180
+  Grade {
+   channels rgba
+   multiply -1
+   white_clamp true
+   name Grade2
+   xpos 522
+   ypos 80
+  }
+clone $C8b7c1c00 {
+   xpos 522
+   ypos 106
+   selected false
+  }
+push $N53023880
+  Dot {
+   name Dot2
+   xpos 453
+   ypos 17
+  }
+  Transform {
+   translate {{"(parent.seamx*width*0.5) - width"} 0}
+   center {1024 778}
+   name Transform_x
+   xpos 419
+   ypos 55
+  }
+push $N53023880
+  Merge2 {
+   inputs 2+1
+   bbox B
+   name Merge_x
+   xpos 300
+   ypos 106
+  }
+  Merge2 {
+   inputs 2+1
+   operation under
+   bbox B
+   name Merge_x1
+   xpos 300
+   ypos 132
+  }
+  Dot {
+   name Dot3
+   xpos 334
+   ypos 342
+  }
+set Nadea8e00 [stack 0]
+  Transform {
+   translate {0 {height+(parent.biasy*height)}}
+   center {1024 778}
+   name Transform1
+   xpos 166
+   ypos 382
+  }
+push $N5fabea80
+  Grade {
+   channels rgba
+   multiply -1
+   white_clamp true
+   name Grade3
+   xpos 590
+   ypos 405
+  }
+clone $C8b7c1c00 {
+   xpos 590
+   ypos 431
+   selected false
+  }
+push $Nadea8e00
+  Dot {
+   name Dot4
+   xpos 453
+   ypos 342
+  }
+  Transform {
+   translate {0 {"(parent.seamy*height*0.5) - height"}}
+   center {1024 778}
+   name Transform_y
+   xpos 419
+   ypos 377
+  }
+push $Nadea8e00
+  Merge2 {
+   inputs 2+1
+   bbox B
+   name Merge_y
+   xpos 300
+   ypos 431
+  }
+  Merge2 {
+   inputs 2+1
+   operation under
+   bbox B
+   name Merge_y1
+   xpos 300
+   ypos 457
+  }
+  Reformat {
+   type scale
+   name Reformat1
+   xpos 300
+   ypos 483
+  }
+  Output {
+   name Output1
+   xpos 300
+   ypos 620
+  }
+push $N5fabea80
+push 0
+push 0
+  Viewer {
+   inputs 3
+   frame_range 1-100
+   input_number 2
+   name Viewer1
+   xpos 769
+   ypos 337
+  }
+ end_group
+push $N1fc02a80
+ Merge2 {
+  inputs 2
+  name Merge
+  xpos 0
+  ypos 194
+ }
+ Output {
+  name Output
+  xpos 0
+  ypos 300
+ }
+end_group
