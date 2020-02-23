@@ -17,6 +17,7 @@ Group {
  addUserKnob {18 chromatic_abberation_color l color}
  chromatic_abberation_color {1.2 0.95 0.8}
  addUserKnob {6 chromatic_abberation_color_panelDropped l "panel dropped state" -STARTLINE +HIDDEN}
+ addUserKnob {6 chromatic_abberation_color_panelDropped_1 l "panel dropped state" -STARTLINE +HIDDEN}
  addUserKnob {26 Blur_div l Blur}
  addUserKnob {7 blur_amount l amount}
  blur_amount 0.5
@@ -45,13 +46,13 @@ Group {
   xpos -127
   ypos 463
  }
-set N666d4000 [stack 0]
+set Ndb0d3c00 [stack 0]
  Dot {
   name Dot1
   xpos -6
   ypos 463
  }
-set N2a87fc00 [stack 0]
+set Ndb0d3880 [stack 0]
  Dot {
   name Dot4
   xpos 109
@@ -64,9 +65,9 @@ set N2a87fc00 [stack 0]
   xpos 75
   ypos 512
  }
-set N2a87e800 [stack 0]
-push $N2a87e800
-push $N2a87fc00
+set Ndb0d3180 [stack 0]
+push $Ndb0d3180
+push $Ndb0d3880
  Merge2 {
   inputs 2
   operation screen
@@ -90,10 +91,10 @@ push $N2a87fc00
   ypos 536
  }
  BlinkScript {
-  recompileCount 177
+  recompileCount 182
   ProgramGroup 1
-  KernelDescription "2 \"LensDefects\" iterate pixelWise 7733d64b5e067471ab3901d4fc0a03a06ed71dff3c37c4e46b7c7bb08153d575 2 \"src\" Read Random \"dst\" Write Point 11 \"format\" Int 2 AAAAAAAAAAA= \"vignette_gamma\" Float 1 AACAPg== \"vignette_aspect\" Float 1 XI/iPw== \"vignette_scale\" Float 1 mpkZPw== \"distort\" Float 1 AACgQA== \"offset\" Float 1 AACAPw== \"abberation\" Float 4 mpmZPzMzcz/NzEw/AACAPw== \"blur\" Float 1 AACAPw== \"mix\" Float 1 MzMzPw== \"blur_steps\" Int 1 DAAAAA== \"intensity\" Float 1 zczMPQ== 11 \"format\" 2 1 \"gamma\" 1 1 \"aspect\" 1 1 \"scale\" 1 1 \"distort\" 1 1 \"offset\" 1 1 \"abb\" 4 1 \"blur\" 1 1 \"mix\" 1 1 \"blur_steps\" 1 1 \"intensity\" 1 1 0"
-  kernelSource "kernel LensDefects : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessRandom, eEdgeClamped> src; // the input image\n  Image<eWrite> dst; // the output image\n\n  param:\n    // Vignette param\n    int2 format;\n    float gamma;\n    float aspect;\n    float scale;\n\n    // Abberation param\n    float distort;\n    float offset;\n    float4 abb;\n    float blur;\n    float mix;\n    int blur_steps;\n\n    // Intensity\n    float intensity;\n    \n\n  void define()\{\n    // Vignette define\n    defineParam(gamma, \"vignette_gamma\", 0.25f);\n    defineParam(aspect, \"vignette_aspect\", 1.77f);\n    defineParam(scale, \"vignette_scale\", 0.6f);\n\n    // Abberation define\n    defineParam(distort, \"distort\", 5.f);\n    defineParam(offset, \"offset\", 1.f);\n    defineParam(abb, \"abberation\", float4(1.2f, 0.95f, 0.8f, 1.f));\n    defineParam(blur, \"blur\", 1.f);\n    defineParam(mix, \"mix\", 0.7f);\n    defineParam(blur_steps, \"blur_steps\", 12);\n\n    // Intensity define\n    defineParam(intensity, \"intensity\", 0.1f);\n  \}\n\n  void process(int2 pos) \{\n    // Vignette\n    float2 ratio = float2(1.0f, aspect);\n    float rad = length((float2)format*ratio*scale)/2.f;\n    float2 dir = ((float2)pos-((float2)format/2))*ratio;\n    float u = length(dir);\n    float weight = pow(u/rad, (1/gamma));\n\n    // Abberation\n    float scale_factor = rad/1000.0f;\n    dir /= length(dir+float2(0.0001f, 0.0001f));\n    float4 col = 0;\n    float2 dist, sample;\n    for(int c=0;c<4;c++)\{\n      dist = (dir*weight*(1-abb\[c])*distort);\n      for(int i=0;i<blur_steps;i++)\{\n        sample = ((dist+(blur*dir*weight))*scale_factor*(float)i/(float)blur_steps) + (float2)pos+((1-abb\[c])*offset*scale_factor);\n        col\[c] += bilinear(src, sample.x, sample.y, c);\n      \}\n    \}\n    col /= (float)blur_steps;\n    col = (src(pos.x, pos.y)*(1-mix))+(col*mix);\n  \n    // Intensity\n    col *= 1-(intensity*weight);\n    col\[3] = weight;\n    dst() = col;\n    \n  \}\n\};\n"
+  KernelDescription "2 \"LensDefects\" iterate pixelWise 0dd7b66211cef52f06cf36a4d03b4f8b4cdd12ff940f0060699f250b9b76dbce 2 \"src\" Read Random \"dst\" Write Point 11 \"format\" Int 2 AAAAAAAAAAA= \"vignette_gamma\" Float 1 AACAPg== \"vignette_aspect\" Float 1 XI/iPw== \"vignette_scale\" Float 1 mpkZPw== \"distort\" Float 1 AACgQA== \"offset\" Float 1 AACAPw== \"abberation\" Float 4 mpmZPzMzcz/NzEw/AACAPw== \"blur\" Float 1 AACAPw== \"mix\" Float 1 MzMzPw== \"blur_steps\" Int 1 DAAAAA== \"intensity\" Float 1 zczMPQ== 11 \"format\" 2 1 \"gamma\" 1 1 \"aspect\" 1 1 \"scale\" 1 1 \"distort\" 1 1 \"offset\" 1 1 \"abb\" 4 1 \"blur\" 1 1 \"mix\" 1 1 \"blur_steps\" 1 1 \"intensity\" 1 1 0"
+  kernelSource "kernel LensDefects : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessRandom, eEdgeClamped> src; // the input image\n  Image<eWrite> dst; // the output image\n\n  param:\n    // Vignette param\n    int2 format;\n    float gamma;\n    float aspect;\n    float scale;\n\n    // Abberation param\n    float distort;\n    float offset;\n    float4 abb;\n    float blur;\n    float mix;\n    int blur_steps;\n\n    // Intensity\n    float intensity;\n    \n\n  void define()\{\n    // Vignette define\n    defineParam(gamma, \"vignette_gamma\", 0.25f);\n    defineParam(aspect, \"vignette_aspect\", 1.77f);\n    defineParam(scale, \"vignette_scale\", 0.6f);\n\n    // Abberation define\n    defineParam(distort, \"distort\", 5.f);\n    defineParam(offset, \"offset\", 1.f);\n    defineParam(abb, \"abberation\", float4(1.2f, 0.95f, 0.8f, 1.f));\n    defineParam(blur, \"blur\", 1.f);\n    defineParam(mix, \"mix\", 0.7f);\n    defineParam(blur_steps, \"blur_steps\", 12);\n\n    // Intensity define\n    defineParam(intensity, \"intensity\", 0.1f);\n  \}\n\n  void process(int2 pos) \{\n    float2 fpos = float2((float)pos.x, (float)pos.y);\n    float2 fformat = float2((float)format.x, (float)format.y);\n    // Vignette\n    float2 ratio = float2(1.0f, aspect);\n    float rad = length(fformat*ratio*scale)/2.f;\n    float2 dir = (fpos-(fformat/2))*ratio;\n    float u = length(dir);\n    float weight = pow(u/rad, (1/gamma));\n\n    // Abberation\n    float scale_factor = rad/1000.0f;\n    dir /= length(dir+float2(0.0001f, 0.0001f));\n    float4 col = 0;\n    float2 dist, sample;\n    for(int c=0;c<4;c++)\{\n      dist = (dir*weight*(1-abb\[c])*distort);\n      for(int i=0;i<blur_steps;i++)\{\n        sample = ((dist+(blur*dir*weight))*scale_factor*(float)i/(float)blur_steps) + fpos+((1-abb\[c])*offset*scale_factor);\n        col\[c] += bilinear(src, sample.x, sample.y, c);\n      \}\n    \}\n    col /= (float)blur_steps;\n    col = (src(pos.x, pos.y)*(1-mix))+(col*mix);\n  \n    // Intensity\n    col *= 1-(intensity*weight);\n    col\[3] = weight;\n    dst() = col;\n    \n  \}\n\};\n"
   rebuild ""
   LensDefects_format {{width} {height}}
   LensDefects_vignette_gamma {{parent.mask_gamma}}
@@ -115,9 +116,9 @@ push $N2a87fc00
   xpos -6
   ypos 655
  }
-set Nd764000 [stack 0]
-push $Nd764000
-push $N666d4000
+set Ndb0d2380 [stack 0]
+push $Ndb0d2380
+push $Ndb0d3c00
  Copy {
   inputs 2
   from0 rgba.red
@@ -130,7 +131,7 @@ push $N666d4000
   xpos -161
   ypos 636
  }
-set N2bc8b800 [stack 0]
+set Ndb0d2000 [stack 0]
  Copy {
   inputs 2
   from0 rgba.alpha
@@ -145,7 +146,7 @@ set N2bc8b800 [stack 0]
   xpos -40
   ypos 705
  }
-push $N2bc8b800
+push $Ndb0d2000
  Switch {
   inputs 2
   which {{parent.mask_preview}}
@@ -162,15 +163,7 @@ end_group
 Grain2 {
  name Grain2_1
  label "Kodak 5218"
- selected true
  red_size {{h*2} 0.1}
  green_size {{h*2} 1.6}
  blue_size {{h*2} 1.91}
- green_i 0.86
- blue_i 0.73
- red_m 0.1216
- green_m 0.0544
- blue_m 0.2784
- black {0.019 0.0085 0.0435}
- minimum {0 0 0}
 }

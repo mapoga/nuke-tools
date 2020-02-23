@@ -39,6 +39,8 @@ Edge.addCommand('CropToBBox', 'nuke.createNode(\'CropToBBox.nk\')',
                 icon='Format Feather_icon.png')
 Edge.addCommand('Gradient', 'nuke.createNode(\'Gradient.nk\')',
                 icon='Format Feather_icon.png')
+Edge.addCommand('LensDefects', 'nuke.createNode(\'LensDefects.nk\')',
+                icon='Format Feather_icon.png')
 
 Time = Tools.addMenu('Time', icon='Time_icon.png')
 Time.addCommand('Frame Skip', 'nuke.createNode(\'Frame Skip.nk\')',
