@@ -18,6 +18,8 @@ Threed.addCommand('Z Convert', 'nuke.createNode(\'Z Convert.nk\')',
                   icon='Z Convert_icon.png')
 Threed.addCommand('Z Merge', 'nuke.createNode(\'Z Merge.nk\')',
                   icon='Z Merge_icon.png')
+Threed.addCommand('Vector', 'nuke.createNode(\'Vector.nk\')',
+                  icon='Z Merge_icon.png')
 
 
 Edge = Tools.addMenu('Edge', icon='Edge_icon.png')

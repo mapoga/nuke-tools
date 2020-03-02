@@ -1,0 +1,484 @@
+#define PI 3.1415926535897932384626433832795028841971693993751058;
+
+float degrees(float rad){
+  return rad * 180.0 / PI;
+}
+float2 degrees(float2 rad){
+  return float2(degrees(rad.x), degrees(rad.y));
+}
+float3 degrees(float3 rad){
+  return float3(degrees(rad.x), degrees(rad.y), degrees(rad.z));
+}
+float radians(float deg){
+  return deg / 180.0 * PI;
+}
+float2 radians(float2 deg){
+  return float2(radians(deg.x), radians(deg.y));
+}
+float3 radians(float3 deg){
+  return float3(radians(deg.x), radians(deg.y), radians(deg.z));
+}
+float signedToRad(float signedf){
+  return ((signedf/2.0)+0.5) * PI ;
+}
+float radToSigned(float rad){
+  rad = rad/ PI;
+  return ((rad-0.5)*2.0);
+}
+float unsignedToRad(float unsignedf){
+  return unsignedf * 2.0 * PI;
+}
+float radToUnsigned(float rad){
+  return (rad / 2.0) / PI;
+}
+
+float3x3 ident3x3(){
+  float3x3 mat;
+  mat[0][0] = 1.0;
+  mat[0][1] = 0.0;
+  mat[0][2] = 0.0;
+  mat[1][0] = 0.0;
+  mat[1][1] = 1.0;
+  mat[1][2] = 0.0;
+  mat[2][0] = 0.0;
+  mat[2][1] = 0.0;
+  mat[2][2] = 1.0;
+  return mat;
+}
+float4x4 ident4x4(){
+  float4x4 mat;
+  mat[0][0] = 1.0;
+  mat[0][1] = 0.0;
+  mat[0][2] = 0.0;
+  mat[0][3] = 0.0;
+  mat[1][0] = 0.0;
+  mat[1][1] = 1.0;
+  mat[1][2] = 0.0;
+  mat[1][3] = 0.0;
+  mat[2][0] = 0.0;
+  mat[2][1] = 0.0;
+  mat[2][2] = 1.0;
+  mat[2][3] = 0.0;
+  mat[3][0] = 0.0;
+  mat[3][1] = 0.0;
+  mat[3][2] = 0.0;
+  mat[3][3] = 1.0;
+  return mat;
+}
+float2 mult(float2 a, float3x3 mat){
+  return float2((a.x*mat[0][0])+(a.y*mat[0][1])+mat[0][2],
+                (a.x*mat[1][0])+(a.y*mat[1][1])+mat[1][2]);
+}
+float3 mult(float3 a, float4x4 mat){
+  return float3((a.x*mat[0][0])+(a.y*mat[0][1])+(a.z*mat[0][2])+mat[0][3],
+                (a.x*mat[1][0])+(a.y*mat[1][1])+(a.z*mat[1][2])+mat[1][3],
+                (a.x*mat[2][0])+(a.y*mat[2][1])+(a.z*mat[2][2])+mat[2][3]);
+}
+float3x3 translate(float2 t){
+  float3x3 mat = ident3x3();
+  mat[0][2] = t.x;
+  mat[1][2] = t.y;
+  return mat;
+}
+float4x4 translate(float3 t){
+  float4x4 mat = ident4x4();
+  mat[0][3] = t.x;
+  mat[1][3] = t.y;
+  mat[2][3] = t.z;
+  return mat;
+}
+float3x3 rotate(float angle){
+  float3x3 mat = ident3x3();
+  mat[0][0] = cos(angle);
+  mat[0][1] = sin(angle);
+  mat[1][0] = -sin(angle);
+  mat[1][1] = cos(angle);
+  return mat;
+}
+float4x4 rotateAxis(float angle, int axis){
+  float4x4 mat = ident4x4();
+  if(axis==0){      // X
+    mat[1][1] =  cos(angle);
+    mat[1][2] = -sin(angle);
+    mat[2][1] =  sin(angle);
+    mat[2][2] =  cos(angle);
+  }else if(axis==1){// Y
+    mat[0][0] =  cos(angle);
+    mat[0][2] =  sin(angle);
+    mat[2][0] = -sin(angle);
+    mat[2][2] =  cos(angle);
+  }else if(axis==2){// Z
+    mat[0][0] =  cos(angle);
+    mat[0][1] = -sin(angle);
+    mat[1][0] =  sin(angle);
+    mat[1][1] =  cos(angle);
+  }
+  return mat;
+}
+float4x4 rotate(float3 angle, int order){
+  float4x4 mat = ident4x4();
+  float4x4 x = rotateAxis(angle.x, 0);
+  float4x4 y = rotateAxis(angle.y, 1);
+  float4x4 z = rotateAxis(angle.z, 2);
+  if(order==0){       // XYZ
+    mat = z*y*x;
+  }else  if(order==1){// XZY
+    mat = y*z*x;
+  }else  if(order==2){// YXZ
+    mat = z*x*y;
+  }else  if(order==3){// YZX
+    mat = x*z*y;
+  }else  if(order==4){// ZXY
+    mat = y*x*z;
+  }else  if(order==5){// ZYX
+    mat = x*y*z;
+  }
+  return mat;
+}
+float3x3 scale(float2 s){
+  float3x3 mat = ident3x3();
+  mat[0][0] = s.x;
+  mat[1][1] = s.y;
+  return mat;
+}
+float4x4 scale(float3 s){
+  float4x4 mat = ident4x4();
+  mat[0][0] = s.x;
+  mat[1][1] = s.y;
+  mat[2][2] = s.z;
+  return mat;
+}
+float3x3 transform(float2 _t, float _r, float2 _s, int order){
+  float3x3 m = ident3x3();
+  float3x3 t = translate(_t);
+  float3x3 r = rotate(_r);
+  float3x3 s = scale(_s);
+  if(order==0){      // SRT
+    m = t*r*s;
+  }else if(order==1){// STR
+    m = r*t*s;
+  }else if(order==2){// RST
+    m = t*s*r;
+  }else if(order==3){// RTS
+    m = s*t*r;
+  }else if(order==4){// TSR
+    m = r*s*t;
+  }else if(order==5){// TRS
+    m = s*r*t;
+  }
+  return m;
+}
+float4x4 transform(float3 _t, float3 _r, float3 _s, int order, int rot_order){
+  float4x4 m = ident4x4();
+  float4x4 t = translate(_t);
+  float4x4 r = rotate(_r, rot_order);
+  float4x4 s = scale(_s);
+  if(order==0){      // SRT
+    m = t*r*s;
+  }else if(order==1){// STR
+    m = r*t*s;
+  }else if(order==2){// RST
+    m = t*s*r;
+  }else if(order==3){// RTS
+    m = s*t*r;
+  }else if(order==4){// TSR
+    m = r*s*t;
+  }else if(order==5){// TRS
+    m = s*r*t;
+  }
+  return m;
+}
+float3 cross(float3 A, float3 B){
+  return float3(A.y*B.z - A.z*B.y,
+                A.z*B.x - A.x*B.z,
+                A.x*B.y - A.y*B.x);
+}
+float distance(float2 a, float2 b){
+  return length(a-b);
+}
+float distance(float3 a, float3 b){
+  return length(a-b);
+}
+float2 norm(float2 a){
+  return a/length(a);
+}
+float3 norm(float3 a){
+  return a/length(a);
+}
+float angleBetween(float3 a, float3 b, float3 axis){
+  a = norm(a);
+  b = norm(b);
+  axis = norm(axis);
+  float3 perp = norm(cross(b, axis));
+  float side = dot(a, perp);
+  float angle = acos(dot(a, b));
+  if(side<0.0){
+    angle = -angle + 2.0 * PI ;
+  }
+  return angle;
+}
+
+float angleBetween(float2 a, float2 b){
+  float dott = a.x*b.x + a.y*b.y;
+  float dett = a.x*b.y - a.y*b.x;
+  float angle = atan2(dett, dott);
+  if(angle<0){
+    angle = angle + 2.0 * PI;
+  }
+  return angle;
+}
+float angleConvert(float angle, int from, int to){
+  if(from==0){
+    angle = signedToRad(angle);
+  }else if(from==1){
+    angle = unsignedToRad(angle);
+  }else if(from==3){
+    angle = radians(angle);
+  }
+  if(to==0){
+    angle = radToSigned(angle);
+  }else if(to==1){
+    angle = radToUnsigned(angle);
+  }else if(to==3){
+    angle = degrees(angle);
+  }
+  return angle;
+}
+
+kernel vector : ImageComputationKernel<ePixelWise>
+{
+  Image<eRead, eAccessPoint, eEdgeClamped> src; // A
+  Image<eRead, eAccessPoint, eEdgeClamped> srcB; // B
+  Image<eWrite> dst; // the output image
+
+  param:
+    int size;
+    int isolate;
+    // op
+    int cat;
+    int math_op2;
+    int math_op3;
+    int trans_op;
+    int util_op;
+
+    int cons;
+    float val;
+    float2 val2;
+    float3 val3;
+    int uni;
+
+    // Transform
+    float2 t2;
+    float3 t3;
+    float r2;
+    float3 r3;
+    int ru;
+    float2 s2;
+    float3 s3;
+    float us;
+    int to;
+    int ro3;
+    int inv;
+    int cons_trans;
+
+    float3 ab_axis;
+    int angConvFrom;
+    int angConvTo;
+
+  void define(){
+    defineParam(size, "size", 1);
+    defineParam(isolate, "isolate", 1);
+    // op
+    defineParam(cat, "category", 2);//transform
+    defineParam(math_op2, "math_operation2", 5);//normalize
+    defineParam(math_op3, "math_operation3", 5);//normalize
+    defineParam(trans_op, "transform_operation", 3);//transform
+    defineParam(util_op, "utility_operation", 0);//distance
+
+    defineParam(cons, "constant", int(1));
+    defineParam(val3, "value3", float3(0,0,0));
+    defineParam(val2, "value2", float2(0,0));
+    defineParam(val, "value", float(0));
+    defineParam(uni, "uniform", int(0));
+
+    // Transform
+    defineParam(cons_trans, "constant_transform", int(1));
+    defineParam(t2, "translate2", float2(0,0));
+    defineParam(t3, "translate3", float3(0,0,0));
+    defineParam(r2, "rotate", float(0));
+    defineParam(r3, "rotate3", float3(0,0,0));
+    defineParam(ru, "rotateunit", int(0));
+    defineParam(s2, "scale2", float2(1,1));
+    defineParam(s3, "scale3", float3(1,1,1));
+    defineParam(us, "uniformScale", float(1.0));
+    defineParam(to, "transform_order", 0);
+    defineParam(ro3, "rotate_order3", 4);
+    defineParam(inv, "invert", int(0));
+
+    defineParam(ab_axis, "angle_between_axis", float3(0,1,0));
+    defineParam(angConvFrom, "angle_convert_from", int(0));
+    defineParam(angConvTo, "angleConvertTo", int(3));
+
+  }
+
+  void process() {
+    float4 colA = src();
+    float4 colB = srcB();
+    if(isolate==1){
+      if(size==0){
+        colA.z = 0.0;
+      }
+      //colA.w = 0.0;
+    }
+
+    if(size==0){
+      // VECTOR 2
+      float2 A2 = float2(colA.x, colA.y);
+      if(cons==0){
+        val2 = float2(colB.x, colB.y);
+      }else if(uni==1){
+        val2 = float2(val, val);
+      }
+      if(cat==0){
+        // Initialize
+        A2 = val2;
+      }else if(cat==1){
+        // Math
+        if(math_op2==0){
+          A2 += val2;
+        }else if(math_op2==1){
+          A2 -= val2;
+        }else if(math_op2==2){
+          A2 *= val2;
+        }else if(math_op2==3){
+          A2 /= val2;
+        }else if(math_op2==4){
+          A2 = fmod(A2, val2);
+        }else if(math_op2==5){
+          A2 = norm(A2);
+        }else if(math_op2==6){
+          float i = length(A2);
+          A2 = float2(i,i);
+        }else if(math_op2==7){
+          float i = dot(A2, val2);
+          A2 = float2(i,i);
+        }
+      }else if(cat==2){
+        // Transform
+        float2 t = t2;
+        float r = r2;
+        float2 s = s2*us;
+        float3x3 m;
+        if(cons_trans==0 && trans_op!=3){
+          t = float2(colB.x, colB.y);
+          r = colB.x;
+          s = float2(colB.x, colB.y);
+        }
+        if(ru==0){
+          r = radians(r);
+        }
+        if(trans_op==0){
+          m = translate(t);
+        }else if(trans_op==1){
+          m = rotate(r);
+        }else if(trans_op==2){
+          m = scale(s);
+        }else if(trans_op==3){
+          m = transform(t, r, s, to);
+        }
+        if(inv==1){
+          m = m.invert();
+        }
+        A2 = mult(A2, m);
+      }else if(cat==3){
+        // Utility
+        if(util_op==0){
+          float i = distance(A2, val2);
+          A2 = float2(i,i);
+        }else if(util_op==1){
+          float i = angleBetween(A2, val2);
+          A2 = float2(i,i);
+        }else if(util_op==2){
+          float i = angleConvert(A2.x, angConvFrom, angConvTo);
+          A2 = float2(i,i);
+        }
+      }
+      dst() = float4(A2.x, A2.y, colA.z, colA.w);
+    }else if(size==1){
+      // VECTOR 3
+      float3 A3 = float3(colA.x, colA.y, colA.z);
+      if(cons==0){
+        val3 = float3(colB.x, colB.y, colB.z);
+      }else if(uni==1){
+        val3 = float3(val, val, val);
+      }
+      if(cat==0){
+        // Initialize
+        A3 = val3;
+      }else if(cat==1){
+        // Math
+        if(math_op3==0){
+          A3 += val3;
+        }else if(math_op3==1){
+          A3 -= val3;
+        }else if(math_op3==2){
+          A3 *= val3;
+        }else if(math_op3==3){
+          A3 /= val3;
+        }else if(math_op3==4){
+          A3 = fmod(A3, val3);
+        }else if(math_op3==5){
+          A3 = norm(A3);
+        }else if(math_op3==6){
+          float i = length(A3);
+          A3 = float3(i,i,i);
+        }else if(math_op3==7){
+          float i = dot(A3, val3);
+          A3 = float3(i,i,i);
+        }else if(math_op3==8){
+          A3 = cross(A3, val3);
+        }
+      }else if(cat==2){
+        // Transform
+        float3 t = t3;
+        float3 r = r3;
+        float3 s = s3*us;
+        if(cons_trans==0 && trans_op!=3){
+          t = float3(colB.x, colB.y, colB.z);
+          r = float3(colB.x, colB.y, colB.z);
+          s = float3(colB.x, colB.y, colB.z);
+        }
+        float4x4 m;
+        if(ru==0){
+          r = radians(r);
+        }
+        if(trans_op==0){
+          m = translate(t);
+        }else if(trans_op==1){
+          m = rotate(r, ro3);
+        }else if(trans_op==2){
+          m = scale(s);
+        }else if(trans_op==3){
+          m = transform(t, r, s, to, ro3);
+        }
+        if(inv==1){
+          m = m.invert();
+        }
+        A3 = mult(A3, m);
+      }else if(cat==3){
+        // Utility
+        if(util_op==0){
+          float i = distance(A3, val3);
+          A3 = float3(i,i,i);
+        }else if(util_op==1){
+          float i = angleBetween(A3, val3, ab_axis);
+          A3 = float3(i,i,i);
+        }else if(util_op==2){
+          float i = angleConvert(A3.x, angConvFrom, angConvTo);
+          A3 = float3(i,i,i);
+        }
+      }
+      dst() = float4(A3.x, A3.y, A3.z, colA.w);
+    }
+  }
+};
