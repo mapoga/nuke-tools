@@ -1,50 +1,184 @@
+/*
+SIMPLEX NOISE
+Based on https://github.com/Draradech/csworldgen/blob/master/simplexnoise.cpp
+Ported by Mads Hagbarth Lund 2014
+*/
+int fastfloor( const float x ) { return x > 0 ? (int) x : (int) x - 1; }
+float raw_noise_4d( const float x, const float y, const float z, const float w ){
+  int simplex[64][4] = {
+    {0,1,2,3},{0,1,3,2},{0,0,0,0},{0,2,3,1},{0,0,0,0},{0,0,0,0},{0,0,0,0},{1,2,3,0},
+    {0,2,1,3},{0,0,0,0},{0,3,1,2},{0,3,2,1},{0,0,0,0},{0,0,0,0},{0,0,0,0},{1,3,2,0},
+    {0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},
+    {1,2,0,3},{0,0,0,0},{1,3,0,2},{0,0,0,0},{0,0,0,0},{0,0,0,0},{2,3,0,1},{2,3,1,0},
+    {1,0,2,3},{1,0,3,2},{0,0,0,0},{0,0,0,0},{0,0,0,0},{2,0,3,1},{0,0,0,0},{2,1,3,0},
+    {0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},
+    {2,0,1,3},{0,0,0,0},{0,0,0,0},{0,0,0,0},{3,0,1,2},{3,0,2,1},{0,0,0,0},{3,1,2,0},
+    {2,1,0,3},{0,0,0,0},{0,0,0,0},{0,0,0,0},{3,1,0,2},{0,0,0,0},{3,2,0,1},{3,2,1,0}
+  };
+  int perm[512] = {
+    151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,
+    8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,
+    35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,
+    134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,
+    55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208, 89,
+    18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,
+    250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,
+    189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,
+    172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,
+    228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,
+    107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,
+    138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180,
+
+    151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,
+    8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,
+    35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,
+    134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,
+    55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208, 89,
+    18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,
+    250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,
+    189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,
+    172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,
+    228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,
+    107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,
+    138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
+  };
+  int grad4[32][4]= {
+    {0,1,1,1},  {0,1,1,-1},  {0,1,-1,1},  {0,1,-1,-1},
+    {0,-1,1,1}, {0,-1,1,-1}, {0,-1,-1,1}, {0,-1,-1,-1},
+    {1,0,1,1},  {1,0,1,-1},  {1,0,-1,1},  {1,0,-1,-1},
+    {-1,0,1,1}, {-1,0,1,-1}, {-1,0,-1,1}, {-1,0,-1,-1},
+    {1,1,0,1},  {1,1,0,-1},  {1,-1,0,1},  {1,-1,0,-1},
+    {-1,1,0,1}, {-1,1,0,-1}, {-1,-1,0,1}, {-1,-1,0,-1},
+    {1,1,1,0},  {1,1,-1,0},  {1,-1,1,0},  {1,-1,-1,0},
+    {-1,1,1,0}, {-1,1,-1,0}, {-1,-1,1,0}, {-1,-1,-1,0}
+  };
+  float F4 = (sqrt(5.0f)-1.0)/4.0;
+  float G4 = (5.0-sqrt(5.0f))/20.0;
+  float n0, n1, n2, n3, n4;
+  float s = (x + y + z + w) * F4;
+  int i = fastfloor(x + s);
+  int j = fastfloor(y + s);
+  int k = fastfloor(z + s);
+  int l = fastfloor(w + s);
+  float t = (i + j + k + l) * G4;
+  float X0 = i - t;
+  float Y0 = j - t;
+  float Z0 = k - t;
+  float W0 = l - t;
+
+  float x0 = x - X0;
+  float y0 = y - Y0;
+  float z0 = z - Z0;
+  float w0 = w - W0;
+  int c1 = (x0 > y0) ? 32 : 0;
+  int c2 = (x0 > z0) ? 16 : 0;
+  int c3 = (y0 > z0) ? 8 : 0;
+  int c4 = (x0 > w0) ? 4 : 0;
+  int c5 = (y0 > w0) ? 2 : 0;
+  int c6 = (z0 > w0) ? 1 : 0;
+  int c = c1 + c2 + c3 + c4 + c5 + c6;
+
+  int i1, j1, k1, l1;
+  int i2, j2, k2, l2;
+  int i3, j3, k3, l3;
+  i1 = simplex[c][0]>=3 ? 1 : 0;
+  j1 = simplex[c][1]>=3 ? 1 : 0;
+  k1 = simplex[c][2]>=3 ? 1 : 0;
+  l1 = simplex[c][3]>=3 ? 1 : 0;
+  i2 = simplex[c][0]>=2 ? 1 : 0;
+  j2 = simplex[c][1]>=2 ? 1 : 0;
+  k2 = simplex[c][2]>=2 ? 1 : 0;
+  l2 = simplex[c][3]>=2 ? 1 : 0;
+  i3 = simplex[c][0]>=1 ? 1 : 0;
+  j3 = simplex[c][1]>=1 ? 1 : 0;
+  k3 = simplex[c][2]>=1 ? 1 : 0;
+  l3 = simplex[c][3]>=1 ? 1 : 0;
+  float x1 = x0 - i1 + G4;
+  float y1 = y0 - j1 + G4;
+  float z1 = z0 - k1 + G4;
+  float w1 = w0 - l1 + G4;
+  float x2 = x0 - i2 + 2.0*G4;
+  float y2 = y0 - j2 + 2.0*G4;
+  float z2 = z0 - k2 + 2.0*G4;
+  float w2 = w0 - l2 + 2.0*G4;
+  float x3 = x0 - i3 + 3.0*G4;
+  float y3 = y0 - j3 + 3.0*G4;
+  float z3 = z0 - k3 + 3.0*G4;
+  float w3 = w0 - l3 + 3.0*G4;
+  float x4 = x0 - 1.0 + 4.0*G4;
+  float y4 = y0 - 1.0 + 4.0*G4;
+  float z4 = z0 - 1.0 + 4.0*G4;
+  float w4 = w0 - 1.0 + 4.0*G4;
+  int ii = i & 255;
+  int jj = j & 255;
+  int kk = k & 255;
+  int ll = l & 255;
+  int gi0 = perm[ii+perm[jj+perm[kk+perm[ll]]]] % 32;
+  int gi1 = perm[ii+i1+perm[jj+j1+perm[kk+k1+perm[ll+l1]]]] % 32;
+  int gi2 = perm[ii+i2+perm[jj+j2+perm[kk+k2+perm[ll+l2]]]] % 32;
+  int gi3 = perm[ii+i3+perm[jj+j3+perm[kk+k3+perm[ll+l3]]]] % 32;
+  int gi4 = perm[ii+1+perm[jj+1+perm[kk+1+perm[ll+1]]]] % 32;
+  float t0 = 0.6 - x0*x0 - y0*y0 - z0*z0 - w0*w0;
+  if(t0<0) n0 = 0.0;
+  else {
+      t0 *= t0;
+      n0 = t0 * t0 * dot(float4(grad4[gi0][0],grad4[gi0][2],grad4[gi0][3],grad4[gi0][3]), float4(x0, y0, z0, w0));
+  }
+  float t1 = 0.6 - x1*x1 - y1*y1 - z1*z1 - w1*w1;
+  if(t1<0) n1 = 0.0;
+  else {
+      t1 *= t1;
+      n1 = t1 * t1 * dot(float4(grad4[gi1][0],grad4[gi1][2],grad4[gi1][3],grad4[gi1][3]), float4(x1, y1, z1, w1));
+  }
+  float t2 = 0.6 - x2*x2 - y2*y2 - z2*z2 - w2*w2;
+  if(t2<0) n2 = 0.0;
+  else {
+      t2 *= t2;
+      n2 = t2 * t2 * dot(float4(grad4[gi2][0],grad4[gi2][2],grad4[gi2][3],grad4[gi2][3]), float4(x2, y2, z2, w2));
+  }
+  float t3 = 0.6 - x3*x3 - y3*y3 - z3*z3 - w3*w3;
+  if(t3<0) n3 = 0.0;
+  else {
+      t3 *= t3;
+      n3 = t3 * t3 * dot(float4(grad4[gi3][0],grad4[gi3][2],grad4[gi3][3],grad4[gi3][3]), float4(x3, y3, z3, w3));
+  }
+  float t4 = 0.6 - x4*x4 - y4*y4 - z4*z4 - w4*w4;
+  if(t4<0) n4 = 0.0;
+  else {
+      t4 *= t4;
+      n4 = t4 * t4 * dot(float4(grad4[gi4][0],grad4[gi4][2],grad4[gi4][3],grad4[gi4][3]), float4(x4, y4, z4, w4));
+  }
+  return 27.0 * (n0 + n1 + n2 + n3 + n4);
+}
+float octave_noise_4d( const float octaves, const float persistence, const float scale, const float x, const float y, const float z, const float w ){
+  float total = 0;
+  float frequency = scale;
+  float amplitude = 1;
+  float maxAmplitude = 0;
+  for( int i=0; i < octaves; i++ ) {
+      total += (float)raw_noise_4d( x * frequency, y * frequency, z * frequency, w * frequency ) * amplitude;
+
+      frequency *= 2;
+      maxAmplitude += amplitude;
+      amplitude *= persistence;
+  }
+  return float(total / maxAmplitude);
+}
+/*
+END SIMPLEX NOISE
+*/
+
+
 #define PI 3.1415926535897932384626433832795028841971693993751058;
 
-float degrees(float rad){
-  return rad * 180.0 / PI;
-}
-float2 degrees(float2 rad){
-  return float2(degrees(rad.x), degrees(rad.y));
-}
-float3 degrees(float3 rad){
-  return float3(degrees(rad.x), degrees(rad.y), degrees(rad.z));
-}
 float radians(float deg){
   return deg / 180.0 * PI;
 }
-float2 radians(float2 deg){
-  return float2(radians(deg.x), radians(deg.y));
-}
-float3 radians(float3 deg){
-  return float3(radians(deg.x), radians(deg.y), radians(deg.z));
-}
-float signedToRad(float signedf){
-  return ((signedf/2.0)+0.5) * PI ;
-}
-float radToSigned(float rad){
-  rad = rad/ PI;
-  return ((rad-0.5)*2.0);
-}
-float unsignedToRad(float unsignedf){
-  return unsignedf * 2.0 * PI;
-}
-float radToUnsigned(float rad){
-  return (rad / 2.0) / PI;
+
+inline float3 norm(float3 a){
+  return a/length(a);
 }
 
-float3x3 ident3x3(){
-  float3x3 mat;
-  mat[0][0] = 1.0;
-  mat[0][1] = 0.0;
-  mat[0][2] = 0.0;
-  mat[1][0] = 0.0;
-  mat[1][1] = 1.0;
-  mat[1][2] = 0.0;
-  mat[2][0] = 0.0;
-  mat[2][1] = 0.0;
-  mat[2][2] = 1.0;
-  return mat;
-}
 float4x4 ident4x4(){
   float4x4 mat;
   mat[0][0] = 1.0;
@@ -63,36 +197,6 @@ float4x4 ident4x4(){
   mat[3][1] = 0.0;
   mat[3][2] = 0.0;
   mat[3][3] = 1.0;
-  return mat;
-}
-float2 mult(float2 a, float3x3 mat){
-  return float2((a.x*mat[0][0])+(a.y*mat[0][1])+mat[0][2],
-                (a.x*mat[1][0])+(a.y*mat[1][1])+mat[1][2]);
-}
-float3 mult(float3 a, float4x4 mat){
-  return float3((a.x*mat[0][0])+(a.y*mat[0][1])+(a.z*mat[0][2])+mat[0][3],
-                (a.x*mat[1][0])+(a.y*mat[1][1])+(a.z*mat[1][2])+mat[1][3],
-                (a.x*mat[2][0])+(a.y*mat[2][1])+(a.z*mat[2][2])+mat[2][3]);
-}
-float3x3 translate(float2 t){
-  float3x3 mat = ident3x3();
-  mat[0][2] = t.x;
-  mat[1][2] = t.y;
-  return mat;
-}
-float4x4 translate(float3 t){
-  float4x4 mat = ident4x4();
-  mat[0][3] = t.x;
-  mat[1][3] = t.y;
-  mat[2][3] = t.z;
-  return mat;
-}
-float3x3 rotate(float angle){
-  float3x3 mat = ident3x3();
-  mat[0][0] = cos(angle);
-  mat[0][1] = sin(angle);
-  mat[1][0] = -sin(angle);
-  mat[1][1] = cos(angle);
   return mat;
 }
 float4x4 rotateAxis(float angle, int axis){
@@ -135,350 +239,339 @@ float4x4 rotate(float3 angle, int order){
   }
   return mat;
 }
-float3x3 scale(float2 s){
-  float3x3 mat = ident3x3();
-  mat[0][0] = s.x;
-  mat[1][1] = s.y;
-  return mat;
-}
-float4x4 scale(float3 s){
-  float4x4 mat = ident4x4();
-  mat[0][0] = s.x;
-  mat[1][1] = s.y;
-  mat[2][2] = s.z;
-  return mat;
-}
-float3x3 transform(float2 _t, float _r, float2 _s, int order){
-  float3x3 m = ident3x3();
-  float3x3 t = translate(_t);
-  float3x3 r = rotate(_r);
-  float3x3 s = scale(_s);
-  if(order==0){      // SRT
-    m = t*r*s;
-  }else if(order==1){// STR
-    m = r*t*s;
-  }else if(order==2){// RST
-    m = t*s*r;
-  }else if(order==3){// RTS
-    m = s*t*r;
-  }else if(order==4){// TSR
-    m = r*s*t;
-  }else if(order==5){// TRS
-    m = s*r*t;
-  }
-  return m;
-}
-float4x4 transform(float3 _t, float3 _r, float3 _s, int order, int rot_order){
-  float4x4 m = ident4x4();
-  float4x4 t = translate(_t);
-  float4x4 r = rotate(_r, rot_order);
-  float4x4 s = scale(_s);
-  if(order==0){      // SRT
-    m = t*r*s;
-  }else if(order==1){// STR
-    m = r*t*s;
-  }else if(order==2){// RST
-    m = t*s*r;
-  }else if(order==3){// RTS
-    m = s*t*r;
-  }else if(order==4){// TSR
-    m = r*s*t;
-  }else if(order==5){// TRS
-    m = s*r*t;
-  }
-  return m;
-}
-float3 cross(float3 A, float3 B){
-  return float3(A.y*B.z - A.z*B.y,
-                A.z*B.x - A.x*B.z,
-                A.x*B.y - A.y*B.x);
-}
-float distance(float2 a, float2 b){
-  return length(a-b);
-}
-float distance(float3 a, float3 b){
-  return length(a-b);
-}
-float2 norm(float2 a){
-  return a/length(a);
-}
-float3 norm(float3 a){
-  return a/length(a);
-}
-float angleBetween(float3 a, float3 b, float3 axis){
-  a = norm(a);
-  b = norm(b);
-  axis = norm(axis);
-  float3 perp = norm(cross(b, axis));
-  float side = dot(a, perp);
-  float angle = acos(dot(a, b));
-  if(side<0.0){
-    angle = -angle + 2.0 * PI ;
-  }
-  return angle;
+float3 mult(float3 a, float4x4 mat){
+  return float3((a.x*mat[0][0])+(a.y*mat[0][1])+(a.z*mat[0][2])+mat[0][3],
+                (a.x*mat[1][0])+(a.y*mat[1][1])+(a.z*mat[1][2])+mat[1][3],
+                (a.x*mat[2][0])+(a.y*mat[2][1])+(a.z*mat[2][2])+mat[2][3]);
 }
 
-float angleBetween(float2 a, float2 b){
-  float dott = a.x*b.x + a.y*b.y;
-  float dett = a.x*b.y - a.y*b.x;
-  float angle = atan2(dett, dott);
-  if(angle<0){
-    angle = angle + 2.0 * PI;
-  }
-  return angle;
+float3 projectPointOnLine(float3 linePoint, float3 lineVec, float3 point){
+  lineVec = norm(lineVec);
+  float3 linePointToPoint = point - linePoint;
+  float t = dot(linePointToPoint, lineVec);
+  return linePoint + lineVec * t;
 }
-float angleConvert(float angle, int from, int to){
-  if(from==0){
-    angle = signedToRad(angle);
-  }else if(from==1){
-    angle = unsignedToRad(angle);
-  }else if(from==3){
-    angle = radians(angle);
+float3 projectPointOnLineSegment(float3 linePoint1, float3 linePoint2, float3 point){
+  float3 pointProjectedOnLine = projectPointOnLine(linePoint1, linePoint2 - linePoint1, point);
+  float3 v = linePoint2 - linePoint1;
+  return linePoint1 + v * clamp(dot(v, (point - linePoint1) / dot(v,v)), 0.0f, 1.0f);
+}
+int isIntersectingLineUnitSphere(float3 linePoint1, float3 lineVec){
+  lineVec = norm(lineVec);
+  float3 segmentCenter = projectPointOnLine(linePoint1, lineVec, float3(0.0f));
+  if(length(segmentCenter) <= 1.0f){
+    return 1;
+  }else{
+    return 0;
   }
-  if(to==0){
-    angle = radToSigned(angle);
-  }else if(to==1){
-    angle = radToUnsigned(angle);
-  }else if(to==3){
-    angle = degrees(angle);
+}
+int intersectionsLineUnitSphere(float3 linePoint1, float3 lineVec, float3 &intersectionPoint1, float3 &intersectionPoint2){
+  lineVec = norm(lineVec);
+  float3 segmentCenter = projectPointOnLine(linePoint1, lineVec, float3(0.0f));
+  if(length(segmentCenter) <= 1.0f){
+    float segmentHalfLength = sqrt(1-pow(length(segmentCenter), 2.0f));
+    float3 dir = norm(linePoint1 - segmentCenter);
+    intersectionPoint1 = segmentCenter + (dir * segmentHalfLength);
+    intersectionPoint2 = segmentCenter + (-dir * segmentHalfLength);
+    return 1;
+  }else{
+    return 0;
   }
-  return angle;
+}
+int isIntersectingLineSegmentUnitBox( float3 linePoint1, float3 linePoint2 ){ 
+  // Get line midpoint and extent
+  float3 segmentCenter = (linePoint1 + linePoint2) * 0.5f; 
+  float3 segmentHalfLength = (linePoint1 - segmentCenter);
+  float3 segmentExtent = fabs(segmentHalfLength);
+
+  // Use Separating Axis Test
+  // Separation vector from box center to line center is segmentCenter, since the line is in box space
+  if ( fabs( segmentCenter.x ) > 0.5f + segmentExtent.x ) return 0;
+  if ( fabs( segmentCenter.y ) > 0.5f + segmentExtent.y ) return 0;
+  if ( fabs( segmentCenter.z ) > 0.5f + segmentExtent.z ) return 0;
+  // Crossproducts of line and each axis
+  if ( fabs( segmentCenter.y * segmentHalfLength.z - segmentCenter.z * segmentHalfLength.y)  >  (0.5f * segmentExtent.z + 0.5f * segmentExtent.y) ) return 0;
+  if ( fabs( segmentCenter.x * segmentHalfLength.z - segmentCenter.z * segmentHalfLength.x)  >  (0.5f * segmentExtent.z + 0.5f * segmentExtent.x) ) return 0;
+  if ( fabs( segmentCenter.x * segmentHalfLength.y - segmentCenter.y * segmentHalfLength.x)  >  (0.5f * segmentExtent.y + 0.5f * segmentExtent.x) ) return 0;
+  // No separating axis, the line intersects
+  return 1;
+}
+int intersectionsLineUnitBox(float3 linePoint1, float3 linePoint2, float3 &intersectionPoint1, float3 &intersectionPoint2){
+  // https://www.scratchapixel.com/lessons/3d-basic-rendering/minimal-ray-tracer-rendering-simple-shapes/ray-box-intersection
+  float tmin, tmax, tymin, tymax, tzmin, tzmax;
+  float3 segmentDirection = linePoint2-linePoint1;
+  float3 segmentDirectionSign = sign(segmentDirection);
+
+  tmin  = ((segmentDirectionSign.x*-0.5) - linePoint1.x) / segmentDirection.x; 
+  tmax  = ((segmentDirectionSign.x* 0.5) - linePoint1.x) / segmentDirection.x; 
+  tymin = ((segmentDirectionSign.y*-0.5) - linePoint1.y) / segmentDirection.y; 
+  tymax = ((segmentDirectionSign.y* 0.5) - linePoint1.y) / segmentDirection.y; 
+
+  if ((tmin > tymax) || (tymin > tmax)) 
+      return 0; 
+  if (tymin > tmin) 
+      tmin = tymin; 
+  if (tymax < tmax) 
+      tmax = tymax;
+
+  tzmin = ((segmentDirectionSign.z*-0.5) - linePoint1.z) / segmentDirection.z; 
+  tzmax = ((segmentDirectionSign.z* 0.5) - linePoint1.z) / segmentDirection.z; 
+
+  if ((tmin > tzmax) || (tzmin > tmax)) 
+      return 0; 
+  if (tzmin > tmin) 
+      tmin = tzmin; 
+  if (tzmax < tmax) 
+      tmax = tzmax; 
+
+  intersectionPoint1 = linePoint1 + (segmentDirection * tmin);
+  intersectionPoint2 = linePoint1 + (segmentDirection * tmax);
+  return 1;
 }
 
-kernel vector : ImageComputationKernel<ePixelWise>
+
+float fit(float value, float old0, float old1, float new0, float new1){
+  return (((value-old0)/old1)*new1)+new0;
+}
+float sphereDensity(const float4x4 &shapeTransformMatrixInverted, float3 pos){
+  pos = mult(pos, shapeTransformMatrixInverted);
+  return max(1.0f-(length(pos)/1.0f), 0.0f);
+}
+void sphereRange(const float4x4 &shapeTransformMatrix, const float4x4 &shapeTransformMatrixInverted, float3 rayOrigin, float3 rayDirection, int &isInsideBounds, float &nearDist, float &farDist){
+  //Inverse transfrom
+  float3 centerInv = float3(0,0,0);
+  float radiusInv = 1.0f;
+  float3 rayOriginInv = mult(rayOrigin, shapeTransformMatrixInverted);
+  float3 hitPosition = rayOrigin + (rayDirection*1000000000);
+  float3 hitPositionInv = mult(hitPosition, shapeTransformMatrixInverted);
+  //Ray range
+  float3 closestPointInv = projectPointOnLineSegment(rayOriginInv, hitPositionInv, centerInv);
+  float closestDistanceInv = length(centerInv-closestPointInv);
+  isInsideBounds = closestDistanceInv <= radiusInv;//Bounds detection
+  float halfRangeInv = sqrt((radiusInv*radiusInv)-(closestDistanceInv*closestDistanceInv));
+  float3 nearPointInv = closestPointInv + (norm(rayOriginInv-closestPointInv)*halfRangeInv);
+  float3 farPointInv = closestPointInv - (norm(rayOriginInv-closestPointInv)*halfRangeInv);
+  //transform
+  float3 nearPoint = mult(nearPointInv, shapeTransformMatrix);
+  float3 farPoint = mult(farPointInv, shapeTransformMatrix);
+  //Ray depth near/far range
+  nearDist = length(rayOrigin-nearPoint);
+  farDist = length(rayOrigin-farPoint);
+}
+float boxDensity(const float4x4 &shapeTransformMatrixInverted, float3 pos){
+  // Look to optimize
+  pos = mult(pos, shapeTransformMatrixInverted);
+  pos = fabs(pos);
+  if(pos.x<=1 && pos.y<=1 && pos.z<=1){
+    float3 q = fabs(pos) - float3(1,1,1);
+    float sdf = fabs(length(max(q, float3(0,0,0))) + min(max(q.x,max(q.y,q.z)),0.0f));
+    float fullLength = sdf + length(pos);
+    return min(max(1.0f-(length(pos)/fullLength), 0.0f), 1.0f);
+  }else{
+    return 0.0f;
+  }
+}
+float rampDensity(const float4x4 &shapeTransformMatrixInverted, float3 pos){
+  pos = mult(pos, shapeTransformMatrixInverted);
+  return min(max(1.0f-pos.y, 0.0f), 1.0f);
+}
+float3 cameraRayDirection(int2 imagePosition, int2 imageSize, float2 angleOfView, const float4x4 &cameraTransformMatrix){
+  float3 rayDirection;
+  // Camera angle of view compensation
+  float u = float(imagePosition.x)/(imageSize.x-1);
+  float v = float(imagePosition.y)/(imageSize.y-1);
+  float3 uv_angle = float3(v-0.5f, u-0.5f, 0.0f);
+  uv_angle *= float3(radians(angleOfView.x)*imageSize.y/imageSize.x, -radians(angleOfView.x), 0.0f);
+  // rayDirection
+  float3 rayOrigin = mult(float3(0,0,0), cameraTransformMatrix);
+  rayDirection = float3(0,0,-1);
+  rayDirection = mult(rayDirection, rotate(uv_angle, 0));
+  rayDirection = mult(rayDirection, cameraTransformMatrix);
+  rayDirection = norm(rayDirection-rayOrigin);
+  return rayDirection;
+}
+float normalizeDensity(float density, const float4x4 &shapeTransformMatrix){
+  float3 xAxis = mult(float3(1,0,0), shapeTransformMatrix);
+  float3 yAxis = mult(float3(0,1,0), shapeTransformMatrix);
+  float3 zAxis = mult(float3(0,0,1), shapeTransformMatrix);
+  float3 center = mult(float3(0,0,0), shapeTransformMatrix);
+  return density / ((length(xAxis-center)+length(yAxis-center)+length(zAxis-center))/3.0f);
+}
+
+
+kernel P_vol : ImageComputationKernel<ePixelWise>
 {
-  Image<eRead, eAccessPoint, eEdgeClamped> src; // A
-  Image<eRead, eAccessPoint, eEdgeClamped> srcB; // B
+  Image<eRead, eAccessPoint, eEdgeClamped> src; // the input image
   Image<eWrite> dst; // the output image
 
   param:
-    int size;
-    int isolate;
-    // op
-    int cat;
-    int math_op2;
-    int math_op3;
-    int trans_op;
-    int util_op;
+    //Occlusion
+    int occlusionMode; 
+    //Shape
+    int shapeType;
+    float4x4 shapeTransformMatrix;
+    //Volume
+    float densityMultiplier;
+    float stepSizeUser;
+    int stepMin;
+    int stepMax;
+    int stepsToRefine;
+    int stepRefineAmount;
+    int isDensityNormalized;
+    int isZeroAsInfinity;
+    //Camera
+    float4x4 cameraTransformMatrix;
+    float2 angleOfView;
+    int2 imageSize;
+    //Density Noise
+    int hasDensityNoise;
+    int densityNoiseOctaves;
+    float densityNoiseGain;
+    float densityNoiseTime;
+    float4x4 densityNoiseTransformMatrix;
+    float densityNoiseFit0;
+    float densityNoiseFit1;
+    float densityNoiseBias;
+    float densityNoiseClamp;
 
-    int cons;
-    float val;
-    float2 val2;
-    float3 val3;
-    int uni;
+  local:
+    float infinity;
+    float3 rayOrigin;
+    float4x4 shapeTransformMatrixInverted;
+    float4x4 densityNoiseTransformMatrixInverted;
 
-    // Transform
-    float2 t2;
-    float3 t3;
-    float r2;
-    float3 r3;
-    int ru;
-    float2 s2;
-    float3 s3;
-    float us;
-    int to;
-    int ro3;
-    int inv;
-    int cons_trans;
-
-    float3 ab_axis;
-    int angConvFrom;
-    int angConvTo;
-
-  void define(){
-    defineParam(size, "size", 1);
-    defineParam(isolate, "isolate", 1);
-    // op
-    defineParam(cat, "category", 2);//transform
-    defineParam(math_op2, "math_operation2", 5);//normalize
-    defineParam(math_op3, "math_operation3", 5);//normalize
-    defineParam(trans_op, "transform_operation", 3);//transform
-    defineParam(util_op, "utility_operation", 0);//distance
-
-    defineParam(cons, "constant", int(1));
-    defineParam(val3, "value3", float3(0,0,0));
-    defineParam(val2, "value2", float2(0,0));
-    defineParam(val, "value", float(0));
-    defineParam(uni, "uniform", int(0));
-
-    // Transform
-    defineParam(cons_trans, "constant_transform", int(1));
-    defineParam(t2, "translate2", float2(0,0));
-    defineParam(t3, "translate3", float3(0,0,0));
-    defineParam(r2, "rotate", float(0));
-    defineParam(r3, "rotate3", float3(0,0,0));
-    defineParam(ru, "rotateunit", int(0));
-    defineParam(s2, "scale2", float2(1,1));
-    defineParam(s3, "scale3", float3(1,1,1));
-    defineParam(us, "uniformScale", float(1.0));
-    defineParam(to, "transform_order", 0);
-    defineParam(ro3, "rotate_order3", 4);
-    defineParam(inv, "invert", int(0));
-
-    defineParam(ab_axis, "angle_between_axis", float3(0,1,0));
-    defineParam(angConvFrom, "angle_convert_from", int(0));
-    defineParam(angConvTo, "angleConvertTo", int(3));
-
+  void define() {
+    //Occlusion
+    defineParam(occlusionMode, "occlusionMode", 0);
+    //Shape
+    defineParam(shapeType, "shapeType", 0);
+    defineParam(shapeTransformMatrix, "shapeTransformMatrix", float4x4());
+    //Volume
+    defineParam(densityMultiplier, "densityMultiplier", 1.0f);
+    defineParam(stepSizeUser, "stepSize", 0.1f);
+    defineParam(stepMin, "stepMin", 100);
+    defineParam(stepMax, "stepMax", 100000);
+    defineParam(stepsToRefine, "stepsToRefine", 2);
+    defineParam(stepRefineAmount, "stepRefineAmount", 10);
+    defineParam(isDensityNormalized, "isDensityNormalized", 1);
+    defineParam(isZeroAsInfinity, "isZeroAsInfinity", 1);
+    //Camera
+    defineParam(cameraTransformMatrix, "cameraTransformMatrix", float4x4());
+    defineParam(angleOfView, "angleOfView", float2(0,0));
+    defineParam(imageSize, "imageSize", int2(0,0));
+    //DensityNoise
+    defineParam(densityNoiseOctaves, "densityNoiseOctaves", 8);
+    defineParam(densityNoiseGain, "densityNoiseGain", 0.5f);
+    defineParam(densityNoiseTime, "densityNoiseTime", 0.0f);
+    defineParam(densityNoiseTransformMatrix, "densityNoiseTransformMatrix", float4x4());
+    defineParam(densityNoiseFit0, "densityNoiseFit0", 0.0f);
+    defineParam(densityNoiseFit1, "densityNoiseFit1", 1.0f);
   }
 
-  void process() {
-    float4 colA = src();
-    float4 colB = srcB();
-    if(isolate==1){
-      if(size==0){
-        colA.z = 0.0;
+  void init(){
+    infinity = 1000000000000000000;
+    rayOrigin = mult(float3(0,0,0), cameraTransformMatrix);
+    shapeTransformMatrixInverted = shapeTransformMatrix.invert();
+    densityNoiseTransformMatrixInverted = densityNoiseTransformMatrix.invert();
+  }
+
+  void process(int2 pos) {
+    //Ray Setup
+    float3 rayDirection = cameraRayDirection(pos, imageSize, angleOfView, cameraTransformMatrix);
+    float hitDist = infinity;
+    float3 hitPosition = rayOrigin + (rayDirection * hitDist);
+
+    //Occlusion setup
+    if(occlusionMode<2){
+      float4 rgba = src();
+      if(occlusionMode==0){
+        //Depth
+        hitDist = rgba.x;
+        hitPosition = rayOrigin + (rayDirection * hitDist);
       }
-      //colA.w = 0.0;
+      else if(occlusionMode==1){
+        //Position
+        hitPosition = float3(rgba.x, rgba.y, rgba.z);
+        hitDist = length(rayOrigin-hitPosition);
+      }
+      //Fill in "empty" values
+      if(isZeroAsInfinity && ((length(hitPosition) <= 1.0f/infinity) || hitDist<=1.0f/infinity)){
+        hitPosition = rayOrigin + (rayDirection * infinity);
+        hitDist = infinity;
+      }
     }
 
-    if(size==0){
-      // VECTOR 2
-      float2 A2 = float2(colA.x, colA.y);
-      if(cons==0){
-        val2 = float2(colB.x, colB.y);
-      }else if(uni==1){
-        val2 = float2(val, val);
+    //Bounds optimization
+    float nearDist = 0.0;
+    float farDist = infinity;
+    int isInsideBounds = 1;
+    if(shapeType==0){
+      sphereRange(shapeTransformMatrix, shapeTransformMatrixInverted, rayOrigin, rayDirection, isInsideBounds, nearDist, farDist);
+    }else if(shapeType==1){
+      // TODO
+    }else if(shapeType==2){
+      // TODO
+    }
+
+    //Intersection with shape
+    if(isInsideBounds){
+      //Init
+      float density = 0.0f;
+      float stepDensity = 0.0f;
+      int steps = 0;
+      float stepSize = stepSizeUser;
+      float stepSizeDefault = stepSize;
+      float rayDist = nearDist;
+      float minHitDist = min(farDist, hitDist);
+      //Enforce stepMin
+      int predictedSteps = ceil((minHitDist-rayDist)/stepSize);
+      if(predictedSteps<max(1, stepMin)){
+        stepSize *= float(predictedSteps)/max(1, stepMin);
+        stepSizeDefault = stepSize;
       }
-      if(cat==0){
-        // Initialize
-        A2 = val2;
-      }else if(cat==1){
-        // Math
-        if(math_op2==0){
-          A2 += val2;
-        }else if(math_op2==1){
-          A2 -= val2;
-        }else if(math_op2==2){
-          A2 *= val2;
-        }else if(math_op2==3){
-          A2 /= val2;
-        }else if(math_op2==4){
-          A2 = fmod(A2, val2);
-        }else if(math_op2==5){
-          A2 = norm(A2);
-        }else if(math_op2==6){
-          float i = length(A2);
-          A2 = float2(i,i);
-        }else if(math_op2==7){
-          float i = dot(A2, val2);
-          A2 = float2(i,i);
+      // Steps in ray direction from near until minimum hit distance. Quit at max steps
+      while(rayDist<=minHitDist && steps<=stepMax){
+        float3 stepPosition = rayOrigin + (rayDirection * rayDist);
+        if(shapeType==0){
+          stepDensity = sphereDensity(shapeTransformMatrixInverted, stepPosition);
+        }else if(shapeType==1){
+          stepDensity = boxDensity(shapeTransformMatrixInverted, stepPosition);
+        }else if(shapeType==2){
+          stepDensity = rampDensity(shapeTransformMatrixInverted, stepPosition);
         }
-      }else if(cat==2){
-        // Transform
-        float2 t = t2;
-        float r = r2;
-        float2 s = s2*us;
-        float3x3 m;
-        if(cons_trans==0 && trans_op!=3){
-          t = float2(colB.x, colB.y);
-          r = colB.x;
-          s = float2(colB.x, colB.y);
+        if(hasDensityNoise){
+          float3 densityNoisePosition = mult(stepPosition, densityNoiseTransformMatrixInverted);
+          float densityNoise = octave_noise_4d(densityNoiseOctaves, densityNoiseGain, 1.0f,
+                                               densityNoisePosition.x, densityNoisePosition.y,
+                                               densityNoisePosition.z,densityNoiseTime);
+          //stepDensity = fit(stepDensity, -0.5, 0.5, 0.0f, 1.0f);
+          stepDensity = fit(stepDensity, densityNoiseFit0, densityNoiseFit1, 0.0f, 1.0f);
+          stepDensity *= max(densityNoise, 0.0f);
         }
-        if(ru==0){
-          r = radians(r);
+        density += stepDensity * stepSize * densityMultiplier;
+
+        //Refine stepSize when close to occlusion
+        if(rayDist > minHitDist-(stepSize*stepsToRefine)){
+          //Change stepSize only once
+          if(stepSize >= stepSizeDefault){
+            stepSize /= float(stepRefineAmount);
+          }
         }
-        if(trans_op==0){
-          m = translate(t);
-        }else if(trans_op==1){
-          m = rotate(r);
-        }else if(trans_op==2){
-          m = scale(s);
-        }else if(trans_op==3){
-          m = transform(t, r, s, to);
-        }
-        if(inv==1){
-          m = m.invert();
-        }
-        A2 = mult(A2, m);
-      }else if(cat==3){
-        // Utility
-        if(util_op==0){
-          float i = distance(A2, val2);
-          A2 = float2(i,i);
-        }else if(util_op==1){
-          float i = angleBetween(A2, val2);
-          A2 = float2(i,i);
-        }else if(util_op==2){
-          float i = angleConvert(A2.x, angConvFrom, angConvTo);
-          A2 = float2(i,i);
-        }
+        //Increment
+        rayDist += stepSize;
+        steps++;
       }
-      dst() = float4(A2.x, A2.y, colA.z, colA.w);
-    }else if(size==1){
-      // VECTOR 3
-      float3 A3 = float3(colA.x, colA.y, colA.z);
-      if(cons==0){
-        val3 = float3(colB.x, colB.y, colB.z);
-      }else if(uni==1){
-        val3 = float3(val, val, val);
+
+      //Normalize density by shape scale
+      if(isDensityNormalized){
+        density = normalizeDensity(density, shapeTransformMatrix);
       }
-      if(cat==0){
-        // Initialize
-        A3 = val3;
-      }else if(cat==1){
-        // Math
-        if(math_op3==0){
-          A3 += val3;
-        }else if(math_op3==1){
-          A3 -= val3;
-        }else if(math_op3==2){
-          A3 *= val3;
-        }else if(math_op3==3){
-          A3 /= val3;
-        }else if(math_op3==4){
-          A3 = fmod(A3, val3);
-        }else if(math_op3==5){
-          A3 = norm(A3);
-        }else if(math_op3==6){
-          float i = length(A3);
-          A3 = float3(i,i,i);
-        }else if(math_op3==7){
-          float i = dot(A3, val3);
-          A3 = float3(i,i,i);
-        }else if(math_op3==8){
-          A3 = cross(A3, val3);
-        }
-      }else if(cat==2){
-        // Transform
-        float3 t = t3;
-        float3 r = r3;
-        float3 s = s3*us;
-        if(cons_trans==0 && trans_op!=3){
-          t = float3(colB.x, colB.y, colB.z);
-          r = float3(colB.x, colB.y, colB.z);
-          s = float3(colB.x, colB.y, colB.z);
-        }
-        float4x4 m;
-        if(ru==0){
-          r = radians(r);
-        }
-        if(trans_op==0){
-          m = translate(t);
-        }else if(trans_op==1){
-          m = rotate(r, ro3);
-        }else if(trans_op==2){
-          m = scale(s);
-        }else if(trans_op==3){
-          m = transform(t, r, s, to, ro3);
-        }
-        if(inv==1){
-          m = m.invert();
-        }
-        A3 = mult(A3, m);
-      }else if(cat==3){
-        // Utility
-        if(util_op==0){
-          float i = distance(A3, val3);
-          A3 = float3(i,i,i);
-        }else if(util_op==1){
-          float i = angleBetween(A3, val3, ab_axis);
-          A3 = float3(i,i,i);
-        }else if(util_op==2){
-          float i = angleConvert(A3.x, angConvFrom, angConvTo);
-          A3 = float3(i,i,i);
-        }
-      }
-      dst() = float4(A3.x, A3.y, A3.z, colA.w);
+      //Output
+      dst() = float4(density, density, density, density);
+    }else{
+      //Out of bounds
+      dst() = float4(0,0,0,0);
+      return;
     }
   }
 };
