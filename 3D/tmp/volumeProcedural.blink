@@ -507,6 +507,60 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
     }
     return shapeDensity * noiseDensity;;
   }
+  float2 shapeMinMax(float3 linePoint1, float3 linePoint2){
+    /*
+    // Need to handle inside shape better
+    */
+    //Bounds optimization
+    float3 linePoint1Inverted = mult(linePoint1, shapeTransformMatrixInverted);
+    float3 linePoint2Inverted = mult(linePoint2, shapeTransformMatrixInverted);
+    float nearDist = 0.0;
+    float farDist = infinity;
+    int isInsideBounds = 1;
+    float3 p1, p2;
+    if(shapeType==0){
+      // Sphere
+      isInsideBounds = intersectionsLineUnitSphere(linePoint1Inverted, linePoint2Inverted, p1, p2);
+    if(isInsideBounds){
+      //nearDist = length(-linePoint1 + mult(p1, shapeTransformMatrix));
+      //farDist  = length(-linePoint1 + mult(p2, shapeTransformMatrix));
+      nearDist = dot(-linePoint1 + mult(p1, shapeTransformMatrix), norm(linePoint2-linePoint1));
+      nearDist = max(0.0f, nearDist);
+      farDist  = dot(-linePoint1 + mult(p2, shapeTransformMatrix), norm(linePoint2-linePoint1));
+    }else{
+      return float2(0);
+    }
+    }else if(shapeType==1){
+      // Box
+      isInsideBounds = intersectionsLineUnitBox(linePoint1Inverted, linePoint2Inverted, p1, p2);
+    if(isInsideBounds){
+      nearDist = dot(-linePoint1 + mult(p1, shapeTransformMatrix), norm(linePoint2-linePoint1));
+      nearDist = max(0.0f, nearDist);
+      farDist  = dot(-linePoint1 + mult(p2, shapeTransformMatrix), norm(linePoint2-linePoint1));
+    }else{
+      return float2(0);
+    }
+    }else if(shapeType==2){
+      // Ramp
+      if((linePoint1Inverted.y-1.0f) <= 0.0f){
+        // camera under plane. Volume all around
+      }else{
+        isInsideBounds = intersectionsLinePlaneXZ(linePoint1Inverted-float3(0,1,0), linePoint2Inverted-float3(0,1,0), p1);
+        if(isInsideBounds > 0){
+          p1 = mult(p1, shapeTransformMatrix);
+          float nearDistSign = sign(dot(norm(p1 - linePoint1), norm(linePoint2-linePoint1)));
+          nearDist = length(-linePoint1 + p1);
+          if(nearDist>60.0f || nearDistSign < 0){
+            // too far or behind camera
+            return float2(0);
+          }
+        }else{
+          return float2(0);
+        }
+      }
+    }
+    return float2(nearDist, farDist);
+  }
 
   void process(int2 pos) {
     //Ray Setup
@@ -534,55 +588,29 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
       }
     }
 
+    
     //Bounds optimization
-    float nearDist = 0.0;
-    float farDist = infinity;
+    float2 minMax = shapeMinMax(rayOrigin, hitPosition);
+    float nearDist = minMax.x;
+    float farDist = minMax.y;
     int isInsideBounds = 1;
-    float3 p1, p2;
-    if(shapeType==0){
-      // Sphere
-      isInsideBounds = intersectionsLineUnitSphere(mult(rayOrigin, shapeTransformMatrixInverted), mult(hitPosition, shapeTransformMatrixInverted), p1, p2);
-      if(isInsideBounds){
-        nearDist = length(-rayOrigin + mult(p1, shapeTransformMatrix));
-        farDist  = length(-rayOrigin + mult(p2, shapeTransformMatrix));
-        hitPosition = rayOrigin + (rayDirection * farDist);
-      }
-    }else if(shapeType==1){
-      // Box
-      isInsideBounds = intersectionsLineUnitBox(mult(rayOrigin, shapeTransformMatrixInverted), mult(hitPosition, shapeTransformMatrixInverted), p1, p2);
-      if(isInsideBounds){
-        nearDist = length(-rayOrigin + mult(p1, shapeTransformMatrix));
-        farDist  = length(-rayOrigin + mult(p2, shapeTransformMatrix));
-        hitPosition = rayOrigin + (rayDirection * farDist);
-      }
-    }else if(shapeType==2){
-      // Ramp
-      float3 rayOriginTransformed = mult(rayOrigin, shapeTransformMatrixInverted);
-      if((rayOriginTransformed.y-1.0f) <= 0.0f){
-        // camera under plane. Volume all around
-        isInsideBounds = 1;
-      }else{
-        isInsideBounds = intersectionsLinePlaneXZ(rayOriginTransformed-float3(0,1,0), mult(hitPosition, shapeTransformMatrixInverted)-float3(0,1,0), p1);
-        if(isInsideBounds > 0){
-          p1 = mult(p1, shapeTransformMatrix);
-          float nearDistSign = sign(dot(norm(p1 - rayOrigin), rayDirection));
-          nearDist = length(-rayOrigin + p1);
-          if(nearDist>60.0f || nearDistSign < 0){
-            // too far or behind camera
-            isInsideBounds = 0;
-          }
-        }
-      }
-    }
     if(hitDist < nearDist){
       isInsideBounds = 0;
     }
+    if(farDist-nearDist<0.00000001){
+      isInsideBounds = 0;
+    }
+    //isInsideBounds = 1;
+    //nearDist = 0.0f;
+    //farDist = infinity;
 
     //Intersection with shape
     if(isInsideBounds>0){
       //Init
       float density = 0.0f;
       float stepDensity = 0.0f;
+      //float absorption = 0.0f;
+      //float stepAbsorption = 0.0f;
       int steps = 0;
       float stepSize = stepSizeUser;
       float stepSizeDefault = stepSize;
@@ -600,8 +628,8 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
 
         // DENSITY
         stepDensity = sampleDensity(stepPosition);
-        
-        density += stepDensity * stepSize * densityMultiplier;
+        stepDensity = stepDensity * stepSize * densityMultiplier;
+        density += stepDensity;
 
 
         // STEP
@@ -626,7 +654,7 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
     }else{
       //Out of bounds
       //dst() = float4(0,0,0.05f,0);
-      dst() = float4(0,0,0.05f,0);
+      dst() = float4(0,0,0,0);
       return;
     }
   }
