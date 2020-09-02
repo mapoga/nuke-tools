@@ -397,16 +397,6 @@ float normalizeDensity(float density, const float4x4 &shapeTransformMatrix){
   return density / ((length(xAxis-center)+length(yAxis-center)+length(zAxis-center))/3.0f);
 }
 
-float sampleShapeDensity(float3 point, int shapeType){
-  if(shapeType==0){
-    return sphereDensity(point);
-  }else if(shapeType==1){
-    return boxDensity(point);
-  }else if(shapeType==2){
-    return rampDensity(point);
-  }
-}
-
 
 kernel P_vol : ImageComputationKernel<ePixelWise>
 {
@@ -486,6 +476,36 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
     rayOrigin = mult(float3(0,0,0), cameraTransformMatrix);
     shapeTransformMatrixInverted = shapeTransformMatrix.invert();
     densityNoiseTransformMatrixInverted = densityNoiseTransformMatrix.invert();
+  }
+
+  float sampleDensity(float3 point){
+    float shapeDensity = 1, noiseDensity = 1;
+    float3 pointShapeSpace = mult(point, shapeTransformMatrixInverted);
+    // Shape
+    if(shapeType==0){
+      shapeDensity = sphereDensity(pointShapeSpace);
+    }else if(shapeType==1){
+      shapeDensity = boxDensity(pointShapeSpace);
+    }else if(shapeType==2){
+      shapeDensity = rampDensity(pointShapeSpace);
+    }
+    // Noise
+    if(hasDensityNoise){
+      float3 pointNoiseSpace;
+      if(isdensityNoiseWorldSpace){
+        pointNoiseSpace = point;
+      }else{
+        pointNoiseSpace = pointShapeSpace;
+      }
+      pointNoiseSpace = mult(pointNoiseSpace, densityNoiseTransformMatrixInverted);
+      float noise = octave_noise_4d(densityNoiseOctaves, densityNoiseGain, 1.0f,
+                                           pointNoiseSpace.x, pointNoiseSpace.y,
+                                           pointNoiseSpace.z,densityNoiseTime);
+      //stepDensity = fit(stepDensity, -0.5, 0.5, 0.0f, 1.0f);
+      //stepDensity = fit(stepDensity, densityNoiseFit0, densityNoiseFit1, 0.0f, 1.0f);
+      noiseDensity = max(noise, 0.0f);
+    }
+    return shapeDensity * noiseDensity;;
   }
 
   void process(int2 pos) {
@@ -577,26 +597,10 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
       // Steps in ray direction from near until minimum hit distance. Quit at max steps
       while(rayDist<=minHitDist && steps<=stepMax){
         float3 stepPosition = rayOrigin + (rayDirection * rayDist);
-        float3 stepPositionShapeSpace = mult(stepPosition, shapeTransformMatrixInverted);
 
         // DENSITY
-        stepDensity = sampleShapeDensity(stepPositionShapeSpace, shapeType);
-
-        if(hasDensityNoise){
-          float3 stepPositionNoiseSpace;
-          if(isdensityNoiseWorldSpace){
-            stepPositionNoiseSpace = stepPosition;
-          }else{
-            stepPositionNoiseSpace = stepPositionShapeSpace;
-          }
-          stepPositionNoiseSpace = mult(stepPositionNoiseSpace, densityNoiseTransformMatrixInverted);
-          float densityNoise = octave_noise_4d(densityNoiseOctaves, densityNoiseGain, 1.0f,
-                                               stepPositionNoiseSpace.x, stepPositionNoiseSpace.y,
-                                               stepPositionNoiseSpace.z,densityNoiseTime);
-          //stepDensity = fit(stepDensity, -0.5, 0.5, 0.0f, 1.0f);
-          stepDensity = fit(stepDensity, densityNoiseFit0, densityNoiseFit1, 0.0f, 1.0f);
-          stepDensity *= max(densityNoise, 0.0f);
-        }
+        stepDensity = sampleDensity(stepPosition);
+        
         density += stepDensity * stepSize * densityMultiplier;
 
 
