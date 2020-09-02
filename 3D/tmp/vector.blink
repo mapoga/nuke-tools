@@ -245,29 +245,26 @@ float3 mult(float3 a, float4x4 mat){
                 (a.x*mat[2][0])+(a.y*mat[2][1])+(a.z*mat[2][2])+mat[2][3]);
 }
 
-float3 projectPointOnLine(float3 linePoint, float3 lineVec, float3 point){
-  lineVec = norm(lineVec);
-  float3 linePointToPoint = point - linePoint;
-  float t = dot(linePointToPoint, lineVec);
-  return linePoint + lineVec * t;
+float3 projectPointOnLine(float3 linePoint1, float3 linePoint2, float3 point){
+  float3 lineDirection = norm(linePoint2-linePoint1);
+  float t = dot(point - linePoint1, lineDirection);
+  return linePoint1 + lineDirection * t;
 }
 float3 projectPointOnLineSegment(float3 linePoint1, float3 linePoint2, float3 point){
   float3 pointProjectedOnLine = projectPointOnLine(linePoint1, linePoint2 - linePoint1, point);
   float3 v = linePoint2 - linePoint1;
   return linePoint1 + v * clamp(dot(v, (point - linePoint1) / dot(v,v)), 0.0f, 1.0f);
 }
-int isIntersectingLineUnitSphere(float3 linePoint1, float3 lineVec){
-  lineVec = norm(lineVec);
-  float3 segmentCenter = projectPointOnLine(linePoint1, lineVec, float3(0.0f));
+int isIntersectingLineUnitSphere(float3 linePoint1, float3 linePoint2){
+  float3 segmentCenter = projectPointOnLine(linePoint1, linePoint2, float3(0.0f));
   if(length(segmentCenter) <= 1.0f){
     return 1;
   }else{
     return 0;
   }
 }
-int intersectionsLineUnitSphere(float3 linePoint1, float3 lineVec, float3 &intersectionPoint1, float3 &intersectionPoint2){
-  lineVec = norm(lineVec);
-  float3 segmentCenter = projectPointOnLine(linePoint1, lineVec, float3(0.0f));
+int intersectionsLineUnitSphere(float3 linePoint1, float3 linePoint2, float3 &intersectionPoint1, float3 &intersectionPoint2){
+  float3 segmentCenter = projectPointOnLine(linePoint1, linePoint2, float3(0.0f));
   if(length(segmentCenter) <= 1.0f){
     float segmentHalfLength = sqrt(1-pow(length(segmentCenter), 2.0f));
     float3 dir = norm(linePoint1 - segmentCenter);
@@ -328,6 +325,10 @@ int intersectionsLineUnitBox(float3 linePoint1, float3 linePoint2, float3 &inter
   intersectionPoint2 = linePoint1 + (segmentDirection * tmax);
   return 1;
 }
+int intersectionsLineUnitInfinityPlane(float3 linePoint1, float3 linePoint2, float3 &intersectionPoint1, float3 &intersectionPoint2){
+  // TODO
+  return 0;
+}
 
 
 float fit(float value, float old0, float old1, float new0, float new1){
@@ -337,33 +338,13 @@ float sphereDensity(const float4x4 &shapeTransformMatrixInverted, float3 pos){
   pos = mult(pos, shapeTransformMatrixInverted);
   return max(1.0f-(length(pos)/1.0f), 0.0f);
 }
-void sphereRange(const float4x4 &shapeTransformMatrix, const float4x4 &shapeTransformMatrixInverted, float3 rayOrigin, float3 rayDirection, int &isInsideBounds, float &nearDist, float &farDist){
-  //Inverse transfrom
-  float3 centerInv = float3(0,0,0);
-  float radiusInv = 1.0f;
-  float3 rayOriginInv = mult(rayOrigin, shapeTransformMatrixInverted);
-  float3 hitPosition = rayOrigin + (rayDirection*1000000000);
-  float3 hitPositionInv = mult(hitPosition, shapeTransformMatrixInverted);
-  //Ray range
-  float3 closestPointInv = projectPointOnLineSegment(rayOriginInv, hitPositionInv, centerInv);
-  float closestDistanceInv = length(centerInv-closestPointInv);
-  isInsideBounds = closestDistanceInv <= radiusInv;//Bounds detection
-  float halfRangeInv = sqrt((radiusInv*radiusInv)-(closestDistanceInv*closestDistanceInv));
-  float3 nearPointInv = closestPointInv + (norm(rayOriginInv-closestPointInv)*halfRangeInv);
-  float3 farPointInv = closestPointInv - (norm(rayOriginInv-closestPointInv)*halfRangeInv);
-  //transform
-  float3 nearPoint = mult(nearPointInv, shapeTransformMatrix);
-  float3 farPoint = mult(farPointInv, shapeTransformMatrix);
-  //Ray depth near/far range
-  nearDist = length(rayOrigin-nearPoint);
-  farDist = length(rayOrigin-farPoint);
-}
+
 float boxDensity(const float4x4 &shapeTransformMatrixInverted, float3 pos){
   // Look to optimize
   pos = mult(pos, shapeTransformMatrixInverted);
   pos = fabs(pos);
-  if(pos.x<=1 && pos.y<=1 && pos.z<=1){
-    float3 q = fabs(pos) - float3(1,1,1);
+  if(pos.x<=0.5f && pos.y<=0.5f && pos.z<=0.5f){
+    float3 q = fabs(pos) - float3(0.5f);
     float sdf = fabs(length(max(q, float3(0,0,0))) + min(max(q.x,max(q.y,q.z)),0.0f));
     float fullLength = sdf + length(pos);
     return min(max(1.0f-(length(pos)/fullLength), 0.0f), 1.0f);
@@ -505,11 +486,25 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
     float nearDist = 0.0;
     float farDist = infinity;
     int isInsideBounds = 1;
+    float3 p1, p2;
     if(shapeType==0){
-      sphereRange(shapeTransformMatrix, shapeTransformMatrixInverted, rayOrigin, rayDirection, isInsideBounds, nearDist, farDist);
+      // Sphere
+      isInsideBounds = intersectionsLineUnitSphere(mult(rayOrigin, shapeTransformMatrixInverted), mult(hitPosition, shapeTransformMatrixInverted), p1, p2);
+      if(isInsideBounds){
+        nearDist = length(-rayOrigin + mult(p1, shapeTransformMatrix));
+        farDist  = length(-rayOrigin + mult(p2, shapeTransformMatrix));
+        hitPosition = rayOrigin + (rayDirection * farDist);
+      }
     }else if(shapeType==1){
-      // TODO
+      // Box
+      isInsideBounds = intersectionsLineUnitBox(mult(rayOrigin, shapeTransformMatrixInverted), mult(hitPosition, shapeTransformMatrixInverted), p1, p2);
+      if(isInsideBounds){
+        nearDist = length(-rayOrigin + mult(p1, shapeTransformMatrix));
+        farDist  = length(-rayOrigin + mult(p2, shapeTransformMatrix));
+        hitPosition = rayOrigin + (rayDirection * farDist);
+      }
     }else if(shapeType==2){
+      // Ramp
       // TODO
     }
 
@@ -567,10 +562,10 @@ kernel P_vol : ImageComputationKernel<ePixelWise>
         density = normalizeDensity(density, shapeTransformMatrix);
       }
       //Output
-      dst() = float4(density, density, density, density);
+      dst() = float4(density, density, farDist, density);
     }else{
       //Out of bounds
-      dst() = float4(0,0,0,0);
+      dst() = float4(1,0,0,0);
       return;
     }
   }
