@@ -76,5 +76,17 @@ dg_PerspLines.addCommand('dg_Horizon', 'dg_PerspLines_Horizon()',
                          icon='dg_Horizon_icon.png')
 dg_PerspLines.addCommand('dg_CamFromLines', 'dg_PerspLines_AlignCamera()',
                          icon='Camera.png')
+import readFromWrite
+Others.addCommand('Read from Write',
+                             'readFromWrite.ReadFromWrite()',
+                             'shift+r')
+
+Commands = Tools.addMenu('Commands', icon='ToolSets_icon.png')
+import commands
+Commands.addCommand('Read Range',
+                  'commands.reads_set_range_panel()',
+                  'ctrl+r')
 ###################### Tools End ######################
 #######################################################
+
+nuke.addOnUserCreate(lambda:nuke.thisNode()['first_frame'].setValue(nuke.frame()), nodeClass='FrameHold')
