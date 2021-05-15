@@ -86,6 +86,9 @@ import commands
 Commands.addCommand('Read Range',
                   'commands.reads_set_range_panel()',
                   'ctrl+r')
+Commands.addCommand('Camera from RS metadata',
+                  'commands.camera_from_RS_metadata()',
+                  'shift+c')
 ###################### Tools End ######################
 #######################################################
 
