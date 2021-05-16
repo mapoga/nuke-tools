@@ -1,0 +1,862 @@
+Group {
+ name RS_FIX
+ selected true
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 92
+  ypos 218
+ }
+ Dot {
+  name Dot2
+  xpos 126
+  ypos 295
+ }
+set N1d9ce700 [stack 0]
+ Dot {
+  name Dot3
+  xpos 278
+  ypos 295
+ }
+set N77e36700 [stack 0]
+ Dot {
+  name Dot12
+  xpos 278
+  ypos 389
+ }
+push $N77e36700
+ Dot {
+  name Dot1
+  xpos 388
+  ypos 295
+ }
+add_layer {N N.red N.green N.blue N.alpha}
+add_layer {P P.red P.green P.blue}
+add_layer {V V.red V.green V.blue}
+ Remove {
+  operation keep
+  channels depth
+  channels2 {N.red N.green N.blue none}
+  channels3 P
+  channels4 V
+  name Remove1
+  xpos 354
+  ypos 328
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  selected true
+  xpos 354
+  ypos 379
+ }
+ Expression {
+  expr3 a>0.9999?1:0
+  name Expression1
+  xpos 354
+  ypos 417
+ }
+ Premult {
+  channels all
+  name Premult1
+  xpos 354
+  ypos 443
+ }
+ Dot {
+  name Dot4
+  xpos 388
+  ypos 512
+ }
+set Na0b3500 [stack 0]
+ Dot {
+  name Dot7
+  xpos 490
+  ypos 512
+ }
+set N1d58b500 [stack 0]
+ Dot {
+  name Dot6
+  xpos 596
+  ypos 512
+ }
+set N1278ee00 [stack 0]
+ Dot {
+  name Dot5
+  xpos 702
+  ypos 512
+ }
+ Shuffle {
+  in V
+  in2 alpha
+  alpha red2
+  name Shuffle_V
+  xpos 668
+  ypos 543
+ }
+ Group {
+  name EdgeExtend3
+  onCreate "n = nuke.thisNode()\nk = n.knob(\"exponent\")\nexponent = int(k.value())\nprint(exponent)\nk.setValue(2)\nprint(k.setValue(exponent))"
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob()\nknobs = \[\"exponent\", \"step\"]\nif k.name() in knobs:\n\twith n:  # enables group scope\n\t\tInput = n.node(\"Input\")\n\t\toutput = n.node(\"Output\")\n\t\tnodes = nuke.allNodes()\n\t\tnodes.remove(Input)\n\t\tnodes.remove(output)\n\t\texp = int(n.knob(\"exponent\").value())\n\t\tstep = n.knob(\"step\").value()\n\t\tunpre = n.knob(\"unpre\").value()\n\n\t\t# Clean\n\t\tif nodes:\n\t\t\tfor n in nodes:\n\t\t\t\tnuke.delete(n)\n\n\t\t# Create\n\t\tInput.setSelected(True)\n\t\tlayers = \[]\n\t\tfor i in range(exp):\n\t\t\tun = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\t\texpr = nuke.createNode(\"Expression\", \"expr3 a>0?1:0\", inpanel=False)\n\t\t\tblur = nuke.createNode(\"Blur\", \"size \{0\}\".format(step**i), inpanel=False)\n\t\t\tlayers.append(blur)\n\n\n\t\tprev = Input\n\t\tif layers:\n\t\t\tfor l in layers:\n\t\t\t\tmerge = nuke.createNode(\"Merge\", inpanel=False)\n\t\t\t\tmerge.setInput(0, l)\n\t\t\t\tmerge.setInput(1, prev)\n\t\t\t\tprev = merge\n\n\t\tprev.setSelected(True)\n\t\tunpreNode = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\tunpreNode.setName(\"output_unpremult\")\n\t\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\t\tnodes = nuke.allNodes()\n\t\tfor n in nodes:\n\t\t\tn.autoplace()\n\t\t\t\nelif k.name() == \"unpre\":\n\tunpre = k.value()\n\tunpreNode = n.node(\"output_unpremult\")\n\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\n"
+  xpos 668
+  ypos 577
+  addUserKnob {20 EdgeExtend}
+  addUserKnob {7 step R 1 10}
+  step 2
+  addUserKnob {3 exponent}
+  exponent 8
+  addUserKnob {6 unpre l unpremult +STARTLINE}
+  unpre true
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -40
+   ypos -10
+  }
+set N1c3bb500 [stack 0]
+push $N1c3bb500
+  Unpremult {
+   name Unpremult1
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression1
+  }
+  Blur {
+   size 1
+   name Blur1
+  }
+set N9fcbc00 [stack 0]
+  Merge {
+   inputs 2
+   name Merge1
+  }
+push $N9fcbc00
+  Unpremult {
+   name Unpremult2
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression2
+  }
+  Blur {
+   size 2
+   name Blur2
+  }
+set N24e4b500 [stack 0]
+  Merge {
+   inputs 2
+   name Merge2
+  }
+push $N24e4b500
+  Unpremult {
+   name Unpremult3
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression3
+  }
+  Blur {
+   size 4
+   name Blur3
+  }
+set N1562e380 [stack 0]
+  Merge {
+   inputs 2
+   name Merge3
+  }
+push $N1562e380
+  Unpremult {
+   name Unpremult4
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression4
+  }
+  Blur {
+   size 8
+   name Blur4
+  }
+set N1b464000 [stack 0]
+  Merge {
+   inputs 2
+   name Merge4
+  }
+push $N1b464000
+  Unpremult {
+   name Unpremult5
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression5
+  }
+  Blur {
+   size 16
+   name Blur5
+  }
+set Nf6e8000 [stack 0]
+  Merge {
+   inputs 2
+   name Merge5
+  }
+push $Nf6e8000
+  Unpremult {
+   name Unpremult6
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression6
+  }
+  Blur {
+   size 32
+   name Blur6
+  }
+set Nfbe0380 [stack 0]
+  Merge {
+   inputs 2
+   name Merge6
+  }
+push $Nfbe0380
+  Unpremult {
+   name Unpremult7
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression7
+  }
+  Blur {
+   size 64
+   name Blur7
+  }
+set N13899880 [stack 0]
+  Merge {
+   inputs 2
+   name Merge7
+  }
+push $N13899880
+  Unpremult {
+   name Unpremult8
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression8
+  }
+  Blur {
+   size 128
+   name Blur8
+  }
+  Merge {
+   inputs 2
+   name Merge8
+  }
+  Unpremult {
+   name output_unpremult
+   selected true
+  }
+  Output {
+   name Output
+   xpos 70
+   ypos 666
+  }
+ end_group
+ Dot {
+  name Dot11
+  xpos 702
+  ypos 782
+ }
+push $N1278ee00
+ Shuffle {
+  in P
+  in2 alpha
+  alpha red2
+  name Shuffle_P
+  xpos 562
+  ypos 546
+ }
+ Group {
+  name EdgeExtend2
+  onCreate "n = nuke.thisNode()\nk = n.knob(\"exponent\")\nexponent = int(k.value())\nprint(exponent)\nk.setValue(2)\nprint(k.setValue(exponent))"
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob()\nknobs = \[\"exponent\", \"step\"]\nif k.name() in knobs:\n\twith n:  # enables group scope\n\t\tInput = n.node(\"Input\")\n\t\toutput = n.node(\"Output\")\n\t\tnodes = nuke.allNodes()\n\t\tnodes.remove(Input)\n\t\tnodes.remove(output)\n\t\texp = int(n.knob(\"exponent\").value())\n\t\tstep = n.knob(\"step\").value()\n\t\tunpre = n.knob(\"unpre\").value()\n\n\t\t# Clean\n\t\tif nodes:\n\t\t\tfor n in nodes:\n\t\t\t\tnuke.delete(n)\n\n\t\t# Create\n\t\tInput.setSelected(True)\n\t\tlayers = \[]\n\t\tfor i in range(exp):\n\t\t\tun = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\t\texpr = nuke.createNode(\"Expression\", \"expr3 a>0?1:0\", inpanel=False)\n\t\t\tblur = nuke.createNode(\"Blur\", \"size \{0\}\".format(step**i), inpanel=False)\n\t\t\tlayers.append(blur)\n\n\n\t\tprev = Input\n\t\tif layers:\n\t\t\tfor l in layers:\n\t\t\t\tmerge = nuke.createNode(\"Merge\", inpanel=False)\n\t\t\t\tmerge.setInput(0, l)\n\t\t\t\tmerge.setInput(1, prev)\n\t\t\t\tprev = merge\n\n\t\tprev.setSelected(True)\n\t\tunpreNode = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\tunpreNode.setName(\"output_unpremult\")\n\t\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\t\tnodes = nuke.allNodes()\n\t\tfor n in nodes:\n\t\t\tn.autoplace()\n\t\t\t\nelif k.name() == \"unpre\":\n\tunpre = k.value()\n\tunpreNode = n.node(\"output_unpremult\")\n\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\n"
+  xpos 562
+  ypos 580
+  addUserKnob {20 EdgeExtend}
+  addUserKnob {7 step R 1 10}
+  step 2
+  addUserKnob {3 exponent}
+  exponent 8
+  addUserKnob {6 unpre l unpremult +STARTLINE}
+  unpre true
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -40
+   ypos -10
+  }
+set N2620e380 [stack 0]
+push $N2620e380
+  Unpremult {
+   name Unpremult1
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression1
+  }
+  Blur {
+   size 1
+   name Blur1
+  }
+set N16a9a380 [stack 0]
+  Merge {
+   inputs 2
+   name Merge1
+  }
+push $N16a9a380
+  Unpremult {
+   name Unpremult2
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression2
+  }
+  Blur {
+   size 2
+   name Blur2
+  }
+set N1315aa80 [stack 0]
+  Merge {
+   inputs 2
+   name Merge2
+  }
+push $N1315aa80
+  Unpremult {
+   name Unpremult3
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression3
+  }
+  Blur {
+   size 4
+   name Blur3
+  }
+set N912a380 [stack 0]
+  Merge {
+   inputs 2
+   name Merge3
+  }
+push $N912a380
+  Unpremult {
+   name Unpremult4
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression4
+  }
+  Blur {
+   size 8
+   name Blur4
+  }
+set Nab1a700 [stack 0]
+  Merge {
+   inputs 2
+   name Merge4
+  }
+push $Nab1a700
+  Unpremult {
+   name Unpremult5
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression5
+  }
+  Blur {
+   size 16
+   name Blur5
+  }
+set N1e226000 [stack 0]
+  Merge {
+   inputs 2
+   name Merge5
+  }
+push $N1e226000
+  Unpremult {
+   name Unpremult6
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression6
+  }
+  Blur {
+   size 32
+   name Blur6
+  }
+set N1c8ad500 [stack 0]
+  Merge {
+   inputs 2
+   name Merge6
+  }
+push $N1c8ad500
+  Unpremult {
+   name Unpremult7
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression7
+  }
+  Blur {
+   size 64
+   name Blur7
+  }
+set N9f24e00 [stack 0]
+  Merge {
+   inputs 2
+   name Merge7
+  }
+push $N9f24e00
+  Unpremult {
+   name Unpremult8
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression8
+  }
+  Blur {
+   size 128
+   name Blur8
+  }
+  Merge {
+   inputs 2
+   name Merge8
+  }
+  Unpremult {
+   name output_unpremult
+   selected true
+  }
+  Output {
+   name Output
+   xpos 70
+   ypos 666
+  }
+ end_group
+ Dot {
+  name Dot10
+  xpos 596
+  ypos 732
+ }
+push $N1d58b500
+ Shuffle {
+  in {N.red N.green N.blue -N.alpha}
+  in2 alpha
+  alpha red2
+  name Shuffle_N
+  xpos 456
+  ypos 545
+ }
+ Group {
+  name EdgeExtend1
+  onCreate "n = nuke.thisNode()\nk = n.knob(\"exponent\")\nexponent = int(k.value())\nprint(exponent)\nk.setValue(2)\nprint(k.setValue(exponent))"
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob()\nknobs = \[\"exponent\", \"step\"]\nif k.name() in knobs:\n\twith n:  # enables group scope\n\t\tInput = n.node(\"Input\")\n\t\toutput = n.node(\"Output\")\n\t\tnodes = nuke.allNodes()\n\t\tnodes.remove(Input)\n\t\tnodes.remove(output)\n\t\texp = int(n.knob(\"exponent\").value())\n\t\tstep = n.knob(\"step\").value()\n\t\tunpre = n.knob(\"unpre\").value()\n\n\t\t# Clean\n\t\tif nodes:\n\t\t\tfor n in nodes:\n\t\t\t\tnuke.delete(n)\n\n\t\t# Create\n\t\tInput.setSelected(True)\n\t\tlayers = \[]\n\t\tfor i in range(exp):\n\t\t\tun = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\t\texpr = nuke.createNode(\"Expression\", \"expr3 a>0?1:0\", inpanel=False)\n\t\t\tblur = nuke.createNode(\"Blur\", \"size \{0\}\".format(step**i), inpanel=False)\n\t\t\tlayers.append(blur)\n\n\n\t\tprev = Input\n\t\tif layers:\n\t\t\tfor l in layers:\n\t\t\t\tmerge = nuke.createNode(\"Merge\", inpanel=False)\n\t\t\t\tmerge.setInput(0, l)\n\t\t\t\tmerge.setInput(1, prev)\n\t\t\t\tprev = merge\n\n\t\tprev.setSelected(True)\n\t\tunpreNode = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\tunpreNode.setName(\"output_unpremult\")\n\t\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\t\tnodes = nuke.allNodes()\n\t\tfor n in nodes:\n\t\t\tn.autoplace()\n\t\t\t\nelif k.name() == \"unpre\":\n\tunpre = k.value()\n\tunpreNode = n.node(\"output_unpremult\")\n\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\n"
+  xpos 456
+  ypos 580
+  addUserKnob {20 EdgeExtend}
+  addUserKnob {7 step R 1 10}
+  step 2
+  addUserKnob {3 exponent}
+  exponent 8
+  addUserKnob {6 unpre l unpremult +STARTLINE}
+  unpre true
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -40
+   ypos -10
+  }
+set N1d3b8380 [stack 0]
+push $N1d3b8380
+  Unpremult {
+   name Unpremult1
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression1
+  }
+  Blur {
+   size 1
+   name Blur1
+  }
+set N19ae8700 [stack 0]
+  Merge {
+   inputs 2
+   name Merge1
+  }
+push $N19ae8700
+  Unpremult {
+   name Unpremult2
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression2
+  }
+  Blur {
+   size 2
+   name Blur2
+  }
+set Nd71f500 [stack 0]
+  Merge {
+   inputs 2
+   name Merge2
+  }
+push $Nd71f500
+  Unpremult {
+   name Unpremult3
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression3
+  }
+  Blur {
+   size 4
+   name Blur3
+  }
+set N2e504000 [stack 0]
+  Merge {
+   inputs 2
+   name Merge3
+  }
+push $N2e504000
+  Unpremult {
+   name Unpremult4
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression4
+  }
+  Blur {
+   size 8
+   name Blur4
+  }
+set N246f3180 [stack 0]
+  Merge {
+   inputs 2
+   name Merge4
+  }
+push $N246f3180
+  Unpremult {
+   name Unpremult5
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression5
+  }
+  Blur {
+   size 16
+   name Blur5
+  }
+set N1377d880 [stack 0]
+  Merge {
+   inputs 2
+   name Merge5
+  }
+push $N1377d880
+  Unpremult {
+   name Unpremult6
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression6
+  }
+  Blur {
+   size 32
+   name Blur6
+  }
+set N1d475c00 [stack 0]
+  Merge {
+   inputs 2
+   name Merge6
+  }
+push $N1d475c00
+  Unpremult {
+   name Unpremult7
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression7
+  }
+  Blur {
+   size 64
+   name Blur7
+  }
+set Na4e9500 [stack 0]
+  Merge {
+   inputs 2
+   name Merge7
+  }
+push $Na4e9500
+  Unpremult {
+   name Unpremult8
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression8
+  }
+  Blur {
+   size 128
+   name Blur8
+  }
+  Merge {
+   inputs 2
+   name Merge8
+  }
+  Unpremult {
+   name output_unpremult
+   selected true
+  }
+  Output {
+   name Output
+   xpos 70
+   ypos 666
+  }
+ end_group
+ Dot {
+  name Dot9
+  xpos 490
+  ypos 684
+ }
+push $Na0b3500
+ Shuffle {
+  in depth
+  in2 alpha
+  alpha red2
+  name Shuffle_Z
+  xpos 354
+  ypos 544
+ }
+ Group {
+  name EdgeExtend
+  onCreate "n = nuke.thisNode()\nk = n.knob(\"exponent\")\nexponent = int(k.value())\nprint(exponent)\nk.setValue(2)\nprint(k.setValue(exponent))"
+  knobChanged "n = nuke.thisNode()\nk = nuke.thisKnob()\nknobs = \[\"exponent\", \"step\"]\nif k.name() in knobs:\n\twith n:  # enables group scope\n\t\tInput = n.node(\"Input\")\n\t\toutput = n.node(\"Output\")\n\t\tnodes = nuke.allNodes()\n\t\tnodes.remove(Input)\n\t\tnodes.remove(output)\n\t\texp = int(n.knob(\"exponent\").value())\n\t\tstep = n.knob(\"step\").value()\n\t\tunpre = n.knob(\"unpre\").value()\n\n\t\t# Clean\n\t\tif nodes:\n\t\t\tfor n in nodes:\n\t\t\t\tnuke.delete(n)\n\n\t\t# Create\n\t\tInput.setSelected(True)\n\t\tlayers = \[]\n\t\tfor i in range(exp):\n\t\t\tun = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\t\texpr = nuke.createNode(\"Expression\", \"expr3 a>0?1:0\", inpanel=False)\n\t\t\tblur = nuke.createNode(\"Blur\", \"size \{0\}\".format(step**i), inpanel=False)\n\t\t\tlayers.append(blur)\n\n\n\t\tprev = Input\n\t\tif layers:\n\t\t\tfor l in layers:\n\t\t\t\tmerge = nuke.createNode(\"Merge\", inpanel=False)\n\t\t\t\tmerge.setInput(0, l)\n\t\t\t\tmerge.setInput(1, prev)\n\t\t\t\tprev = merge\n\n\t\tprev.setSelected(True)\n\t\tunpreNode = nuke.createNode(\"Unpremult\", inpanel=False)\n\t\tunpreNode.setName(\"output_unpremult\")\n\t\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\t\tnodes = nuke.allNodes()\n\t\tfor n in nodes:\n\t\t\tn.autoplace()\n\t\t\t\nelif k.name() == \"unpre\":\n\tunpre = k.value()\n\tunpreNode = n.node(\"output_unpremult\")\n\tunpreNode.knob(\"disable\").setValue(1-unpre)\n\n\n"
+  xpos 354
+  ypos 578
+  addUserKnob {20 EdgeExtend}
+  addUserKnob {7 step R 1 10}
+  step 2
+  addUserKnob {3 exponent}
+  exponent 8
+  addUserKnob {6 unpre l unpremult +STARTLINE}
+  unpre true
+ }
+  Input {
+   inputs 0
+   name Input
+   xpos -40
+   ypos -10
+  }
+set N1ce1c380 [stack 0]
+push $N1ce1c380
+  Unpremult {
+   name Unpremult1
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression1
+  }
+  Blur {
+   size 1
+   name Blur1
+  }
+set Nec13880 [stack 0]
+  Merge {
+   inputs 2
+   name Merge1
+  }
+push $Nec13880
+  Unpremult {
+   name Unpremult2
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression2
+  }
+  Blur {
+   size 2
+   name Blur2
+  }
+set Na2b5180 [stack 0]
+  Merge {
+   inputs 2
+   name Merge2
+  }
+push $Na2b5180
+  Unpremult {
+   name Unpremult3
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression3
+  }
+  Blur {
+   size 4
+   name Blur3
+  }
+set Nab1a000 [stack 0]
+  Merge {
+   inputs 2
+   name Merge3
+  }
+push $Nab1a000
+  Unpremult {
+   name Unpremult4
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression4
+  }
+  Blur {
+   size 8
+   name Blur4
+  }
+set N1bb0b880 [stack 0]
+  Merge {
+   inputs 2
+   name Merge4
+  }
+push $N1bb0b880
+  Unpremult {
+   name Unpremult5
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression5
+  }
+  Blur {
+   size 16
+   name Blur5
+  }
+set N8503500 [stack 0]
+  Merge {
+   inputs 2
+   name Merge5
+  }
+push $N8503500
+  Unpremult {
+   name Unpremult6
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression6
+  }
+  Blur {
+   size 32
+   name Blur6
+  }
+set Nf54e000 [stack 0]
+  Merge {
+   inputs 2
+   name Merge6
+  }
+push $Nf54e000
+  Unpremult {
+   name Unpremult7
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression7
+  }
+  Blur {
+   size 64
+   name Blur7
+  }
+set N28227880 [stack 0]
+  Merge {
+   inputs 2
+   name Merge7
+  }
+push $N28227880
+  Unpremult {
+   name Unpremult8
+  }
+  Expression {
+   expr3 a>0?1:0
+   name Expression8
+  }
+  Blur {
+   size 128
+   name Blur8
+  }
+  Merge {
+   inputs 2
+   name Merge8
+  }
+  Unpremult {
+   name output_unpremult
+   selected true
+  }
+  Output {
+   name Output
+   xpos 70
+   ypos 666
+  }
+ end_group
+ Dot {
+  name Dot8
+  xpos 388
+  ypos 638
+ }
+push $N1d9ce700
+ ShuffleCopy {
+  inputs 2
+  in2 none
+  red red
+  out depth
+  name ShuffleCopy1
+  xpos 92
+  ypos 634
+  disable {{"\[python 1-('depth.Z'\\ in\\ nuke.thisNode().channels())]"}}
+ }
+ ShuffleCopy {
+  inputs 2
+  in2 none
+  red red
+  green green
+  blue blue
+  out {N.red N.green N.blue -N.alpha}
+  name ShuffleCopy2
+  xpos 92
+  ypos 680
+  disable {{"\[python 1-('N.red'\\ in\\ nuke.thisNode().channels())]"}}
+ }
+ ShuffleCopy {
+  inputs 2
+  in2 none
+  red red
+  green green
+  blue blue
+  out P
+  name ShuffleCopy3
+  xpos 92
+  ypos 728
+  disable {{"\[python 1-('P.red'\\ in\\ nuke.thisNode().channels())]"}}
+ }
+ ShuffleCopy {
+  inputs 2
+  in2 none
+  red red
+  green green
+  blue blue
+  out V
+  name ShuffleCopy4
+  xpos 92
+  ypos 778
+  disable {{"\[python 1-('V.red'\\ in\\ nuke.thisNode().channels())]"}}
+ }
+ Output {
+  name Output1
+  xpos 92
+  ypos 941
+ }
+end_group

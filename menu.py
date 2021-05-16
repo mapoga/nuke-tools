@@ -79,13 +79,13 @@ dg_PerspLines.addCommand('dg_CamFromLines', 'dg_PerspLines_AlignCamera()',
 import readFromWrite
 Others.addCommand('Read from Write',
                              'readFromWrite.ReadFromWrite()',
-                             'shift+r')
+                             'ctrl+r')
 
 Commands = Tools.addMenu('Commands', icon='ToolSets_icon.png')
 import commands
 Commands.addCommand('Read Range',
                   'commands.reads_set_range_panel()',
-                  'ctrl+r')
+                  'shift+r')
 Commands.addCommand('Camera from RS metadata',
                   'commands.camera_from_RS_metadata()',
                   'shift+c')
