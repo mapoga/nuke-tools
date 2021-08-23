@@ -1,0 +1,110 @@
+add_layer {P P.red P.green P.blue P.X P.Y P.Z}
+Group {
+ name ScreenSpaceTransform
+ selected true
+ addUserKnob {20 User l ScreenSpaceTransform}
+ addUserKnob {41 in l Vector T vectorIn.in}
+ addUserKnob {6 project +STARTLINE}
+ project true
+ addUserKnob {6 isNormal +STARTLINE}
+ addUserKnob {6 invert +STARTLINE}
+}
+ Input {
+  inputs 0
+  name Camera
+  xpos 752
+  ypos -52
+  number 1
+ }
+ Camera2 {
+  inputs 0
+  useMatrix true
+  matrix {
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+    }
+  focal {{"\[topnode parent.input1].focal"}}
+  haperture {{"\[topnode parent.input1].haperture"}}
+  near {{"\[topnode parent.input1].near"}}
+  far {{"\[topnode parent.input1].far"}}
+  name Camera1
+  xpos 762
+  ypos 5
+ }
+ Input {
+  inputs 0
+  name Vector
+  xpos 220
+  ypos -48
+ }
+ Dot {
+  name Dot1
+  xpos 254
+  ypos 1
+ }
+set N587e0f00 [stack 0]
+ Dot {
+  name Dot2
+  xpos 403
+  ypos 1
+ }
+ Shuffle {
+  in P
+  name vectorIn
+  xpos 369
+  ypos 51
+ }
+ BlinkScript {
+  recompileCount 266
+  ProgramGroup 1
+  KernelDescription "2 \"SaturationKernel\" iterate pixelWise 3a50bfff32b58b54a88217da56a4dae927eec9541acd2fe5c5c9b015f01db8be 2 \"Vector\" Read Point \"dst\" Write Point 10 \"focalLength\" Float 1 AAAAAA== \"hape\" Float 1 AAAAAA== \"width\" Int 1 AAAAAA== \"height\" Int 1 AAAAAA== \"Near\" Float 1 zczMPQ== \"Far\" Float 1 AEAcRg== \"transform\" Float 16 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== \"project\" Int 1 AAAAAA== \"invert\" Int 1 AAAAAA== \"isNormal\" Int 1 AAAAAA== 10 \"focalLength\" 1 1 \"hape\" 1 1 \"width\" 1 1 \"height\" 1 1 \"near\" 1 1 \"far\" 1 1 \"transform\" 16 1 \"project\" 1 1 \"invert\" 1 1 \"isNormal\" 1 1 5 \"aov\" Float 1 1 AAAAAA== \"transformInverted\" Float 16 1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== \"cameraProjection\" Float 16 1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA== \"aspect\" Float 1 1 AAAAAA== \"transformNormal\" Float 16 1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  kernelSource "#define PI 3.1415926535897932384626433832795028841971693993751058;\n\nfloat3 norm(float3 a)\{\n  return a/length(a);\n\}\n\nfloat4x4 ident4x4()\{\n  float4x4 mat;\n  mat\[0]\[0] = 1.0;\n  mat\[0]\[1] = 0.0;\n  mat\[0]\[2] = 0.0;\n  mat\[0]\[3] = 0.0;\n  mat\[1]\[0] = 0.0;\n  mat\[1]\[1] = 1.0;\n  mat\[1]\[2] = 0.0;\n  mat\[1]\[3] = 0.0;\n  mat\[2]\[0] = 0.0;\n  mat\[2]\[1] = 0.0;\n  mat\[2]\[2] = 1.0;\n  mat\[2]\[3] = 0.0;\n  mat\[3]\[0] = 0.0;\n  mat\[3]\[1] = 0.0;\n  mat\[3]\[2] = 0.0;\n  mat\[3]\[3] = 1.0;\n  return mat;\n\}\n\nfloat4x4 rotateAxis(float angle, int axis)\{\n  float4x4 mat = ident4x4();\n  if(axis==0)\{      // X\n    mat\[1]\[1] =  cos(angle);\n    mat\[1]\[2] = -sin(angle);\n    mat\[2]\[1] =  sin(angle);\n    mat\[2]\[2] =  cos(angle);\n  \}else if(axis==1)\{// Y\n    mat\[0]\[0] =  cos(angle);\n    mat\[0]\[2] =  sin(angle);\n    mat\[2]\[0] = -sin(angle);\n    mat\[2]\[2] =  cos(angle);\n  \}else if(axis==2)\{// Z\n    mat\[0]\[0] =  cos(angle);\n    mat\[0]\[1] = -sin(angle);\n    mat\[1]\[0] =  sin(angle);\n    mat\[1]\[1] =  cos(angle);\n  \}\n  return mat;\n\}\n\nfloat3 mult(float3 a, float4x4 mat)\{\n  return float3((a.x*mat\[0]\[0])+(a.y*mat\[0]\[1])+(a.z*mat\[0]\[2])+mat\[0]\[3],\n                (a.x*mat\[1]\[0])+(a.y*mat\[1]\[1])+(a.z*mat\[1]\[2])+mat\[1]\[3],\n                (a.x*mat\[2]\[0])+(a.y*mat\[2]\[1])+(a.z*mat\[2]\[2])+mat\[2]\[3]);\n\}\n\nfloat3 multPointMatrix(float3 in,  float4x4 M) \n\{ \n    float3 out = float3(0,0,0);\n    out.x   = in.x * M\[0]\[0] + in.y * M\[0]\[1] + in.z * M\[0]\[2] + M\[0]\[3]; \n    out.y   = in.x * M\[1]\[0] + in.y * M\[1]\[1] + in.z * M\[1]\[2] + M\[1]\[3]; \n    out.z   = in.x * M\[2]\[0] + in.y * M\[2]\[1] + in.z * M\[2]\[2] + M\[2]\[3]; \n    float w = in.x * M\[3]\[0] + in.y * M\[3]\[1] + in.z * M\[3]\[2] + M\[3]\[3]; \n \n    // normalize if w is different than 1 (convert from homogeneous to Cartesian coordinates)\n    if (w != 1) \{ \n        out.x /= w; \n        out.y /= w; \n        //out.z /= w; \n    \}\n    return out;\n\}\nfloat3 divPointMatrix(float3 in,  float4x4 M) \n\{ \n    float w = in.x * M\[3]\[0] + in.y * M\[3]\[1] + in.z * M\[3]\[2] + M\[3]\[3];;\n    // normalize if w is different than 1 (convert from homogeneous to Cartesian coordinates)\n    if (w != 1) \{ \n        in.x *= w; \n        in.y *= w; \n        //out.z /= w; \n    \}\n    float3 out = float3(0,0,0);\n    out.x   = in.x / M\[0]\[0]; \n    out.y   = in.y / M\[1]\[1]; \n    out.z   = in.z / M\[2]\[2]; \n\n \n    return out;\n\}\n\nfloat4x4 projectionMatrix(float aov, float aspect, float near, float far)\{\n  float4x4 M = ident4x4();\n  // X\n  M\[0]\[0] = 1.0f / (aspect * tan(aov / 2.0f)); // scale the x coordinates of the projected point \n  M\[0]\[1] = 0.0;\n  M\[0]\[2] = 0.0;\n  M\[0]\[3] = 0.0;\n  // Y\n  M\[1]\[0] = 0.0;\n  M\[1]\[1] = 1.0f / tan(aov / 2.0f); // scale the y coordinates of the projected point \n  M\[1]\[2] = 0.0;\n  M\[1]\[3] = 0.0;\n  // Z\n  M\[2]\[0] = 0.0;\n  M\[2]\[1] = 0.0;\n  //M\[2]\[2] = far / (far - near);\n  //M\[2]\[3] = -far * near / (far - near);\n  // Offset\n  M\[3]\[0] = 0.0;\n  M\[3]\[1] = 0.0;\n  M\[3]\[2] = -1.0;\n  M\[3]\[3] = 0.0;\n  return M;\n\}\n\n\nfloat angleOfView(float aperture, float focalLength)\{\n  return 2.0f * atan( 0.5f * aperture / focalLength);\n\}\n\n\n\nkernel SaturationKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> Vector; // the input image\n  Image<eWrite> dst; // the output image\n\n  param:\n    float focalLength;\n    float hape;\n    int width;\n    int height;\n    float near;\n    float far;\n    float4x4 transform;\n    int project;\n    int invert;\n    int isNormal;\n\n  local:\n    float aov;\n    float4x4 transformInverted;\n    float4x4 cameraProjection;\n    float aspect;\n    float4x4 transformNormal;\n\n  void define() \{\n    defineParam(near, \"Near\", 0.1f);\n    defineParam(far, \"Far\", 10000.0f);\n  \}\n\n  void init() \{\n    aspect = float(width) / float(height);\n    aov = angleOfView(hape, focalLength * aspect);\n\n    cameraProjection = projectionMatrix(aov, aspect, near, far);\n\n    transformInverted = transform.invert();\n    transformNormal = transform;\n    if( isNormal == 1 )\{\n      transformInverted\[0]\[3] = 0.0f;\n      transformInverted\[1]\[3] = 0.0f;\n      transformInverted\[2]\[3] = 0.0f;\n      transformNormal\[0]\[3] = 0.0;\n      transformNormal\[1]\[3] = 0.0f;\n      transformNormal\[2]\[3] = 0.0f;\n    \}\n\n  \}\n\n\n\n  void process(int2 pos) \{\n    // Read the input image\n    SampleType(Vector) input  = Vector();\n    float3 v = float3(input\[0], input\[1], input\[2]);\n\n    float screenOffsetX = float(pos.x) / float(width);\n    screenOffsetX = (screenOffsetX * 2.0f) - 1.0f;\n    float screenOffsetY = float(pos.y) / float(height);\n    screenOffsetY = (screenOffsetY * 2.0f) - 1.0f;\n\n    if(invert == 0)\{\n      v = mult(v, transformInverted);\n      if( project == 1 )\{\n        if( isNormal == 1 )\{\n          float4x4 rotY = rotateAxis( aov * screenOffsetX * 0.5f * aspect, 1 );\n          float4x4 rotX = rotateAxis( aov * -screenOffsetY * 0.5f, 0 );\n          v = mult(v, rotY);\n          v = mult(v, rotX);\n        \}else\{\n          v = multPointMatrix(v, cameraProjection);\n        \}\n      \}\n    \}else\{\n      if( project == 1 )\{\n        if( isNormal == 1 )\{\n          float4x4 rotY = rotateAxis( aov * -screenOffsetX * 0.5f * aspect, 1 );\n          float4x4 rotX = rotateAxis( aov * screenOffsetY * 0.5f, 0 );\n          v = mult(v, rotX);\n          v = mult(v, rotY);\n        \}else\{\n          v = divPointMatrix(v, cameraProjection);\n        \}\n      \}\n      v = mult(v, transformNormal);\n    \}\n    if( isNormal == 1 )\{\n      v = norm(v);\n    \}\n    dst() = float4(v\[0], v\[1], v\[2], 0.0f);\n  \}\n\};\n"
+  rebuild ""
+  SaturationKernel_focalLength {{Camera1.focal}}
+  SaturationKernel_hape {{Camera1.haperture}}
+  SaturationKernel_width {{width}}
+  SaturationKernel_height {{height}}
+  SaturationKernel_Near {{Camera1.near}}
+  SaturationKernel_Far {{Camera1.far}}
+  group_SaturationKernel_transform 1
+  SaturationKernel_transform {
+      {{Camera1.world_matrix.0} {Camera1.world_matrix.1} {Camera1.world_matrix.2} {Camera1.world_matrix.3}}
+      {{Camera1.world_matrix.4} {Camera1.world_matrix.5} {Camera1.world_matrix.6} {Camera1.world_matrix.7}}
+      {{Camera1.world_matrix.8} {Camera1.world_matrix.9} {Camera1.world_matrix.10} {Camera1.world_matrix.11}}
+      {{Camera1.world_matrix.12} {Camera1.world_matrix.13} {Camera1.world_matrix.14} {Camera1.world_matrix.15}}
+    }
+  SaturationKernel_project {{parent.project}}
+  SaturationKernel_invert {{parent.invert}}
+  SaturationKernel_isNormal {{parent.isNormal}}
+  rebuild_finalise ""
+  name BlinkScript4
+  selected true
+  xpos 369
+  ypos 154
+ }
+ Dot {
+  name Dot3
+  xpos 403
+  ypos 274
+ }
+push $N587e0f00
+ ShuffleCopy {
+  inputs 2
+  in2 {{{vectorIn.in}}}
+  red red
+  green green
+  blue blue
+  alpha alpha2
+  out {{{vectorIn.in}}}
+  name ShuffleCopy1
+  xpos 220
+  ypos 270
+ }
+ Output {
+  name Output1
+  xpos 220
+  ypos 313
+ }
+end_group
