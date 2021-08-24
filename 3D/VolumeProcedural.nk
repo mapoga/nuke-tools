@@ -1,5 +1,5 @@
 Group {
- name VolumeProcedural2
+ name VolumeProcedural
  selected true
  addUserKnob {20 Volume l VolumeProcedural}
  addUserKnob {26 Occlusion l "Occlusion            "}
@@ -12,7 +12,6 @@ Group {
  addUserKnob {26 Shape_div l "Shape                 "}
  addUserKnob {4 shapeType M {Sphere Box Ramp ""}}
  shapeType Ramp
- addUserKnob {12 centerPoint}
  addUserKnob {41 translate T Shape.translate}
  addUserKnob {41 rotate T Shape.rotate}
  addUserKnob {41 scaling l scale T Shape.scaling}
@@ -57,46 +56,9 @@ Group {
 }
  Axis2 {
   inputs 0
-  name Shape
-  xpos 149
-  ypos 298
- }
- Axis2 {
-  inputs 0
   name DensityNoise
   xpos 13
   ypos 363
- }
- Input {
-  inputs 0
-  name cam
-  xpos 546
-  ypos 278
-  number 1
- }
-set Nab9e6d0 [stack 0]
- Axis2 {
-  useMatrix true
-  matrix {
-      {{parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix}}
-      {{parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix}}
-      {{parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix}}
-      {{parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix} {parent.input1.world_matrix}}
-    }
-  name camera_transform
-  xpos 679
-  ypos 317
- }
-push $Nab9e6d0
- NoOp {
-  name AngleOfView
-  xpos 546
-  ypos 338
-  addUserKnob {20 User}
-  addUserKnob {7 horizontal}
-  horizontal {{2*degrees(atan(parent.input1.haperture/(2*parent.input1.focal)))}}
-  addUserKnob {7 vertical}
-  vertical {{2*degrees(atan(parent.input1.vaperture/(2*parent.input1.focal)))}}
  }
  Input {
   inputs 0
@@ -105,7 +67,7 @@ push $Nab9e6d0
   ypos 259
  }
  Shuffle {
-  in other
+  in depth
   in2 alpha
   alpha red2
   name pos
@@ -127,10 +89,10 @@ push $Nab9e6d0
   P_vol_occlusionMode {{parent.occlusionMode}}
   P_vol_shapeType {{parent.shapeType}}
   P_vol_shapeTransformMatrix {
-      {{VolumeProcedural2.Shape.world_matrix.0} {VolumeProcedural2.Shape.world_matrix.1} {VolumeProcedural2.Shape.world_matrix.2} {VolumeProcedural2.Shape.world_matrix.3}}
-      {{VolumeProcedural2.Shape.world_matrix.4} {VolumeProcedural2.Shape.world_matrix.5} {VolumeProcedural2.Shape.world_matrix.6} {VolumeProcedural2.Shape.world_matrix.7}}
-      {{VolumeProcedural2.Shape.world_matrix.8} {VolumeProcedural2.Shape.world_matrix.9} {VolumeProcedural2.Shape.world_matrix.10} {VolumeProcedural2.Shape.world_matrix.11}}
-      {{VolumeProcedural2.Shape.world_matrix.12} {VolumeProcedural2.Shape.world_matrix.13} {VolumeProcedural2.Shape.world_matrix.14} {VolumeProcedural2.Shape.world_matrix.15}}
+      {{Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix}}
+      {{Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix}}
+      {{Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix}}
+      {{Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix} {Shape.world_matrix}}
     }
   P_vol_color {{parent.color} {parent.color} {parent.color}}
   P_vol_densityMultiplier {{parent.density}}
@@ -142,26 +104,27 @@ push $Nab9e6d0
   P_vol_isDensityNormalized {{parent.normalize_density}}
   P_vol_isZeroAsInfinity {{parent.zeroIsInfinity}}
   P_vol_cameraTransformMatrix {
-      {{VolumeProcedural2.camera_transform.matrix.0} {VolumeProcedural2.camera_transform.matrix.1} {VolumeProcedural2.camera_transform.matrix.2} {VolumeProcedural2.camera_transform.matrix.3}}
-      {{VolumeProcedural2.camera_transform.matrix.4} {VolumeProcedural2.camera_transform.matrix.5} {VolumeProcedural2.camera_transform.matrix.6} {VolumeProcedural2.camera_transform.matrix.7}}
-      {{VolumeProcedural2.camera_transform.matrix.8} {VolumeProcedural2.camera_transform.matrix.9} {VolumeProcedural2.camera_transform.matrix.10} {VolumeProcedural2.camera_transform.matrix.11}}
-      {{VolumeProcedural2.camera_transform.matrix.12} {VolumeProcedural2.camera_transform.matrix.13} {VolumeProcedural2.camera_transform.matrix.14} {VolumeProcedural2.camera_transform.matrix.15}}
+      {{Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix}}
+      {{Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix}}
+      {{Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix}}
+      {{Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix} {Camera1.world_matrix}}
     }
-  P_vol_angleOfView {{VolumeProcedural2.AngleOfView.horizontal} {VolumeProcedural2.AngleOfView.vertical}}
+  P_vol_angleOfView {{AngleOfView.horizontal} {AngleOfView.vertical}}
   P_vol_imageSize {{width} {height}}
   P_vol_hasDensityNoise {{parent.hasDensityNoise}}
   P_vol_densityNoiseOctaves {{parent.densityNoiseOctaves}}
   P_vol_densityNoiseGain {{parent.densityNoiseGain}}
   P_vol_densityNoiseTime {{parent.densityNoiseTime}}
   P_vol_densityNoiseTransformMatrix {
-      {{VolumeProcedural2.DensityNoise.world_matrix.0} {VolumeProcedural2.DensityNoise.world_matrix.1} {VolumeProcedural2.DensityNoise.world_matrix.2} {VolumeProcedural2.DensityNoise.world_matrix.3}}
-      {{VolumeProcedural2.DensityNoise.world_matrix.4} {VolumeProcedural2.DensityNoise.world_matrix.5} {VolumeProcedural2.DensityNoise.world_matrix.6} {VolumeProcedural2.DensityNoise.world_matrix.7}}
-      {{VolumeProcedural2.DensityNoise.world_matrix.8} {VolumeProcedural2.DensityNoise.world_matrix.9} {VolumeProcedural2.DensityNoise.world_matrix.10} {VolumeProcedural2.DensityNoise.world_matrix.11}}
-      {{VolumeProcedural2.DensityNoise.world_matrix.12} {VolumeProcedural2.DensityNoise.world_matrix.13} {VolumeProcedural2.DensityNoise.world_matrix.14} {VolumeProcedural2.DensityNoise.world_matrix.15}}
+      {{DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix}}
+      {{DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix}}
+      {{DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix}}
+      {{DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix} {DensityNoise.world_matrix}}
     }
   P_vol_isdensityNoiseWorldSpace {{parent.isDensityNoiseWorldSpace}}
   rebuild_finalise ""
   name BlinkScript1
+  selected true
   xpos 323
   ypos 402
  }
@@ -169,5 +132,45 @@ push $Nab9e6d0
   name Output1
   xpos 323
   ypos 472
+ }
+ Camera2 {
+  inputs 0
+  useMatrix true
+  matrix {
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+      {{"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"} {"\[topnode parent.input1].world_matrix"}}
+    }
+  focal {{"\[topnode parent.input1].focal"}}
+  haperture {{"\[topnode parent.input1].haperture"}}
+  near {{"\[topnode parent.input1].near"}}
+  far {{"\[topnode parent.input1].far"}}
+  name Camera1
+  xpos 704
+  ypos 317
+ }
+ Axis2 {
+  inputs 0
+  name Shape
+  xpos 149
+  ypos 298
+ }
+ Input {
+  inputs 0
+  name cam
+  xpos 546
+  ypos 278
+  number 1
+ }
+ NoOp {
+  name AngleOfView
+  xpos 546
+  ypos 337
+  addUserKnob {20 User}
+  addUserKnob {7 horizontal}
+  horizontal {{2*degrees(atan(Camera1.haperture/(2*Camera1.focal)))}}
+  addUserKnob {7 vertical}
+  vertical {{2*degrees(atan(Camera1.vaperture/(2*Camera1.focal)))}}
  }
 end_group
