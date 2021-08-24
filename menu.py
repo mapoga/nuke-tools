@@ -18,7 +18,11 @@ Threed.addCommand('Z Convert', 'nuke.createNode(\'Z Convert.nk\')',
                   icon='Z Convert_icon.png')
 Threed.addCommand('Z Merge', 'nuke.createNode(\'Z Merge.nk\')',
                   icon='Z Merge_icon.png')
+Threed.addCommand('Z to P', 'nuke.createNode(\'Z to P.nk\')',
+                  icon='Z Merge_icon.png')
 Threed.addCommand('Vector', 'nuke.createNode(\'Vector.nk\')',
+                  icon='Z Merge_icon.png')
+Threed.addCommand('Screen Space Transform', 'nuke.createNode(\'ScreenSpaceTransform.nk\')',
                   icon='Z Merge_icon.png')
 Threed.addCommand('RS Fix', 'nuke.createNode(\'RS_Fix.nk\')',
                   icon='Z Merge_icon.png')
