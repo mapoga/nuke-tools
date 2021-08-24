@@ -8,17 +8,15 @@ Nodes = nuke.toolbar('Nodes')
 Tools = Nodes.addMenu('Tools', icon='Tools_icon.png')
 
 Threed = Tools.addMenu('3D', icon='3D_icon.png')
-Threed.addCommand('N Convert', 'nuke.createNode(\'N Convert.nk\')',
-                  icon='N Convert_icon.png')
-Threed.addCommand('N Facing', 'nuke.createNode(\'N Facing.nk\')',
+Threed.addCommand('N Matte', 'nuke.createNode(\'N Facing.nk\')',
                   icon='N Facing_icon.png')
 Threed.addCommand('P Matte', 'nuke.createNode(\'P Matte.nk\')',
                   icon='P Matte_icon.png')
 Threed.addCommand('Z Convert', 'nuke.createNode(\'Z Convert.nk\')',
                   icon='Z Convert_icon.png')
-Threed.addCommand('Z Merge', 'nuke.createNode(\'Z Merge.nk\')',
-                  icon='Z Merge_icon.png')
 Threed.addCommand('Z to P', 'nuke.createNode(\'Z to P.nk\')',
+                  icon='Z Merge_icon.png')
+Threed.addCommand('Z Merge', 'nuke.createNode(\'Z Merge.nk\')',
                   icon='Z Merge_icon.png')
 Threed.addCommand('Vector', 'nuke.createNode(\'Vector.nk\')',
                   icon='Z Merge_icon.png')
