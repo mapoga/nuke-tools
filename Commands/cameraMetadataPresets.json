@@ -1,0 +1,65 @@
+{
+    "default": "Redshift",
+    "presets": [
+        {   
+            "name": "None",
+            "parameters": {
+                "cameraTransformMatrix": "",
+                "cameraTransformMatrixOrder": "row-major",
+                "invert": false,
+                "flipZRot": false,
+                "flipZPos": false,
+                "flipZWorld": false,
+                "fov": "",
+                "near": "",
+                "far": "",
+                "pixelAspect": "",
+                "filmAspect": "",
+                "apertures": "",
+                "horizontalAperture": "",
+                "verticalAperture": "",
+                "reconstructedHorizontalAperture": 36
+            }
+        },
+        {
+            "name": "Redshift",
+            "parameters": {
+                "cameraTransformMatrix": "exr/rs/camera/transform",
+                "cameraTransformMatrixOrder": "row-major",
+                "invert": false,
+                "flipZRot": false,
+                "flipZPos": false,
+                "flipZWorld": true,
+                "fov": "exr/rs/camera/fov",
+                "near": "exr/rs/camera/nearPlane",
+                "far": "exr/rs/camera/farPlane",
+                "pixelAspect": "exr/pixelAspectRatio",
+                "filmAspect": "exr/rs/camera/aspect",
+                "apertures": "exr/rs/camera/aperture",
+                "horizontalAperture": "",
+                "verticalAperture": "",
+                "reconstructedHorizontalAperture": 36
+            }
+        },
+        {   
+            "name": "Arnold",
+            "parameters": {
+                "cameraTransformMatrix": "exr/worldToCamera",
+                "cameraTransformMatrixOrder": "row-major",
+                "invert": true,
+                "flipZRot": false,
+                "flipZPos": false,
+                "flipZWorld": true,
+                "fov": "exr/CameraFov",
+                "near": "exr/arnold/camera/near_clip",
+                "far": "exr/arnold/camera/far_clip",
+                "pixelAspect": "exr/pixelAspectRatio",
+                "filmAspect": "",
+                "apertures": "",
+                "horizontalAperture": "exr/CameraFilmApertureHorizontal",
+                "verticalAperture": "exr/CameraFilmApertureVertical",
+                "reconstructedHorizontalAperture": 36
+            }
+        }
+    ]
+}

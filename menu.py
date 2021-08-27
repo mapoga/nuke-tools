@@ -1,4 +1,7 @@
 import nuke
+import os
+
+dirname = os.path.dirname(os.path.abspath(__file__))
 
 Nodes = nuke.toolbar('Nodes')
 
@@ -87,11 +90,12 @@ Others.addCommand('Read from Write',
 
 Commands = Tools.addMenu('Commands', icon='ToolSets_icon.png')
 import commands
+import camera
 Commands.addCommand('Read Range',
                   'commands.reads_set_range_panel()',
                   'shift+r')
-Commands.addCommand('Camera from RS metadata',
-                  'commands.camera_from_RS_metadata()',
+Commands.addCommand('Camera from metadata',
+                  "camera.cameraFromSelectedNodeMetadata(presetsFile=os.path.normpath(os.path.join(dirname, 'Commands/cameraMetadataPresets.json')))",
                   'shift+c')
 ###################### Tools End ######################
 #######################################################
