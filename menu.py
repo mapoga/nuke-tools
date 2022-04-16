@@ -91,12 +91,20 @@ Others.addCommand('Read from Write',
 Commands = Tools.addMenu('Commands', icon='ToolSets_icon.png')
 import commands
 import camera
+import splitRead
+import maskCleanup
 Commands.addCommand('Read Range',
                   'commands.reads_set_range_panel()',
                   'shift+r')
 Commands.addCommand('Camera from metadata',
                   "camera.cameraFromSelectedNodeMetadata(presetsFile=os.path.normpath(os.path.join(dirname, 'Commands/cameraMetadataPresets.json')))",
                   'shift+c')
+Commands.addCommand('Split Read',
+                  'splitRead.split_selected_reads()',
+                  'shift+x')
+Commands.addCommand('Mask Cleanup',
+                  'maskCleanup.mask_cleanup()',
+                  'shift+z')
 ###################### Tools End ######################
 #######################################################
 
