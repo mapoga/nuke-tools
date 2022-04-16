@@ -220,7 +220,7 @@ class CameraFromMetadataPanel(nukescripts.PythonPanel):
             cam['rotate'].setValueAt(float(math.degrees(rotate[1])),frame,1)
             cam['rotate'].setValueAt(float(math.degrees(rotate[2])),frame,2)
 
-            task.setProgress( int( float(frame-self.first.value()) / float(self.last.value()-self.first.value()) * 100 ) )
+            task.setProgress( int( float(frame-self.first.value()) / float(self.last.value()-self.first.value()+1) * 100 ) )
         return cam
 
 

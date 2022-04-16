@@ -59,7 +59,7 @@ def camera_from_RS_metadata():
     mDat = node.metadata()
     reqFields = ['exr/rs/camera/%s' % i for i in ('fov', 'aperture', 'transform', 'aspect', 'nearPlane', 'farPlane')]
     if not set( reqFields ).issubset( mDat ):
-        print 'no metadata for camera found'
+        print('no metadata for camera found')
         return
     
     # User values

@@ -25,7 +25,7 @@ Threed.addCommand('Vector', 'nuke.createNode(\'Vector.nk\')',
                   icon='Z Merge_icon.png')
 Threed.addCommand('Screen Space Transform', 'nuke.createNode(\'ScreenSpaceTransform.nk\')',
                   icon='Z Merge_icon.png')
-Threed.addCommand('RS Fix', 'nuke.createNode(\'RS_Fix.nk\')',
+Threed.addCommand('RS Depth Fix', 'nuke.createNode(\'RS_Depth_Fix.nk\')',
                   icon='Z Merge_icon.png')
 Threed.addCommand('VolumeProcedural', 'nuke.createNode(\'VolumeProcedural.nk\')',
                   icon='VolumeProcedural.png')

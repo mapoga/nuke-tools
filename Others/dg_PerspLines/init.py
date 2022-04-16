@@ -79,29 +79,29 @@ def dg_PerspLines_AlignCamera():
     V2 = nodes[1]['PT'].value()
     
     K = (V2[1]-V1[1])/(V2[0]-V1[0])
-    print K
+    print(K)
     
     Oi = [nodes[0].width()/2,nodes[0].height()/2]
-    print Oi
+    print(Oi)
     
     Vix = (1/K*Oi[0]+Oi[1]+K*V1[0]-V1[1])/(K+1/K)
     Viy = -1/K*(Vix-Oi[0])+Oi[1]
     Vi = [Vix,Viy]
-    print Vi
+    print(Vi)
     
     ViV1 = sqrt(pow(Vi[0]-V1[0],2)+pow(Vi[1]-V1[1],2))
     ViV2 = sqrt(pow(Vi[0]-V2[0],2)+pow(Vi[1]-V1[1],2))
     
-    print ViV1
-    print ViV2
+    print(ViV1)
+    print(ViV2)
     
     OcVi = sqrt(ViV1*ViV2)
     OiVi = sqrt(pow(Oi[0]-Vi[0],2)+pow(Oi[1]-Vi[1],2))
-    print OcVi
-    print OiVi
+    print(OcVi)
+    print(OiVi)
     
     f = sqrt(pow(OcVi,2)-pow(OiVi,2))
-    print f
+    print(f)
     
     f_scale = sqrt(pow(Oi[0]*2,2)+pow(Oi[1]*2,2))/f
     
