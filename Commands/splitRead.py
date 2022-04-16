@@ -82,7 +82,8 @@ def split_layers(node, layers, Redshift_crypto=False):
         bounds = add_to_bound(bounds, a_end)
 
         #Shuffle
-        end = nuke.nodes.Shuffle2( inputs=[ end ], label=layer, postage_stamp=True, in1=layer, in2='rgba')
+        name = layer.replace('beauty_aux_', '')
+        end = nuke.nodes.Shuffle2( inputs=[ end ], label=name, postage_stamp=True, in1=layer, in2='rgba')
         end.knob('mappings').setValue('rgba.alpha', 'rgba.alpha')
         bounds = add_to_bound(bounds, end)
 
@@ -182,6 +183,6 @@ def split_selected_reads():
 	    if n.Class() == 'Read':
 	        layers = channels_to_layers(n.channels())
 	        
-	        selected_layers = [l for l in layers if l.startswith('beauty_')]
+	        selected_layers = [l for l in layers if l.startswith('beauty_aux_')]
 	    
 	        split_layers(n, selected_layers, Redshift_crypto=True)

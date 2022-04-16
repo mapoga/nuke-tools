@@ -84,9 +84,9 @@ class CameraFromMetadataPanel(nukescripts.PythonPanel):
             self.applyPreset(str(default))
 
         self.first = nuke.Int_Knob('first', 'first')
-        self.first.setValue(nuke.root().firstFrame())
+        self.first.setValue(self.node.firstFrame())
         self.last = nuke.Int_Knob('last', 'last')
-        self.last.setValue(nuke.root().lastFrame())
+        self.last.setValue(self.node.lastFrame())
         self.last.clearFlag(nuke.STARTLINE)
         for k in (
                 self.presetTab,
@@ -157,7 +157,7 @@ class CameraFromMetadataPanel(nukescripts.PythonPanel):
         cam = nuke.createNode('Camera2')
         # Preps knobs
         for k in ( 'focal', 'haperture', 'vaperture', 'translate', 'rotate', 'near', 'far'):
-            cam[k].setAnimated() 
+            cam[k].setAnimated()
 
         task = nuke.ProgressTask( 'Baking camera from metadata in {0}'.format(self.node.name()))
 
@@ -167,60 +167,63 @@ class CameraFromMetadataPanel(nukescripts.PythonPanel):
             task.setMessage( 'processing frame {0}'.format(frame))
             # Metadata
             metadata = self.node.metadata(time=frame)
-            fov = metadata.get(self.fov.value(), 45)
-            near = metadata.get(self.near.value(), 0.1)
-            far = metadata.get(self.far.value(), 10000)
-            apertures = self.getCombinedAperture(frame=frame)
-            #Convert
-            haperture = apertures[0]
-            vaperture = apertures[1]
-            focal = self.focal(haperture, fov)
-            # Set
-            cam['focal'].setValueAt(float(focal),frame)
-            cam['haperture'].setValueAt(float(haperture),frame)
-            cam['vaperture'].setValueAt(float(vaperture),frame)
-            cam['near'].setValueAt(float(near),frame)
-            cam['far'].setValueAt(float(far),frame)
+            if metadata:
+	            fov = metadata.get(self.fov.value(), 45)
+	            near = metadata.get(self.near.value(), 0.1)
+	            far = metadata.get(self.far.value(), 10000)
+	            apertures = self.getCombinedAperture(frame=frame)
+	            #Convert
+	            haperture = apertures[0]
+	            vaperture = apertures[1]
+	            focal = self.focal(haperture, fov)
+	            # Set
+	            cam['focal'].setValueAt(float(focal),frame)
+	            cam['haperture'].setValueAt(float(haperture),frame)
+	            cam['vaperture'].setValueAt(float(vaperture),frame)
+	            cam['near'].setValueAt(float(near),frame)
+	            cam['far'].setValueAt(float(far),frame)
 
-            # Transform Initialize
-            meta_transform = self.node.metadata(self.cameraTransformMatrix.value(), frame)
-            xform = nuke.math.Matrix4()
-            for k,v in enumerate(meta_transform):
-                xform[k] = v
-            # row-major matrix
-            if self.cameraTransformMatrixOrder.value() == 'column-major':
-                xform.transpose()
-            # invert
-            if self.invert.value():
-                xform = xform.inverse()
-            # Negate Transform in Z axis local space.
-            if self.flipZRot.value():
-                xform.scale(1,1,-1)
-            # Negate Transform in Z axis world space.
-            if self.flipZPos.value():
-                m = nuke.math.Matrix4()
-                m.makeIdentity()
-                m.scaling(1,1,-1)
-                xform = m * xform
-            # flip Z World
-            if self.flipZWorld.value():
-                m = nuke.math.Matrix4()
-                m.makeIdentity()
-                m.scaling(1,1,-1)
-                xform = xform * m
-            # Extract Translations
-            translate = xform.transform(nuke.math.Vector3(0,0,0))
-            # Extract Rotations
-            rotate = xform.rotationsZXY()
-            # Set values
-            cam['translate'].setValueAt(float(translate.x),frame,0)
-            cam['translate'].setValueAt(float(translate.y),frame,1)
-            cam['translate'].setValueAt(float(translate.z),frame,2)
-            cam['rotate'].setValueAt(float(math.degrees(rotate[0])),frame,0)
-            cam['rotate'].setValueAt(float(math.degrees(rotate[1])),frame,1)
-            cam['rotate'].setValueAt(float(math.degrees(rotate[2])),frame,2)
+	            # Transform Initialize
+	            meta_transform = self.node.metadata(self.cameraTransformMatrix.value(), frame)
+	            xform = nuke.math.Matrix4()
+	            for k,v in enumerate(meta_transform):
+	                xform[k] = v
+	            # row-major matrix
+	            if self.cameraTransformMatrixOrder.value() == 'column-major':
+	                xform.transpose()
+	            # invert
+	            if self.invert.value():
+	                xform = xform.inverse()
+	            # Negate Transform in Z axis local space.
+	            if self.flipZRot.value():
+	                xform.scale(1,1,-1)
+	            # Negate Transform in Z axis world space.
+	            if self.flipZPos.value():
+	                m = nuke.math.Matrix4()
+	                m.makeIdentity()
+	                m.scaling(1,1,-1)
+	                xform = m * xform
+	            # flip Z World
+	            if self.flipZWorld.value():
+	                m = nuke.math.Matrix4()
+	                m.makeIdentity()
+	                m.scaling(1,1,-1)
+	                xform = xform * m
+	            # Extract Translations
+	            translate = xform.transform(nuke.math.Vector3(0,0,0))
+	            # Extract Rotations
+	            rotate = xform.rotationsZXY()
+	            # Set values
+	            cam['translate'].setValueAt(float(translate.x),frame,0)
+	            cam['translate'].setValueAt(float(translate.y),frame,1)
+	            cam['translate'].setValueAt(float(translate.z),frame,2)
+	            cam['rotate'].setValueAt(float(math.degrees(rotate[0])),frame,0)
+	            cam['rotate'].setValueAt(float(math.degrees(rotate[1])),frame,1)
+	            cam['rotate'].setValueAt(float(math.degrees(rotate[2])),frame,2)
 
-            task.setProgress( int( float(frame-self.first.value()) / float(self.last.value()-self.first.value()+1) * 100 ) )
+	            task.setProgress( int( float(frame-self.first.value()) / float(self.last.value()-self.first.value()+1) * 100 ) )
+
+
         return cam
 
 
