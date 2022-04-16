@@ -60,12 +60,18 @@ def split_layers(node, layers, Redshift_crypto=False):
     bounds = add_to_bound(bounds, root)
 
     #Black Base
-    black = nuke.nodes.Shuffle2( inputs=[ root ], label='Black', postage_stamp=True)
-    black.knob('mappings').setValue([
-        (-1, 'black', 'rgba.red'),
-        (-1, 'black', 'rgba.green'),
-        (-1, 'black', 'rgba.blue')
-    ])
+    if nuke.NUKE_VERSION_MAJOR >= 12:
+        black = nuke.nodes.Shuffle2( inputs=[ root ], label='Black', postage_stamp=True)
+        black.knob('mappings').setValue([
+            (-1, 'black', 'rgba.red'),
+            (-1, 'black', 'rgba.green'),
+            (-1, 'black', 'rgba.blue')
+        ])
+    else:
+        black = nuke.nodes.Shuffle( inputs=[ root ], label='Black', postage_stamp=True)
+        black.knob('red').setValue('black')
+        black.knob('green').setValue('black')
+        black.knob('blue').setValue('black')
     bounds = add_to_bound(bounds, black)
     b_end = black
     a_end = root
@@ -83,8 +89,13 @@ def split_layers(node, layers, Redshift_crypto=False):
 
         #Shuffle
         name = layer.replace('beauty_aux_', '')
-        end = nuke.nodes.Shuffle2( inputs=[ end ], label=name, postage_stamp=True, in1=layer, in2='rgba')
-        end.knob('mappings').setValue('rgba.alpha', 'rgba.alpha')
+        if nuke.NUKE_VERSION_MAJOR >= 12:
+            end = nuke.nodes.Shuffle2( inputs=[ end ], label=name, postage_stamp=True, in1=layer, in2='rgba')
+            end.knob('mappings').setValue('rgba.alpha', 'rgba.alpha')
+        else:
+            end = nuke.nodes.Shuffle( inputs=[ end ], label=name, postage_stamp=True, in2='rgba')
+            end.knob('in').setValue(layer)
+            end.knob('alpha').setValue('alpha2')
         bounds = add_to_bound(bounds, end)
 
         #Unpremult
@@ -132,10 +143,15 @@ def split_layers(node, layers, Redshift_crypto=False):
         bounds = add_to_bound(bounds, cryptoMat)
         
         #Shuffle
-        cryptoMat_shuffle = nuke.nodes.Shuffle2( inputs=[ cryptoMat, root ], label='MATERIAL')
-        cryptoMat_shuffle.knob('fromInput2').setValue('{1} B A')
-        cryptoMat_shuffle.knob('in2').setValue('rgba')
-        cryptoMat_shuffle.knob('mappings').setValue(1, 'rgba.alpha', 'rgba.alpha')
+        if nuke.NUKE_VERSION_MAJOR >= 12:
+            cryptoMat_shuffle = nuke.nodes.Shuffle2( inputs=[ cryptoMat, root ], label='MATERIAL')
+            cryptoMat_shuffle.knob('fromInput2').setValue('{1} B A')
+            cryptoMat_shuffle.knob('in2').setValue('rgba')
+            cryptoMat_shuffle.knob('mappings').setValue(1, 'rgba.alpha', 'rgba.alpha')
+        else:
+            cryptoMat_shuffle = nuke.nodes.ShuffleCopy( inputs=[ cryptoMat, root ], label='MATERIAL')
+            cryptoMat_shuffle.knob('alpha').setValue('alpha')
+
         _x, waste = get_node_center(cryptoMat)
         waste, _y = get_node_center(root)
         #set_node_center(cryptoMat_shuffle, _x, _y-6)
@@ -152,10 +168,14 @@ def split_layers(node, layers, Redshift_crypto=False):
         bounds = add_to_bound(bounds, cryptoNode)
         
         #Shuffle
-        cryptoNode_shuffle = nuke.nodes.Shuffle2( inputs=[ cryptoNode, cryptoMat_shuffle ], label='NODE')
-        cryptoNode_shuffle.knob('fromInput2').setValue('{1} B A')
-        cryptoNode_shuffle.knob('in2').setValue('rgba')
-        cryptoNode_shuffle.knob('mappings').setValue(1, 'rgba.alpha', 'rgba.alpha')
+        if nuke.NUKE_VERSION_MAJOR >= 12:
+            cryptoNode_shuffle = nuke.nodes.Shuffle2( inputs=[ cryptoNode, cryptoMat_shuffle ], label='NODE')
+            cryptoNode_shuffle.knob('fromInput2').setValue('{1} B A')
+            cryptoNode_shuffle.knob('in2').setValue('rgba')
+            cryptoNode_shuffle.knob('mappings').setValue(1, 'rgba.alpha', 'rgba.alpha')
+        else:
+            cryptoNode_shuffle = nuke.nodes.ShuffleCopy( inputs=[ cryptoNode, cryptoMat_shuffle ], label='NODE')
+            cryptoNode_shuffle.knob('alpha').setValue('alpha')
         _x, waste = get_node_center(cryptoNode)
         waste, _y = get_node_center(cryptoMat_shuffle)
         set_node_center(cryptoNode_shuffle, _x, _y)
