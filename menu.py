@@ -100,7 +100,7 @@ Commands.addCommand('Camera from metadata',
                   "camera.cameraFromSelectedNodeMetadata(presetsFile=os.path.normpath(os.path.join(dirname, 'Commands/cameraMetadataPresets.json')))",
                   'shift+c')
 Commands.addCommand('Split Read',
-                  'splitRead.split_selected_reads()',
+                  'splitRead.split_selected_reads_panel()',
                   'shift+x')
 Commands.addCommand('Mask Cleanup',
                   'maskCleanup.mask_cleanup()',
