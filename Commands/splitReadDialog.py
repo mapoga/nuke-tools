@@ -37,8 +37,7 @@ class LayersWidget(QListWidget):
 		QListWidget.__init__(self)
 		self.setDragDropMode(QAbstractItemView.InternalMove)
 		self.setSelectionMode(QAbstractItemView.ExtendedSelection)
-		policy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-		self.setSizePolicy(policy)
+
 		#Layers
 		self.layers = layers
 
@@ -47,6 +46,11 @@ class LayersWidget(QListWidget):
 
 			self.addItem(item)
 		self.itemDoubleClicked.connect(self._handleDoubleClick)
+
+		#Size
+		self.setMinimumSize(300, 300)
+		self.setMaximumSize(300, 900)
+		self.resize(300, 10 +(self.sizeHintForRow(0) * self.count()))
 
 		# Contextual menu
 		self.setContextMenuPolicy(Qt.ActionsContextMenu)
@@ -66,6 +70,12 @@ class LayersWidget(QListWidget):
 		for item in self.selectedItems():
 			item.set_enabled(enable)
 
+	def sizeHint(self):
+		s = QSize()
+		s.setWidth(300)
+		s.setHeight(10 +(self.sizeHintForRow(0) * self.count()))
+		return s
+
 
 class LayersDialog(QDialog):
 	def __init__(self, layers):
@@ -78,10 +88,8 @@ class LayersDialog(QDialog):
 		button.clicked.connect(self.accept)
 		layout.addWidget(button)
 		self.setLayout(layout)
-		self.setMinimumSize(300, 300)
 		self.setMaximumSize(300, 900)
-		self.resize(300, 900)
-		#self.accepted.connect(self.create)
+
 
 	def create(self):
 		layers = []
