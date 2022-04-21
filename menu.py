@@ -101,7 +101,7 @@ Commands.addCommand('Camera from metadata',
                   'shift+c')
 Commands.addCommand('Split Read',
                   'splitRead.split_selected_reads_panel()',
-                  'shift+x')
+                  'shift+a')
 Commands.addCommand('Mask Cleanup',
                   'maskCleanup.mask_cleanup()',
                   'shift+z')
