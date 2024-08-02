@@ -167,7 +167,7 @@ class ReadFromWrite(object):
             for f in glob_search_results:
                 frame = re.findall(r'\d+', f)[-1]
                 frames.append(frame)
-            frames = sorted(frames)
+            frames = sorted([int(x) for x in frames])
             firstframe = frames[0]
             lastframe = frames[len(frames)-1]
         if lastframe < 0:
